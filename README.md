@@ -12,7 +12,9 @@ Assets\Scenes\Main.unity
 W, A, S, D: Move your character.
 Space: Jump
 Mouse: Rotate the camera.
-Left Mouse Button: Fire your equipped weapon.
+Left Mouse Button: Fire your equipped weapon or Throw item.
+Middle Mouse Button: Switch weapon.
+Right Mouse Button: Grab Item
 ESC: Open the in-game menu.
 
 #### Weapons
@@ -20,6 +22,9 @@ Variety of weapons, each with targets types they are effective against.
 
 *target vulnerable to current weapon*
 ![alt text](https://github.com/PiotrCynowski/FPS_advanced_aiming/blob/master/GitPics/fps_2.png?raw=true)
+
+#### Grab
+Some items can be grabbed; these items will have an indicator when the player is close enough, signaling that they can be picked up. A second indicator will appear when the player is close enough to the item, pointing at it, signifying that the item can be grabbed. Once the item is grabbed, the player can throw it using the left mouse button.
 
 #### Game UI
 The game's User Interface (UI) provides information to the player: 
