@@ -52,12 +52,21 @@
                 },
                 {
                     "name": "WeaponSwitch",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "d30c8349-f7ae-4c87-97ba-bfd7ef8d6a2a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Grab",
+                    "type": "Value",
+                    "id": "7f578a9b-12e4-43b4-bd31-183e25b5cb21",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "PauseMenu",
@@ -117,7 +126,7 @@
                 {
                     "name": "",
                     "id": "8bc5e2ce-ac2e-49b9-91b1-94c26d54a0cb",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -190,6 +199,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b582271e-339c-4c74-b691-3fbcc4fcabc9",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Grab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

@@ -76,12 +76,21 @@ namespace GameInput
                 },
                 {
                     ""name"": ""WeaponSwitch"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""d30c8349-f7ae-4c87-97ba-bfd7ef8d6a2a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Grab"",
+                    ""type"": ""Value"",
+                    ""id"": ""7f578a9b-12e4-43b4-bd31-183e25b5cb21"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""PauseMenu"",
@@ -141,7 +150,7 @@ namespace GameInput
                 {
                     ""name"": """",
                     ""id"": ""8bc5e2ce-ac2e-49b9-91b1-94c26d54a0cb"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Mouse>/middleButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -214,6 +223,17 @@ namespace GameInput
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b582271e-339c-4c74-b691-3fbcc4fcabc9"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Grab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -228,6 +248,7 @@ namespace GameInput
             m_Player_MouseY = m_Player.FindAction("MouseY", throwIfNotFound: true);
             m_Player_Shot1 = m_Player.FindAction("Shot1", throwIfNotFound: true);
             m_Player_WeaponSwitch = m_Player.FindAction("WeaponSwitch", throwIfNotFound: true);
+            m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
             m_Player_PauseMenu = m_Player.FindAction("PauseMenu", throwIfNotFound: true);
         }
 
@@ -296,6 +317,7 @@ namespace GameInput
         private readonly InputAction m_Player_MouseY;
         private readonly InputAction m_Player_Shot1;
         private readonly InputAction m_Player_WeaponSwitch;
+        private readonly InputAction m_Player_Grab;
         private readonly InputAction m_Player_PauseMenu;
         public struct PlayerActions
         {
@@ -307,6 +329,7 @@ namespace GameInput
             public InputAction @MouseY => m_Wrapper.m_Player_MouseY;
             public InputAction @Shot1 => m_Wrapper.m_Player_Shot1;
             public InputAction @WeaponSwitch => m_Wrapper.m_Player_WeaponSwitch;
+            public InputAction @Grab => m_Wrapper.m_Player_Grab;
             public InputAction @PauseMenu => m_Wrapper.m_Player_PauseMenu;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
@@ -335,6 +358,9 @@ namespace GameInput
                 @WeaponSwitch.started += instance.OnWeaponSwitch;
                 @WeaponSwitch.performed += instance.OnWeaponSwitch;
                 @WeaponSwitch.canceled += instance.OnWeaponSwitch;
+                @Grab.started += instance.OnGrab;
+                @Grab.performed += instance.OnGrab;
+                @Grab.canceled += instance.OnGrab;
                 @PauseMenu.started += instance.OnPauseMenu;
                 @PauseMenu.performed += instance.OnPauseMenu;
                 @PauseMenu.canceled += instance.OnPauseMenu;
@@ -360,6 +386,9 @@ namespace GameInput
                 @WeaponSwitch.started -= instance.OnWeaponSwitch;
                 @WeaponSwitch.performed -= instance.OnWeaponSwitch;
                 @WeaponSwitch.canceled -= instance.OnWeaponSwitch;
+                @Grab.started -= instance.OnGrab;
+                @Grab.performed -= instance.OnGrab;
+                @Grab.canceled -= instance.OnGrab;
                 @PauseMenu.started -= instance.OnPauseMenu;
                 @PauseMenu.performed -= instance.OnPauseMenu;
                 @PauseMenu.canceled -= instance.OnPauseMenu;
@@ -388,6 +417,7 @@ namespace GameInput
             void OnMouseY(InputAction.CallbackContext context);
             void OnShot1(InputAction.CallbackContext context);
             void OnWeaponSwitch(InputAction.CallbackContext context);
+            void OnGrab(InputAction.CallbackContext context);
             void OnPauseMenu(InputAction.CallbackContext context);
         }
     }

@@ -10,6 +10,7 @@ namespace GameInput
         [SerializeField] private PlayerMovement movement;
         [SerializeField] private PlayerMouseLook mouseLook;
         [SerializeField] private PlayerWeapon weapon;
+        [SerializeField] private PlayerGrabController grabController;
 
         private PlayerInputActions controls;
         private PlayerInputActions.PlayerActions playerActions;
@@ -18,6 +19,7 @@ namespace GameInput
         private Vector2 mouseInput;
 
         public static Action onPlayerEscButton;
+        private bool isRMB;
 
 
         private void Awake()
@@ -31,9 +33,12 @@ namespace GameInput
             playerActions.MouseX.performed += ctx => mouseInput.x = ctx.ReadValue<float>();
             playerActions.MouseY.performed += ctx => mouseInput.y = ctx.ReadValue<float>();
 
-            playerActions.Shot1.performed += _ => weapon.ShotLMouseBut();
+            playerActions.Shot1.performed += _ => OnShot1LMB();
             playerActions.WeaponSwitch.performed += _ => weapon.SwitchWeaponRMouseBut();
 
+            playerActions.Grab.performed += ctx => { grabController.OnMouseRMB(true); isRMB = true; };
+            playerActions.Grab.canceled += ctx => { grabController.OnMouseRMB(false); isRMB = false; };
+            
             playerActions.PauseMenu.performed += _ => EscapeButPerformed();
 
             PanelPauseUI.OnPlayerPauseMenuOff += EnableControlls;
@@ -68,6 +73,18 @@ namespace GameInput
         private void EnableControlls()
         {
             controls.Enable();
+        }
+
+        private void OnShot1LMB() 
+            {
+            if (isRMB) 
+                {
+                grabController.OnMouseLMB(true);
+            }
+            else 
+            {
+                weapon.ShotLMouseBut();
+            }
         }
     }
 }
