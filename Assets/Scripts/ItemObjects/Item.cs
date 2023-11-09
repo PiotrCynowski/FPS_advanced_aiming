@@ -40,7 +40,7 @@ public class Item : MonoBehaviour, ICanBeGrabbed
     #region indicator
     public void OnRaycastAim(RaycastAimState aimState)
     {
-        if (isInHand)
+        if (isInHand || this==null)
         { 
             return;
         }
@@ -54,6 +54,7 @@ public class Item : MonoBehaviour, ICanBeGrabbed
             case RaycastAimState.aimedAt:
                 indicatorGrab.SetActive(true);
                 break;
+
 
             case RaycastAimState.leftAlone:
                 indicatorGrab.SetActive(false);

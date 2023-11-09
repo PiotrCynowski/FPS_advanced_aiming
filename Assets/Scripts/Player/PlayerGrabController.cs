@@ -214,10 +214,7 @@ namespace Player
 
         private void CallCurrentAim(RaycastAimState aimState) 
         {
-            if (currentAim != null) 
-            {
-                currentAim.OnRaycastAim(aimState);
-            }
+            currentAim?.OnRaycastAim(aimState);
         }
 
         private void IndicateItemsToPick(bool isItemsCacheRefresh) 
