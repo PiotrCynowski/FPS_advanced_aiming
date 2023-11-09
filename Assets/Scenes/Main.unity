@@ -624,10 +624,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 1397136793}
     m_Modifications:
     - target: {fileID: 1727979686265160798, guid: c7cdbb0aeb180014e94f48843179cd77, type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1727979686265160798, guid: c7cdbb0aeb180014e94f48843179cd77, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.27
       objectReference: {fileID: 0}
@@ -671,10 +667,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ForceField
       objectReference: {fileID: 0}
-    - target: {fileID: 8990978041532790172, guid: c7cdbb0aeb180014e94f48843179cd77, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 2960224688415880698, guid: 40ddd385ac8430c488f202932287abec, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
