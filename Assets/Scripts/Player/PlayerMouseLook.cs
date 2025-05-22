@@ -14,12 +14,6 @@ namespace Player
         private float xRotation = 0f;
         private Vector3 targetRotation;
 
-        private void Start()
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
         private void Update()
         {
             transform.Rotate(Vector3.up, mouseX * Time.deltaTime);
