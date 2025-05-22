@@ -16,8 +16,7 @@ namespace Player
         private Vector3 velocity;
         private CharacterController charCtrl;
       
-        private bool isJumping, isCanJump = true;
-        private float jumpTimer;
+        private bool isCanJump = true;
 
         private void Start()
         {
