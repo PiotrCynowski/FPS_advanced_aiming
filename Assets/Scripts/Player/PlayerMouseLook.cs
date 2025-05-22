@@ -6,13 +6,19 @@ namespace Player
     {
         [SerializeField] private float sensitivityX = 85f;
         [SerializeField] private float sensitivityY = 0.5f;
-        private float mouseX, mouseY;
-
+       
         [SerializeField] private Transform playerCamera;
         [SerializeField] private float xClamp = 45f;
+
+        private float mouseX, mouseY;
         private float xRotation = 0f;
         private Vector3 targetRotation;
 
+        private void Start()
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
         private void Update()
         {
@@ -20,13 +26,11 @@ namespace Player
             LimitViewAngle(); 
         }
 
-
         public void ReceiveInput(Vector2 _mouseIn)
         {
             mouseX = _mouseIn.x * sensitivityX;
             mouseY = _mouseIn.y * sensitivityY;
         }
-
 
         private void LimitViewAngle()
         {
