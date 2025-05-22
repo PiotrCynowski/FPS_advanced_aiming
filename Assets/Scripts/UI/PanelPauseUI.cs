@@ -17,6 +17,8 @@ namespace UI.Elements
         {
             buttonBackFromPause.onClick.AddListener(() => BackFromPause());
             buttonExitApp.onClick.AddListener(() => ExitGame());
+
+            SetCursor(false);
         }
 
         #region enable/disable
@@ -31,11 +33,12 @@ namespace UI.Elements
         }
         #endregion
 
-
         private void PauseGame()
         {
             panelPause.SetActive(true);
             Time.timeScale = 0;
+
+            SetCursor(true);
         }
 
         private void BackFromPause()
@@ -44,11 +47,19 @@ namespace UI.Elements
             Time.timeScale = 1;
 
             OnPlayerPauseMenuOff?.Invoke();
+
+            SetCursor(false);
         }
 
         private void ExitGame()
         {
             Application.Quit();
+        }
+
+        private void SetCursor(bool isActive)
+        {
+           Cursor.visible = isActive;
+           Cursor.lockState = isActive ? CursorLockMode.None : CursorLockMode.Locked;
         }
     }
 }
