@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Player
@@ -6,15 +7,16 @@ namespace Player
     public class PlayerMovement : MonoBehaviour
     {
         [SerializeField] private float moveSpeed;
+        [SerializeField] private float jumpCooldown = 0.35f;
+        [SerializeField] private float jumpHeight = 5f;
+        [SerializeField] private float gravity = -25f;
+        [SerializeField] private float groundCheckDistance = 2f;
 
         private Vector3 moveDirection;
-        private Vector3 move;
+        private Vector3 velocity;
         private CharacterController charCtrl;
       
-        private const float gravity = -25;
-        private const float jump = 5;
-
-        private bool isJumping, isJumpTimer;
+        private bool isJumping, isCanJump = true;
         private float jumpTimer;
 
         private void Start()
@@ -24,29 +26,12 @@ namespace Player
 
         private void Update()
         {
-            move.x = moveDirection.x;
-            move.z = moveDirection.z;
-
             ApplyGravity();
 
-            if (isJumping)
-            {
-                move.y = jump;
-                isJumpTimer = true;
-                isJumping = false;
-            }
+            velocity.x = moveDirection.x;
+            velocity.z = moveDirection.z;
 
-            if (isJumpTimer)
-            {
-                jumpTimer += Time.deltaTime;
-                if (jumpTimer > 0.35f)
-                {
-                    jumpTimer = 0;
-                    isJumpTimer = false;
-                }
-            }
-
-            charCtrl.Move(moveSpeed * Time.deltaTime * move);   
+            charCtrl.Move(moveSpeed * Time.deltaTime * velocity);   
         }
 
         public void ReceiveInput(Vector2 _horizontalInput)
@@ -56,19 +41,33 @@ namespace Player
 
         public void OnJumpPressed()
         {
-            if(!isJumpTimer)
-                isJumping = true;
+            if (IsGrounded() && isCanJump)
+            {
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                StartCoroutine(JumpCooldown());
+            }
         }
 
         private void ApplyGravity()
         {
-            if (charCtrl.isGrounded)
+            if (IsGrounded() && velocity.y < 0)
             {
-                move.y = 0;
-                return;
+                velocity.y = -2f; 
             }
 
-            move.y += gravity * Time.deltaTime;
+            velocity.y += gravity * Time.deltaTime;
+        }
+
+        private bool IsGrounded()
+        {
+            return Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
+        }
+
+        private IEnumerator JumpCooldown()
+        {
+            isCanJump = false;
+            yield return new WaitForSeconds(jumpCooldown);
+            isCanJump = true;
         }
     }
 }
