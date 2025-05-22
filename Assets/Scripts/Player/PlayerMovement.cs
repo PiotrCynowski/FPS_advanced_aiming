@@ -16,7 +16,6 @@ namespace Player
 
         private bool isJumping;
 
-
         private void Start()
         {
             charCtrl = GetComponent<CharacterController>();
@@ -27,7 +26,7 @@ namespace Player
             move.x = moveDirection.x;
             move.z = moveDirection.z;
 
-            applyGravity();
+            ApplyGravity();
 
             if (isJumping)
             {
@@ -35,9 +34,8 @@ namespace Player
                 isJumping = false;
             }
 
-            charCtrl.Move(move * Time.deltaTime * moveSpeed);   
+            charCtrl.Move(moveSpeed * Time.deltaTime * move);   
         }
-
 
         public void ReceiveInput(Vector2 _horizontalInput)
         {
@@ -49,8 +47,7 @@ namespace Player
             isJumping = true;
         }
 
-
-        private void applyGravity()
+        private void ApplyGravity()
         {
             if (charCtrl.isGrounded)
             {
