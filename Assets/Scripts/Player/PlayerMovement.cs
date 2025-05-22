@@ -14,7 +14,8 @@ namespace Player
         private const float gravity = -25;
         private const float jump = 5;
 
-        private bool isJumping;
+        private bool isJumping, isJumpTimer;
+        private float jumpTimer;
 
         private void Start()
         {
@@ -31,7 +32,18 @@ namespace Player
             if (isJumping)
             {
                 move.y = jump;
+                isJumpTimer = true;
                 isJumping = false;
+            }
+
+            if (isJumpTimer)
+            {
+                jumpTimer += Time.deltaTime;
+                if (jumpTimer > 0.35f)
+                {
+                    jumpTimer = 0;
+                    isJumpTimer = false;
+                }
             }
 
             charCtrl.Move(moveSpeed * Time.deltaTime * move);   
@@ -44,7 +56,8 @@ namespace Player
 
         public void OnJumpPressed()
         {
-            isJumping = true;
+            if(!isJumpTimer)
+                isJumping = true;
         }
 
         private void ApplyGravity()
