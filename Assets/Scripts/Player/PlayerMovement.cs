@@ -30,8 +30,8 @@ namespace Player
         [SerializeField] private float groundCheckDistance = 2f;
 
         private Vector3 moveDirection, velocity, currentVelocity;
-        private CharacterController charCtrl;   
-        private bool isCanJump = true;
+        private CharacterController charCtrl;
+        private bool isCanJump = true, isGrounded;
         private float sprintValue = 1;
 
         #region Notify
@@ -59,18 +59,20 @@ namespace Player
 
         private void Update()
         {
+            isGrounded = IsGrounded();
+
             HandleMovement();
             HandleGravity();
             HandleStamina();
 
-            charCtrl.Move(moveSpeed * Time.deltaTime * velocity * sprintValue);   
+            charCtrl.Move(moveSpeed * sprintValue * Time.deltaTime * velocity);   
         }
 
         #region Movement
         private void HandleMovement()
         {
             Vector3 targetVelocity = moveSpeed * sprintValue * moveDirection;
-            float currentAcceleration = IsGrounded() ?
+            float currentAcceleration = isGrounded ?
                 (moveDirection.magnitude > 0.1f ? acceleration : deceleration) :
                 (moveDirection.magnitude > 0.1f ? acceleration * airControl : deceleration * airControl);
 
@@ -91,7 +93,7 @@ namespace Player
         #region Jump
         public void OnJumpPressed()
         {
-            if (IsGrounded() && isCanJump)
+            if (isGrounded && isCanJump)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 StartCoroutine(JumpCooldown());
@@ -100,7 +102,7 @@ namespace Player
 
         private void HandleGravity()
         {
-            if (IsGrounded() && velocity.y < 0)
+            if (isGrounded && velocity.y < 0)
             {
                 velocity.y = -2f;
             }
