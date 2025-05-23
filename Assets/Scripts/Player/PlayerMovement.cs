@@ -25,14 +25,11 @@ namespace Player
         [SerializeField] private float gravity = -25f;
         [SerializeField] private float groundCheckDistance = 2f;
 
-       
-
         private Vector3 moveDirection;
         private Vector3 velocity;
         private Vector3 currentVelocity;
         private float sprintValue = 1;
-        private CharacterController charCtrl;
-      
+        private CharacterController charCtrl;   
         private bool isCanJump = true;
 
         private void Start()
@@ -42,13 +39,13 @@ namespace Player
 
         private void Update()
         {
-            ApplyGravity();
-
             HandleMovement();
+            HandleGravity();
 
             charCtrl.Move(moveSpeed * Time.deltaTime * velocity * sprintValue);   
         }
 
+        #region Movement
         private void HandleMovement()
         {
             Vector3 targetVelocity = moveSpeed * sprintValue * moveDirection;
@@ -64,37 +61,30 @@ namespace Player
 
         public void ReceiveInput(Vector2 _horizontalInput)
         {
+            Vector3 input = new Vector3(_horizontalInput.x, 0, _horizontalInput.y);
+            if (input.magnitude > 1f) input.Normalize();
             moveDirection = transform.right * _horizontalInput.x + transform.forward * _horizontalInput.y;
         }
+        #endregion
 
+        #region Jump
         public void OnJumpPressed()
         {
             if (IsGrounded() && isCanJump)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 StartCoroutine(JumpCooldown());
-            }
+            }  
         }
 
-        public void OnSprintPressed(bool isActive)
-        {
-            sprintValue = isActive ? sprintSpeed : 1;
-            if (isActive) StartCoroutine(SprintCooldown());
-        }
-
-        private void ApplyGravity()
+        private void HandleGravity()
         {
             if (IsGrounded() && velocity.y < 0)
             {
-                velocity.y = -2f; 
+                velocity.y = -2f;
             }
 
             velocity.y += gravity * Time.deltaTime;
-        }
-
-        private bool IsGrounded()
-        {
-            return Physics.CheckSphere(groundCheckPoint.position, checkRadius, groundLayer);
         }
 
         private IEnumerator JumpCooldown()
@@ -103,11 +93,25 @@ namespace Player
             yield return new WaitForSeconds(jumpCooldown);
             isCanJump = true;
         }
+        #endregion
 
+        #region Sprint
+        public void OnSprintPressed(bool isActive)
+        {
+            sprintValue = isActive ? sprintSpeed : 1;
+            if (isActive) StartCoroutine(SprintCooldown());
+        }
+      
         private IEnumerator SprintCooldown()
         {
             yield return new WaitForSeconds(sprintCooldown);
             OnSprintPressed(false);
+        }
+        #endregion
+
+        private bool IsGrounded()
+        {
+            return Physics.CheckSphere(groundCheckPoint.position, checkRadius, groundLayer);
         }
     }
 }
