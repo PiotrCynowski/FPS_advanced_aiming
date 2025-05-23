@@ -14,6 +14,7 @@ namespace Player
 
         private Vector3 moveDirection;
         private Vector3 velocity;
+        private float sprintValue = 1;
         private CharacterController charCtrl;
       
         private bool isCanJump = true;
@@ -30,7 +31,7 @@ namespace Player
             velocity.x = moveDirection.x;
             velocity.z = moveDirection.z;
 
-            charCtrl.Move(moveSpeed * Time.deltaTime * velocity);   
+            charCtrl.Move(moveSpeed * Time.deltaTime * velocity * sprintValue);   
         }
 
         public void ReceiveInput(Vector2 _horizontalInput)
@@ -45,6 +46,11 @@ namespace Player
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 StartCoroutine(JumpCooldown());
             }
+        }
+
+        public void OnSprintPressed(bool isActive)
+        {
+            sprintValue = isActive ? 2 : 1;
         }
 
         private void ApplyGravity()

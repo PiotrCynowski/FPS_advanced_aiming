@@ -100,6 +100,15 @@ namespace GameInput
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""fcc0930c-4280-43f7-aa95-1a47533a2033"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -234,6 +243,17 @@ namespace GameInput
                     ""action"": ""Grab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7327ceb2-250d-4019-bf56-d125e02663eb"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -250,6 +270,7 @@ namespace GameInput
             m_Player_WeaponSwitch = m_Player.FindAction("WeaponSwitch", throwIfNotFound: true);
             m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
             m_Player_PauseMenu = m_Player.FindAction("PauseMenu", throwIfNotFound: true);
+            m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         }
 
         ~@PlayerInputActions()
@@ -324,6 +345,7 @@ namespace GameInput
         private readonly InputAction m_Player_WeaponSwitch;
         private readonly InputAction m_Player_Grab;
         private readonly InputAction m_Player_PauseMenu;
+        private readonly InputAction m_Player_Sprint;
         public struct PlayerActions
         {
             private @PlayerInputActions m_Wrapper;
@@ -336,6 +358,7 @@ namespace GameInput
             public InputAction @WeaponSwitch => m_Wrapper.m_Player_WeaponSwitch;
             public InputAction @Grab => m_Wrapper.m_Player_Grab;
             public InputAction @PauseMenu => m_Wrapper.m_Player_PauseMenu;
+            public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -369,6 +392,9 @@ namespace GameInput
                 @PauseMenu.started += instance.OnPauseMenu;
                 @PauseMenu.performed += instance.OnPauseMenu;
                 @PauseMenu.canceled += instance.OnPauseMenu;
+                @Sprint.started += instance.OnSprint;
+                @Sprint.performed += instance.OnSprint;
+                @Sprint.canceled += instance.OnSprint;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -397,6 +423,9 @@ namespace GameInput
                 @PauseMenu.started -= instance.OnPauseMenu;
                 @PauseMenu.performed -= instance.OnPauseMenu;
                 @PauseMenu.canceled -= instance.OnPauseMenu;
+                @Sprint.started -= instance.OnSprint;
+                @Sprint.performed -= instance.OnSprint;
+                @Sprint.canceled -= instance.OnSprint;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -424,6 +453,7 @@ namespace GameInput
             void OnWeaponSwitch(InputAction.CallbackContext context);
             void OnGrab(InputAction.CallbackContext context);
             void OnPauseMenu(InputAction.CallbackContext context);
+            void OnSprint(InputAction.CallbackContext context);
         }
     }
 }
