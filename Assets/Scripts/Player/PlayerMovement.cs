@@ -6,14 +6,19 @@ namespace Player
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMovement : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed;
+        [SerializeField] private float moveSpeed = 5;
+        [SerializeField] private float acceleration = 10f;
+        [SerializeField] private float deceleration = 15f;
+        [SerializeField] private float sprintSpeed = 8;
         [SerializeField] private float jumpCooldown = 0.35f;
+        [SerializeField] private float sprintCooldown = 2f;
         [SerializeField] private float jumpHeight = 5f;
         [SerializeField] private float gravity = -25f;
         [SerializeField] private float groundCheckDistance = 2f;
 
         private Vector3 moveDirection;
         private Vector3 velocity;
+        private Vector3 currentVelocity;
         private float sprintValue = 1;
         private CharacterController charCtrl;
       
@@ -28,8 +33,12 @@ namespace Player
         {
             ApplyGravity();
 
-            velocity.x = moveDirection.x;
-            velocity.z = moveDirection.z;
+            Vector3 targetVelocity = moveSpeed * sprintValue * moveDirection;
+            currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity,
+                (moveDirection.magnitude > 0.1f ? acceleration : deceleration) * Time.deltaTime);
+
+            velocity.x = currentVelocity.x;
+            velocity.z = currentVelocity.z;
 
             charCtrl.Move(moveSpeed * Time.deltaTime * velocity * sprintValue);   
         }
@@ -50,7 +59,8 @@ namespace Player
 
         public void OnSprintPressed(bool isActive)
         {
-            sprintValue = isActive ? 2 : 1;
+            sprintValue = isActive ? sprintSpeed : 1;
+            if (isActive) StartCoroutine(SprintCooldown());
         }
 
         private void ApplyGravity()
@@ -73,6 +83,12 @@ namespace Player
             isCanJump = false;
             yield return new WaitForSeconds(jumpCooldown);
             isCanJump = true;
+        }
+
+        private IEnumerator SprintCooldown()
+        {
+            yield return new WaitForSeconds(sprintCooldown);
+            OnSprintPressed(false);
         }
     }
 }
