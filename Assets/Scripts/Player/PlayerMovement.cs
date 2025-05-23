@@ -16,11 +16,14 @@ namespace Player
         [SerializeField] private float checkRadius;
 
         [Header("Sprint Settings")]
-        [SerializeField] private float sprintSpeed = 8;
+        [SerializeField] private float sprinteMultiplier = 2f;
+        [SerializeField] private float sprintCooldown = 2f;
+        [SerializeField] private float maxStamina = 100f;
+        [SerializeField] private float staminaDepletionRate = 20f;
+        [SerializeField] private float staminaRecoveryRate = 15f;
 
         [Header("Jump Settings")]
         [SerializeField] private float jumpCooldown = 0.35f;
-        [SerializeField] private float sprintCooldown = 2f;
         [SerializeField] private float jumpHeight = 5f;
         [SerializeField] private float gravity = -25f;
         [SerializeField] private float groundCheckDistance = 2f;
@@ -28,6 +31,7 @@ namespace Player
         private Vector3 moveDirection;
         private Vector3 velocity;
         private Vector3 currentVelocity;
+        private float currentStamina;
         private float sprintValue = 1;
         private CharacterController charCtrl;   
         private bool isCanJump = true;
@@ -41,6 +45,7 @@ namespace Player
         {
             HandleMovement();
             HandleGravity();
+            HandleStamina();
 
             charCtrl.Move(moveSpeed * Time.deltaTime * velocity * sprintValue);   
         }
@@ -96,12 +101,38 @@ namespace Player
         #endregion
 
         #region Sprint
+        public float GetCurrentStaminaNormalized() => currentStamina / maxStamina;
+
         public void OnSprintPressed(bool isActive)
         {
-            sprintValue = isActive ? sprintSpeed : 1;
-            if (isActive) StartCoroutine(SprintCooldown());
+            if (isActive && currentStamina > 10) 
+            {
+                sprintValue = sprinteMultiplier;
+            }
+            else
+            {
+                sprintValue = 1;
+                if (isActive) StartCoroutine(SprintCooldown());
+            }
         }
-      
+
+        private void HandleStamina()
+        {
+            if (sprintValue > 1 && moveDirection.magnitude > 0.1f)
+            {
+                currentStamina -= staminaDepletionRate * Time.deltaTime;
+                if (currentStamina <= 0)
+                {
+                    OnSprintPressed(false);
+                    currentStamina = 0;
+                }
+            }
+            else if (currentStamina < maxStamina)
+            {
+                currentStamina += staminaRecoveryRate * Time.deltaTime;
+            }
+        }
+
         private IEnumerator SprintCooldown()
         {
             yield return new WaitForSeconds(sprintCooldown);
