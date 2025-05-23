@@ -15,12 +15,12 @@ namespace UI.Elements
         [SerializeField] private GameObject staminaContainer;
         [SerializeField] private Image stamina;
 
-        #region enable/disable
         private void OnEnable()
         {
             PlayerGameInfo.OnPlayerWeaponChanged += UpdateWeaponState;
             PlayerGameInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
             PlayerWeapon.OnDestObjTarget += CrosshairTargetInformation;
+            PlayerMovement.OnStaminaChanged += OnStaminaChanged;
         }
 
         private void OnDisable()
@@ -28,8 +28,13 @@ namespace UI.Elements
             PlayerGameInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
             PlayerGameInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
             PlayerWeapon.OnDestObjTarget -= CrosshairTargetInformation;
+            PlayerMovement.OnStaminaChanged -= OnStaminaChanged;
         }
-        #endregion
+
+        private void Start()
+        {
+            staminaContainer.SetActive(false);
+        }
 
         #region update text
         private void UpdateWeaponState(ObjectMaterials[] canDestroyInfo)
@@ -62,6 +67,21 @@ namespace UI.Elements
             }
 
             playerTargetPanel.SetActive(true);
+        }
+
+        private void OnStaminaChanged(float Stamina)
+        {
+            if (!staminaContainer.activeSelf)
+            {
+                staminaContainer.SetActive(true);
+            }
+
+            stamina.fillAmount = Stamina;
+
+            if (stamina.fillAmount >= 1)
+            {
+                staminaContainer.SetActive(false);
+            }
         }
     }  
 }

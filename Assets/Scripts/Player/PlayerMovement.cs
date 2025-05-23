@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -28,17 +29,32 @@ namespace Player
         [SerializeField] private float gravity = -25f;
         [SerializeField] private float groundCheckDistance = 2f;
 
-        private Vector3 moveDirection;
-        private Vector3 velocity;
-        private Vector3 currentVelocity;
-        private float currentStamina;
-        private float sprintValue = 1;
+        private Vector3 moveDirection, velocity, currentVelocity;
         private CharacterController charCtrl;   
         private bool isCanJump = true;
+        private float sprintValue = 1;
+
+        #region Notify
+        public static event Action<float> OnStaminaChanged;
+        private float currentStamina;
+        public float CurrentStamina
+        {
+            get => currentStamina;
+            set
+            {
+                if (currentStamina != value)
+                {
+                    currentStamina = value;
+                    OnStaminaChanged?.Invoke(currentStamina/maxStamina);
+                }
+            }
+        }
+        #endregion
 
         private void Start()
         {
             charCtrl = GetComponent<CharacterController>();
+            currentStamina = maxStamina;
         }
 
         private void Update()
@@ -101,11 +117,9 @@ namespace Player
         #endregion
 
         #region Sprint
-        public float GetCurrentStaminaNormalized() => currentStamina / maxStamina;
-
         public void OnSprintPressed(bool isActive)
         {
-            if (isActive && currentStamina > 10) 
+            if (isActive && CurrentStamina > 10) 
             {
                 sprintValue = sprinteMultiplier;
             }
@@ -120,16 +134,16 @@ namespace Player
         {
             if (sprintValue > 1 && moveDirection.magnitude > 0.1f)
             {
-                currentStamina -= staminaDepletionRate * Time.deltaTime;
-                if (currentStamina <= 0)
+                CurrentStamina -= staminaDepletionRate * Time.deltaTime;
+                if (CurrentStamina <= 0)
                 {
                     OnSprintPressed(false);
-                    currentStamina = 0;
+                    CurrentStamina = 0;
                 }
             }
-            else if (currentStamina < maxStamina)
+            else if (CurrentStamina < maxStamina)
             {
-                currentStamina += staminaRecoveryRate * Time.deltaTime;
+                CurrentStamina += staminaRecoveryRate * Time.deltaTime;
             }
         }
 
