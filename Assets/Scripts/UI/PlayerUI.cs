@@ -12,6 +12,9 @@ namespace UI.Elements
 
         [SerializeField] private Image crosshair;
 
+        [SerializeField] private GameObject staminaContainer;
+        [SerializeField] private Image stamina;
+
         #region enable/disable
         private void OnEnable()
         {
