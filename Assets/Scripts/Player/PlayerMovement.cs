@@ -6,15 +6,26 @@ namespace Player
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMovement : MonoBehaviour
     {
+        [Header("Movement Settings")]
         [SerializeField] private float moveSpeed = 5;
         [SerializeField] private float acceleration = 10f;
         [SerializeField] private float deceleration = 15f;
+        [SerializeField] private float airControl = 0.5f;
+        [SerializeField] private Transform groundCheckPoint;
+        [SerializeField] private LayerMask groundLayer;
+        [SerializeField] private float checkRadius;
+
+        [Header("Sprint Settings")]
         [SerializeField] private float sprintSpeed = 8;
+
+        [Header("Jump Settings")]
         [SerializeField] private float jumpCooldown = 0.35f;
         [SerializeField] private float sprintCooldown = 2f;
         [SerializeField] private float jumpHeight = 5f;
         [SerializeField] private float gravity = -25f;
         [SerializeField] private float groundCheckDistance = 2f;
+
+       
 
         private Vector3 moveDirection;
         private Vector3 velocity;
@@ -33,14 +44,22 @@ namespace Player
         {
             ApplyGravity();
 
+            HandleMovement();
+
+            charCtrl.Move(moveSpeed * Time.deltaTime * velocity * sprintValue);   
+        }
+
+        private void HandleMovement()
+        {
             Vector3 targetVelocity = moveSpeed * sprintValue * moveDirection;
-            currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity,
-                (moveDirection.magnitude > 0.1f ? acceleration : deceleration) * Time.deltaTime);
+            float currentAcceleration = IsGrounded() ?
+                (moveDirection.magnitude > 0.1f ? acceleration : deceleration) :
+                (moveDirection.magnitude > 0.1f ? acceleration * airControl : deceleration * airControl);
+
+            currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, currentAcceleration * Time.deltaTime);
 
             velocity.x = currentVelocity.x;
             velocity.z = currentVelocity.z;
-
-            charCtrl.Move(moveSpeed * Time.deltaTime * velocity * sprintValue);   
         }
 
         public void ReceiveInput(Vector2 _horizontalInput)
@@ -75,7 +94,7 @@ namespace Player
 
         private bool IsGrounded()
         {
-            return Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
+            return Physics.CheckSphere(groundCheckPoint.position, checkRadius, groundLayer);
         }
 
         private IEnumerator JumpCooldown()
