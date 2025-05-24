@@ -2,16 +2,24 @@ using UnityEngine;
 using PoolSpawner;
 using Weapons;
 using DestrObj;
+using System;
 
 namespace Player
 {
     public class PlayerWeapon : MonoBehaviour
     {
+        [Header("Weapon Settings")]
         [SerializeField] private Transform gunBarrel;
         [SerializeField] private Weapon[] possibleWeapons;
 
+        [Header("Crosshair Settings")]
+        [SerializeField] private RectTransform crosshairUI;
+        [SerializeField] private Camera fpsCamera;
+        [SerializeField] private LayerMask targetLayerForCrosshair;
+
         private SpawnWithPool<Bullet> poolSpawner;
         private PlayerGameInfo playerGameInfo;
+        private DestructibleObj lastTargetObj;
 
         private int currentWeaponIndex;
         private int weaponsLen;
@@ -32,10 +40,6 @@ namespace Player
                 }
             }
         }
-
-        [SerializeField] LayerMask targetLayerForCrosshair;
-
-        private DestructibleObj lastTargetObj;
 
         private Ray ray;
         private RaycastHit hit;    
@@ -77,7 +81,10 @@ namespace Player
 
         private void GunBarrelInfo()
         {
-            ray = new Ray(gunBarrel.position, gunBarrel.forward);
+            Vector2 crosshairScreenPos = crosshairUI.position;
+            Ray uiRay = fpsCamera.ScreenPointToRay(crosshairScreenPos);
+
+            ray = new Ray(gunBarrel.position, uiRay.direction);
 
 #if UNITY_EDITOR
             Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red);
@@ -99,7 +106,6 @@ namespace Player
                     currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
                     CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
                     
-
                     playerGameInfo.ObjMat = currentTargMat;
                   
                     return;
@@ -117,11 +123,24 @@ namespace Player
             CurrentTarget = CrosshairTarget.None;
         }
 
-
-        #region input
+        #region Input
         public void ShotLMouseBut()
         {
-            poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex).damage = currentDamage;
+            if (poolSpawner == null || gunBarrel == null) return;
+
+            //if (muzzleFlash != null)
+            //{
+            //    muzzleFlash.Play();
+            //}
+
+            Ray uiRay = fpsCamera.ScreenPointToRay(crosshairUI.position);
+
+            Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+            bullet.damage = currentDamage;
+
+            bullet.transform.position = gunBarrel.position + uiRay.direction;
+
+            Debug.DrawLine(gunBarrel.position, bullet.transform.position, Color.green, 1f);
         }
 
         public void SwitchWeaponRMouseBut()

@@ -11,6 +11,7 @@ namespace GameInput
         [SerializeField] private PlayerMouseLook mouseLook;
         [SerializeField] private PlayerWeapon weapon;
         [SerializeField] private PlayerGrabController grabController;
+        [SerializeField] private PlayerUICrosshair playerCrosshair;
 
         private PlayerInputActions controls;
         private PlayerInputActions.PlayerActions playerActions;
@@ -59,6 +60,8 @@ namespace GameInput
         {
             movement.ReceiveInput(horizontalInput);
             mouseLook.ReceiveInput(mouseInput);
+
+            playerCrosshair.UpdateCrosshair(mouseInput, horizontalInput);
         }
 
         private void EscapeButPerformed()
