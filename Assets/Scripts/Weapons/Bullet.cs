@@ -16,7 +16,7 @@ namespace Weapons
         private Action<Bullet, int> returnToPool;
         private int id;
         [HideInInspector] public int damage;
-
+        private Vector3 direction;
 
         protected void OnTriggerEnter(Collider other)
         {
@@ -29,6 +29,12 @@ namespace Weapons
         private void Update()
         {
             transform.Translate(speed * Time.deltaTime * Vector3.forward);
+        }
+
+        public void SetDirection(Vector3 dir)
+        {
+            direction = dir.normalized;
+            transform.forward = direction;
         }
 
         protected void OnHitTarget(GameObject target)

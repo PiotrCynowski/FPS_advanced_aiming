@@ -62,6 +62,7 @@ namespace GameInput
             mouseLook.ReceiveInput(mouseInput);
 
             playerCrosshair.UpdateCrosshair(mouseInput, horizontalInput);
+            weapon.WeaponUpdate(mouseInput, horizontalInput);
         }
 
         private void EscapeButPerformed()

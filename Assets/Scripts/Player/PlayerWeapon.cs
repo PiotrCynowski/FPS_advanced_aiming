@@ -2,15 +2,24 @@ using UnityEngine;
 using PoolSpawner;
 using Weapons;
 using DestrObj;
-using System;
 
 namespace Player
 {
     public class PlayerWeapon : MonoBehaviour
     {
         [Header("Weapon Settings")]
+        [SerializeField] private Transform weaponGO;
         [SerializeField] private Transform gunBarrel;
         [SerializeField] private Weapon[] possibleWeapons;
+
+        [Header("Sway Settings")]
+        [SerializeField] private float moveSwayAmount = 0.03f;
+        [SerializeField] private float mouseSwayAmount = 0.02f;
+        [SerializeField] private float swaySmooth = 6f;
+
+        private Vector3 initialLocalPos;
+        private Vector3 targetOffset;
+
 
         [Header("Crosshair Settings")]
         [SerializeField] private RectTransform crosshairUI;
@@ -48,7 +57,6 @@ namespace Player
         public delegate void OnObjTarget(CrosshairTarget target);
         public static event OnObjTarget OnDestObjTarget;
 
-     
         private void Start()
         {
             poolSpawner = new();
@@ -56,6 +64,8 @@ namespace Player
 
             PrepareWeapons();
             OnDestObjTarget?.Invoke(CrosshairTarget.None);
+
+            initialLocalPos = weaponGO.localPosition;
         }
 
         private void Update()
@@ -64,6 +74,16 @@ namespace Player
             {
                 GunBarrelInfo();
             }
+
+            weaponGO.localPosition = Vector3.Lerp(weaponGO.localPosition, initialLocalPos + targetOffset, Time.deltaTime * swaySmooth);
+        }
+
+        public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)
+        {
+            Vector3 moveOffset = new Vector3(movementInput.x, 0, 0) * moveSwayAmount;
+            Vector3 mouseOffset = new Vector3(-mouseInput.x, -mouseInput.y, 0f) * mouseSwayAmount;
+
+            targetOffset = moveOffset + mouseOffset;
         }
 
         private void PrepareWeapons()
@@ -81,7 +101,7 @@ namespace Player
 
         private void GunBarrelInfo()
         {
-            Vector2 crosshairScreenPos = crosshairUI.position;
+            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint(fpsCamera, crosshairUI.position);
             Ray uiRay = fpsCamera.ScreenPointToRay(crosshairScreenPos);
 
             ray = new Ray(gunBarrel.position, uiRay.direction);
@@ -128,17 +148,16 @@ namespace Player
         {
             if (poolSpawner == null || gunBarrel == null) return;
 
-            //if (muzzleFlash != null)
-            //{
-            //    muzzleFlash.Play();
-            //}
-
-            Ray uiRay = fpsCamera.ScreenPointToRay(crosshairUI.position);
+            Vector2 crosshairScreenPos = crosshairUI.position;
+            Ray uiRay = fpsCamera.ScreenPointToRay(crosshairScreenPos);
 
             Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
             bullet.damage = currentDamage;
 
-            bullet.transform.position = gunBarrel.position + uiRay.direction;
+            bullet.transform.position = gunBarrel.position;
+
+            Vector3 shootDirection = uiRay.direction.normalized;
+            bullet.SetDirection(shootDirection);
 
             Debug.DrawLine(gunBarrel.position, bullet.transform.position, Color.green, 1f);
         }

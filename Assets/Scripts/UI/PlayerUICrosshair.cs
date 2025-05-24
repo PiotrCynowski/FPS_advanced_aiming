@@ -27,7 +27,7 @@ public class PlayerUICrosshair : MonoBehaviour
         float mouseX = mouseInput.x;
         float mouseY = mouseInput.y;
 
-        Vector2 mouseOffset = new Vector2(mouseX, mouseY) * mouseSwayAmount;
+        Vector2 mouseOffset = new Vector2(-mouseX, mouseY) * mouseSwayAmount;
         Vector2 totalOffset = moveOffset + mouseOffset;
         Vector2 targetPosition = originalPosition + totalOffset;
 
