@@ -34,7 +34,9 @@ namespace Player
         }
 
         [SerializeField] LayerMask targetLayerForCrosshair;
- 
+
+        private DestructibleObj lastTargetObj;
+
         private Ray ray;
         private RaycastHit hit;    
         private const int rayDistance = 25;
@@ -54,7 +56,10 @@ namespace Player
 
         private void Update()
         {
-            GunBarrelInfo();
+            if (Time.frameCount % 2 == 0) 
+            {
+                GunBarrelInfo();
+            }
         }
 
         private void PrepareWeapons()
@@ -84,11 +89,11 @@ namespace Player
                 {
                     playerGameInfo.ObjHP = obj.currentHealth;
 
-                    if (currentTargMat == obj.thisObjMaterial)
+                    if (currentTargMat == obj.thisObjMaterial && lastTargetObj == obj)
                     {
                         return;
                     }
-
+                    lastTargetObj = obj;
                     currentTargMat = obj.thisObjMaterial;
 
                     currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
@@ -101,8 +106,10 @@ namespace Player
                 }
             }
 
+            lastTargetObj = null;
             if (currentTargMat == ObjectMaterials.None)
             {
+                playerGameInfo.ObjMat = ObjectMaterials.None;
                 return;
             }
 
