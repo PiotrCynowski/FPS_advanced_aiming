@@ -21,7 +21,6 @@ namespace GameInput
         public static Action onPlayerEscButton;
         private bool isRMB;
 
-
         private void Awake()
         {
             controls = new PlayerInputActions();
@@ -46,14 +45,6 @@ namespace GameInput
             PanelPauseUI.OnPlayerPauseMenuOff += EnableControlls;
         }
 
-        private void Update()
-        {
-            movement.ReceiveInput(horizontalInput);
-            mouseLook.ReceiveInput(mouseInput);
-        }
-
-
-        #region enable/disable
         private void OnEnable()
         {
             controls.Enable();
@@ -63,8 +54,12 @@ namespace GameInput
         {
             controls.Disable();
         }
-        #endregion
 
+        private void Update()
+        {
+            movement.ReceiveInput(horizontalInput);
+            mouseLook.ReceiveInput(mouseInput);
+        }
 
         private void EscapeButPerformed()
         {
