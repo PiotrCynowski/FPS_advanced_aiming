@@ -7,6 +7,10 @@ namespace Player
 {
     public class PlayerWeapon : MonoBehaviour
     {
+        [Header("3D Crosshair Settings")]
+        [SerializeField] private Transform crosshairTarget; // Assign in Inspector
+        [SerializeField] private float defaultAimDistance = 10f; // Fallback if no hit
+
         [Header("Weapon Settings")]
         [SerializeField] private Transform weaponGO;
         [SerializeField] private Transform gunBarrel;
@@ -99,18 +103,38 @@ namespace Player
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();          
         }
 
+
+        private void Update3DCrosshairPosition()
+        {
+            if (fpsCamera == null || crosshairTarget == null) return;
+
+            Ray ray = fpsCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+
+            if (Physics.Raycast(ray, out hit, 100f, targetLayerForCrosshair))
+            {
+                crosshairTarget.position = hit.point;
+            }
+            else
+            {
+                crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+            }
+        }
+
+
         private void GunBarrelInfo()
         {
-            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint(fpsCamera, crosshairUI.position);
-            Ray uiRay = fpsCamera.ScreenPointToRay(crosshairScreenPos);
+            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint(
+        null, // null means using Screen Space Overlay
+        crosshairUI.position
+    );
 
-            ray = new Ray(gunBarrel.position, uiRay.direction);
+            ray = fpsCamera.ScreenPointToRay(crosshairScreenPos);
 
 #if UNITY_EDITOR
             Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red);
 #endif
 
-            if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair))
+            if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
                 if (hit.transform.TryGetComponent<DestructibleObj>(out var obj))
                 {
@@ -148,18 +172,22 @@ namespace Player
         {
             if (poolSpawner == null || gunBarrel == null) return;
 
-            Vector2 crosshairScreenPos = crosshairUI.position;
-            Ray uiRay = fpsCamera.ScreenPointToRay(crosshairScreenPos);
+            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint(
+       null, // Screen Space Overlay
+       crosshairUI.position
+   );
+            Ray crosshairRay = fpsCamera.ScreenPointToRay(crosshairScreenPos);
 
             Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
             bullet.damage = currentDamage;
+           // bullet.transform.position = gunBarrel.position;
+           // bullet.SetDirection(crosshairRay.direction.normalized);
+            Debug.DrawRay(crosshairRay.origin, crosshairRay.direction * 100f, Color.red, 1f);
+            Debug.DrawRay(gunBarrel.position, crosshairRay.direction * 100f, Color.green, 1f);
 
-            bullet.transform.position = gunBarrel.position;
-
-            Vector3 shootDirection = uiRay.direction.normalized;
+            // Aim at the 3D crosshair position
+            Vector3 shootDirection = (crosshairTarget.position - gunBarrel.position).normalized;
             bullet.SetDirection(shootDirection);
-
-            Debug.DrawLine(gunBarrel.position, bullet.transform.position, Color.green, 1f);
         }
 
         public void SwitchWeaponRMouseBut()

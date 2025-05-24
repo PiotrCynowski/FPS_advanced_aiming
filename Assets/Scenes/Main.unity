@@ -524,6 +524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crosshair: {fileID: 238248649}
+  smoothTime: 0.1
   moveSwayAmount: 10
   mouseSwayAmount: 5
   returnSpeed: 5
@@ -1163,6 +1164,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: crosshairUI
+      value: 
+      objectReference: {fileID: 238248649}
     - target: {fileID: 1891586907174809482, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: playerCrosshair
       value: 
