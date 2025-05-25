@@ -33,11 +33,12 @@ namespace Player
         private Vector3 swayImpulseVelocity = Vector3.zero;
 
         [Header("Bobbing Settings")]
-        [SerializeField] private float bobFrequency = 6f;    
+        [SerializeField] private float bobFrequency = 8f;
+        [SerializeField] private float bobSprintFrequency = 15f;
         [SerializeField] private float bobAmplitude = 0.015f;
         [SerializeField] private float bobSpeedThreshold = 0.1f;
         [SerializeField] private float bobSwayLerp = 8f;
-        private bool isGround = true;
+        private bool isGround = true, isSprint = false;
 
         private float bobTimer = 0f;
         private Vector3 bobOffset = Vector3.zero;
@@ -125,7 +126,7 @@ namespace Player
             float playerSpeed = new Vector2(movementInput.x, movementInput.y).magnitude;
             if (playerSpeed > bobSpeedThreshold && isGround)
             {
-                bobTimer += Time.deltaTime * bobFrequency;
+                bobTimer += Time.deltaTime * (!isSprint ? bobFrequency : bobSprintFrequency);
                 float bobY = Mathf.Sin(bobTimer) * bobAmplitude;
                 bobOffset = new Vector3(0f, bobY, 0f);
             }
@@ -136,6 +137,11 @@ namespace Player
             }
 
             targetOffset = moveOffset + mouseOffset + swayImpulse + bobOffset;
+        }
+
+        public void OnWeaponSprint(bool isPlayerSprint)
+        {
+            isSprint = isPlayerSprint;
         }
 
         #region Input

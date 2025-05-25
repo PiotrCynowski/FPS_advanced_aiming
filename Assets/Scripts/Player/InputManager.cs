@@ -32,6 +32,9 @@ namespace GameInput
             playerActions.Sprint.performed += _ => movement.OnSprintPressed(true);
             playerActions.Sprint.canceled += _ => movement.OnSprintPressed(false);
 
+            playerActions.Sprint.performed += _ => weapon.OnWeaponSprint(true);
+            playerActions.Sprint.canceled += _ => weapon.OnWeaponSprint(false);
+
             playerActions.MouseX.performed += ctx => mouseInput.x = ctx.ReadValue<float>();
             playerActions.MouseY.performed += ctx => mouseInput.y = ctx.ReadValue<float>();
 

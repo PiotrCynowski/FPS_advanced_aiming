@@ -527,8 +527,8 @@ MonoBehaviour:
   smoothTime: 0.1
   moveSwayAmount: 10
   mouseSwayAmount: 5
-  jumpSwayAmount: 0.03
-  landBounceAmount: 0.05
+  jumpSwayAmount: 0.3
+  landBounceAmount: 0.1
   impulseDecayTime: 0.2
 --- !u!1 &1397136792
 GameObject:
@@ -1172,11 +1172,19 @@ PrefabInstance:
       objectReference: {fileID: 238248649}
     - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: bobAmplitude
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: bobFrequency
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: jumpSwayAmount
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: landBounceAmount
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1891586907174809482, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: playerCrosshair
