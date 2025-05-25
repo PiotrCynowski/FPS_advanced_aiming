@@ -32,6 +32,16 @@ namespace Player
         private Vector3 swayImpulse = Vector3.zero;
         private Vector3 swayImpulseVelocity = Vector3.zero;
 
+        [Header("Bobbing Settings")]
+        [SerializeField] private float bobFrequency = 6f;    
+        [SerializeField] private float bobAmplitude = 0.015f;
+        [SerializeField] private float bobSpeedThreshold = 0.1f;
+        [SerializeField] private float bobSwayLerp = 8f;
+        private bool isGround = true;
+
+        private float bobTimer = 0f;
+        private Vector3 bobOffset = Vector3.zero;
+
         private Vector3 initialLocalPos, targetOffset;
 
         private SpawnWithPool<Bullet> poolSpawner;
@@ -105,12 +115,27 @@ namespace Player
 
         public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)
         {
+            //SWAY
             Vector3 moveOffset = new Vector3(movementInput.x, 0, 0) * moveSwayAmount;
             Vector3 mouseOffset = new Vector3(-mouseInput.x, -mouseInput.y, 0f) * mouseSwayAmount;
 
             swayImpulse = Vector3.SmoothDamp(swayImpulse, Vector3.zero, ref swayImpulseVelocity, impulseDecayTime);
 
-            targetOffset = moveOffset + mouseOffset + swayImpulse;
+            //BOBBING
+            float playerSpeed = new Vector2(movementInput.x, movementInput.y).magnitude;
+            if (playerSpeed > bobSpeedThreshold && isGround)
+            {
+                bobTimer += Time.deltaTime * bobFrequency;
+                float bobY = Mathf.Sin(bobTimer) * bobAmplitude;
+                bobOffset = new Vector3(0f, bobY, 0f);
+            }
+            else
+            {
+                bobTimer = 0f;
+                bobOffset = Vector3.Lerp(bobOffset, Vector3.zero, Time.deltaTime * bobSwayLerp);
+            }
+
+            targetOffset = moveOffset + mouseOffset + swayImpulse + bobOffset;
         }
 
         #region Input
@@ -204,6 +229,7 @@ namespace Player
 
         private void OnJumpOrLandAction(bool isJump)
         {
+            isGround = isJump;
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
         }
     }
