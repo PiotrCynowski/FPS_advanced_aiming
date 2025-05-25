@@ -67,6 +67,9 @@ namespace Player
             OnDestObjTarget?.Invoke(CrosshairTarget.None);
 
             initialLocalPos = weaponGO.localPosition;
+
+            ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
+            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
         }
 
         private void Update()
@@ -102,9 +105,7 @@ namespace Player
 
         private void GunBarrelInfo()
         {
-            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint( null, crosshairUI.position);
-
-            ray = fpsCamera.ScreenPointToRay(crosshairScreenPos);
+            ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
 
 #if UNITY_EDITOR
             Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red);
