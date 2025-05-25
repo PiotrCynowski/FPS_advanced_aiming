@@ -154,7 +154,7 @@ namespace Player
                 {
                     playerGameInfo.ObjHP = obj.currentHealth;
 
-                    crosshairTarget.position = hit.point;
+                    crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
 
                     if (currentTargMat == obj.thisObjMaterial && lastTargetObj == obj)
                     {
