@@ -585,6 +585,7 @@ GameObject:
   - component: {fileID: 2511025735557509356}
   - component: {fileID: 5002701196351467752}
   - component: {fileID: 5673705125609093381}
+  - component: {fileID: 4453235882962586906}
   m_Layer: 6
   m_Name: CanvasPlayerInfo
   m_TagString: Untagged
@@ -696,3 +697,22 @@ MonoBehaviour:
   crosshair: {fileID: 473955128}
   staminaContainer: {fileID: 3167190677358663856}
   stamina: {fileID: 8293395910653029871}
+--- !u!114 &4453235882962586906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8322214836279692355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e13a307afd3003447a8c3bc141292f46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crosshair: {fileID: 473955127}
+  smoothTime: 0.1
+  moveSwayAmount: 10
+  mouseSwayAmount: 5
+  jumpSwayAmount: 0.3
+  landBounceAmount: 0.1
+  impulseDecayTime: 0.2

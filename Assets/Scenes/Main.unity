@@ -506,30 +506,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1727979686265160798, guid: c7cdbb0aeb180014e94f48843179cd77, type: 3}
   m_PrefabInstance: {fileID: 1830681653}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1153964044 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8322214836279692355, guid: 0b816f79fa0a0b0448a17cf6984a50fb, type: 3}
+--- !u!114 &1153964050 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4453235882962586906, guid: 0b816f79fa0a0b0448a17cf6984a50fb, type: 3}
   m_PrefabInstance: {fileID: 5673705125609093379}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1153964050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1153964044}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e13a307afd3003447a8c3bc141292f46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crosshair: {fileID: 238248649}
-  smoothTime: 0.1
-  moveSwayAmount: 10
-  mouseSwayAmount: 5
-  jumpSwayAmount: 0.3
-  landBounceAmount: 0.1
-  impulseDecayTime: 0.2
 --- !u!1 &1397136792
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,10 +836,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 498179828464398028, guid: 8d59ad5c594ce0a49b1f1b9ba75d39d4, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 498179828464398028, guid: 8d59ad5c594ce0a49b1f1b9ba75d39d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1170,22 +1153,6 @@ PrefabInstance:
       propertyPath: crosshairUI
       value: 
       objectReference: {fileID: 238248649}
-    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: bobAmplitude
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: bobFrequency
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: jumpSwayAmount
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: landBounceAmount
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 1891586907174809482, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: playerCrosshair
       value: 
@@ -1233,10 +1200,6 @@ PrefabInstance:
     - target: {fileID: 1891586907174809492, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2505799009133097169, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1378,10 +1341,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8322214836279692355, guid: 0b816f79fa0a0b0448a17cf6984a50fb, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1153964050}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b816f79fa0a0b0448a17cf6984a50fb, type: 3}
 --- !u!1001 &5679707532981864221
 PrefabInstance:
