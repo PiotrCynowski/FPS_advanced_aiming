@@ -2,6 +2,7 @@ using UnityEngine;
 using PoolSpawner;
 using Weapons;
 using DestrObj;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Player
 {
@@ -24,6 +25,12 @@ namespace Player
         [SerializeField] private float moveSwayAmount = 0.03f;
         [SerializeField] private float mouseSwayAmount = 0.02f;
         [SerializeField] private float swaySmooth = 6f;
+
+        [SerializeField] private float jumpSwayAmount = 0.03f;
+        [SerializeField] private float landBounceAmount = 0.05f;
+        [SerializeField] private float impulseDecayTime = 0.2f;
+        private Vector3 swayImpulse = Vector3.zero;
+        private Vector3 swayImpulseVelocity = Vector3.zero;
 
         private Vector3 initialLocalPos, targetOffset;
 
@@ -69,6 +76,8 @@ namespace Player
 
             ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+
+            PlayerMovement.onJump += OnJumpOrLandAction;
         }
 
         private void Update()
@@ -89,12 +98,19 @@ namespace Player
             );
         }
 
+        private void OnDestroy()
+        {
+            PlayerMovement.onJump -= OnJumpOrLandAction;
+        }
+
         public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)
         {
             Vector3 moveOffset = new Vector3(movementInput.x, 0, 0) * moveSwayAmount;
             Vector3 mouseOffset = new Vector3(-mouseInput.x, -mouseInput.y, 0f) * mouseSwayAmount;
 
-            targetOffset = moveOffset + mouseOffset;
+            swayImpulse = Vector3.SmoothDamp(swayImpulse, Vector3.zero, ref swayImpulseVelocity, impulseDecayTime);
+
+            targetOffset = moveOffset + mouseOffset + swayImpulse;
         }
 
         #region Input
@@ -184,6 +200,11 @@ namespace Player
 
             currentTargMat = ObjectMaterials.None;
             CurrentTarget = CrosshairTarget.None;
+        }
+
+        private void OnJumpOrLandAction(bool isJump)
+        {
+            swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
         }
     }
 }

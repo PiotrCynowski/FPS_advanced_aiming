@@ -32,6 +32,8 @@ namespace Player
         private CharacterController charCtrl;
         private bool isCanJump = true;
 
+        public static Action<bool> onJump;
+
         private bool isGrounded = true;
         public bool IsGrounded
         {
@@ -41,6 +43,7 @@ namespace Player
                 if (isGrounded != value)
                 {
                     previousSprintValue = SprintValue;
+                    onJump?.Invoke(value);
                     isGrounded = value;
                 }
             }
