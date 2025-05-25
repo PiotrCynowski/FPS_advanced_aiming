@@ -8,8 +8,11 @@ namespace Player
     public class PlayerWeapon : MonoBehaviour
     {
         [Header("3D Crosshair Settings")]
-        [SerializeField] private Transform crosshairTarget; // Assign in Inspector
-        [SerializeField] private float defaultAimDistance = 10f; // Fallback if no hit
+        [SerializeField] private Transform crosshairTarget; 
+        [SerializeField] private float defaultAimDistance = 10f;
+        [SerializeField] private RectTransform crosshairUI;
+        [SerializeField] private Camera fpsCamera;
+        [SerializeField] private LayerMask targetLayerForCrosshair;
 
         [Header("Weapon Settings")]
         [SerializeField] private Transform weaponGO;
@@ -23,12 +26,6 @@ namespace Player
 
         private Vector3 initialLocalPos;
         private Vector3 targetOffset;
-
-
-        [Header("Crosshair Settings")]
-        [SerializeField] private RectTransform crosshairUI;
-        [SerializeField] private Camera fpsCamera;
-        [SerializeField] private LayerMask targetLayerForCrosshair;
 
         private SpawnWithPool<Bullet> poolSpawner;
         private PlayerGameInfo playerGameInfo;
@@ -103,30 +100,9 @@ namespace Player
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();          
         }
 
-
-        private void Update3DCrosshairPosition()
-        {
-            if (fpsCamera == null || crosshairTarget == null) return;
-
-            Ray ray = fpsCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-
-            if (Physics.Raycast(ray, out hit, 100f, targetLayerForCrosshair))
-            {
-                crosshairTarget.position = hit.point;
-            }
-            else
-            {
-                crosshairTarget.position = ray.GetPoint(defaultAimDistance);
-            }
-        }
-
-
         private void GunBarrelInfo()
         {
-            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint(
-        null, // null means using Screen Space Overlay
-        crosshairUI.position
-    );
+            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint( null, crosshairUI.position);
 
             ray = fpsCamera.ScreenPointToRay(crosshairScreenPos);
 
@@ -149,45 +125,35 @@ namespace Player
 
                     currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
                     CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
-                    
+
+                    crosshairTarget.position = hit.point;
+
                     playerGameInfo.ObjMat = currentTargMat;
                   
                     return;
                 }
             }
 
-            lastTargetObj = null;
+            lastTargetObj = null;          
+
             if (currentTargMat == ObjectMaterials.None)
             {
                 playerGameInfo.ObjMat = ObjectMaterials.None;
                 return;
             }
 
+            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+
             currentTargMat = ObjectMaterials.None;
             CurrentTarget = CrosshairTarget.None;
         }
 
         #region Input
-        public void ShotLMouseBut()
+        public void ShotLMouseBut() // Aim at the 3D crosshair position
         {
-            if (poolSpawner == null || gunBarrel == null) return;
-
-            Vector2 crosshairScreenPos = RectTransformUtility.WorldToScreenPoint(
-       null, // Screen Space Overlay
-       crosshairUI.position
-   );
-            Ray crosshairRay = fpsCamera.ScreenPointToRay(crosshairScreenPos);
-
             Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
-            bullet.damage = currentDamage;
-           // bullet.transform.position = gunBarrel.position;
-           // bullet.SetDirection(crosshairRay.direction.normalized);
-            Debug.DrawRay(crosshairRay.origin, crosshairRay.direction * 100f, Color.red, 1f);
-            Debug.DrawRay(gunBarrel.position, crosshairRay.direction * 100f, Color.green, 1f);
-
-            // Aim at the 3D crosshair position
-            Vector3 shootDirection = (crosshairTarget.position - gunBarrel.position).normalized;
-            bullet.SetDirection(shootDirection);
+            bullet.damage = currentDamage;        
+            bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
         }
 
         public void SwitchWeaponRMouseBut()
