@@ -24,15 +24,13 @@ namespace Player
         [SerializeField] private float mouseSwayAmount = 0.02f;
         [SerializeField] private float swaySmooth = 6f;
 
-        private Vector3 initialLocalPos;
-        private Vector3 targetOffset;
+        private Vector3 initialLocalPos, targetOffset;
 
         private SpawnWithPool<Bullet> poolSpawner;
         private PlayerGameInfo playerGameInfo;
         private DestructibleObj lastTargetObj;
 
-        private int currentWeaponIndex;
-        private int weaponsLen;
+        private int currentWeaponIndex, weaponsLen;
 
         private int currentDamage;
         private ObjectMaterials currentTargMat = ObjectMaterials.None;
@@ -89,6 +87,36 @@ namespace Player
 
             targetOffset = moveOffset + mouseOffset;
         }
+
+        #region Input
+        public void ShotLMouseBut() // Aim at the 3D crosshair position
+        {
+            Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+            bullet.damage = currentDamage;
+            bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
+        }
+
+        public void SwitchWeaponRMouseBut()
+        {
+            currentWeaponIndex++;
+
+            if (currentWeaponIndex >= weaponsLen)
+            {
+                currentWeaponIndex = 0;
+            }
+
+            playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
+            currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
+
+            if (currentTargMat == ObjectMaterials.None)
+            {
+                CurrentTarget = CrosshairTarget.None;
+                return;
+            }
+
+            CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
+        }
+        #endregion
 
         private void PrepareWeapons()
         {
@@ -148,36 +176,6 @@ namespace Player
             currentTargMat = ObjectMaterials.None;
             CurrentTarget = CrosshairTarget.None;
         }
-
-        #region Input
-        public void ShotLMouseBut() // Aim at the 3D crosshair position
-        {
-            Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
-            bullet.damage = currentDamage;        
-            bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
-        }
-
-        public void SwitchWeaponRMouseBut()
-        {
-            currentWeaponIndex++;
-
-            if (currentWeaponIndex >= weaponsLen)
-            {
-                currentWeaponIndex = 0;
-            }
-
-            playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
-            currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
-
-            if(currentTargMat == ObjectMaterials.None)
-            {
-                CurrentTarget = CrosshairTarget.None;
-                return;
-            }
-
-            CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
-        }
-        #endregion
     }
 }
 
