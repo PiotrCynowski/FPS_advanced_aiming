@@ -30,8 +30,37 @@ namespace Player
 
         private Vector3 moveDirection, velocity, currentVelocity;
         private CharacterController charCtrl;
-        private bool isCanJump = true, isGrounded;
-        private float sprintValue = 1;
+        private bool isCanJump = true;
+
+        private bool isGrounded = true;
+        public bool IsGrounded
+        {
+            get => isGrounded;
+            set
+            {
+                if (isGrounded != value)
+                {
+                    previousSprintValue = SprintValue;
+                    isGrounded = value;
+                }
+            }
+        }
+
+        private float sprintValue = 1, previousSprintValue = 1;
+        public float SprintValue
+         {
+            get 
+            {
+                return isGrounded ? sprintValue : previousSprintValue;
+            }
+            set
+            {
+                if (sprintValue != value)
+                {
+                    sprintValue = value;
+                }
+            }
+        }
 
         #region Notify
         public static event Action<float> OnStaminaChanged;
@@ -58,19 +87,19 @@ namespace Player
 
         private void Update()
         {
-            isGrounded = IsGrounded();
+            IsGrounded = IsGroundedCheck();
 
             HandleMovement();
             HandleGravity();
             HandleStamina();
 
-            charCtrl.Move(moveSpeed * sprintValue * Time.deltaTime * velocity);   
+            charCtrl.Move(moveSpeed * SprintValue * Time.deltaTime * velocity);   
         }
 
         #region Movement
         private void HandleMovement()
         {
-            Vector3 targetVelocity = moveSpeed * sprintValue * moveDirection;
+            Vector3 targetVelocity = moveSpeed * SprintValue * moveDirection;
             float currentAcceleration = isGrounded ?
                 (moveDirection.magnitude > 0.1f ? acceleration : deceleration) :
                 (moveDirection.magnitude > 0.1f ? acceleration * airControl : deceleration * airControl);
@@ -122,18 +151,18 @@ namespace Player
         {
             if (isActive && CurrentStamina > 10) 
             {
-                sprintValue = sprinteMultiplier;
+                SprintValue = sprinteMultiplier;
             }
             else
             {
-                sprintValue = 1;
+                SprintValue = 1;
                 if (isActive) StartCoroutine(SprintCooldown());
             }
         }
 
         private void HandleStamina()
         {
-            if (sprintValue > 1 && moveDirection.magnitude > 0.1f)
+            if (SprintValue > 1 && moveDirection.magnitude > 0.1f)
             {
                 CurrentStamina -= staminaDepletionRate * Time.deltaTime;
                 if (CurrentStamina <= 0)
@@ -155,7 +184,7 @@ namespace Player
         }
         #endregion
 
-        private bool IsGrounded()
+        private bool IsGroundedCheck()
         {
             return Physics.CheckSphere(groundCheckPoint.position, checkRadius, groundLayer);
         }
