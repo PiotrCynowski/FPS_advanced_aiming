@@ -8,7 +8,6 @@ public class PlayerUICrosshair : MonoBehaviour
 
     [SerializeField] private float moveSwayAmount = 10f;
     [SerializeField] private float mouseSwayAmount = 5f;
-    [SerializeField] private float returnSpeed = 5f;
 
     private Vector2 originalPosition;
 

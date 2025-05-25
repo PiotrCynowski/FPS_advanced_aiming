@@ -27,7 +27,6 @@ namespace Player
         [SerializeField] private float jumpCooldown = 0.35f;
         [SerializeField] private float jumpHeight = 5f;
         [SerializeField] private float gravity = -25f;
-        [SerializeField] private float groundCheckDistance = 2f;
 
         private Vector3 moveDirection, velocity, currentVelocity;
         private CharacterController charCtrl;

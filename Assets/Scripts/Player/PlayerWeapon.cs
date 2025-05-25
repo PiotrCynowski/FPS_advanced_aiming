@@ -7,7 +7,7 @@ namespace Player
 {
     public class PlayerWeapon : MonoBehaviour
     {
-        [Header("3D Crosshair Settings")]
+        [Header("Crosshair Settings")]
         [SerializeField] private Transform crosshairTarget; 
         [SerializeField] private float defaultAimDistance = 10f;
         [SerializeField] private RectTransform crosshairUI;
@@ -18,6 +18,7 @@ namespace Player
         [SerializeField] private Transform weaponGO;
         [SerializeField] private Transform gunBarrel;
         [SerializeField] private Weapon[] possibleWeapons;
+        [SerializeField] private float rotationSpeed = 5f;
 
         [Header("Sway Settings")]
         [SerializeField] private float moveSwayAmount = 0.03f;
@@ -78,6 +79,14 @@ namespace Player
             }
 
             weaponGO.localPosition = Vector3.Lerp(weaponGO.localPosition, initialLocalPos + targetOffset, Time.deltaTime * swaySmooth);
+
+            Quaternion targetRotation = Quaternion.LookRotation(crosshairTarget.position - weaponGO.position);
+
+            weaponGO.rotation = Quaternion.Slerp(
+                weaponGO.rotation,
+                targetRotation,
+                Time.deltaTime * rotationSpeed
+            );
         }
 
         public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)
@@ -145,6 +154,8 @@ namespace Player
                 {
                     playerGameInfo.ObjHP = obj.currentHealth;
 
+                    crosshairTarget.position = hit.point;
+
                     if (currentTargMat == obj.thisObjMaterial && lastTargetObj == obj)
                     {
                         return;
@@ -155,23 +166,21 @@ namespace Player
                     currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
                     CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
 
-                    crosshairTarget.position = hit.point;
-
                     playerGameInfo.ObjMat = currentTargMat;
                   
                     return;
                 }
             }
 
-            lastTargetObj = null;          
+            lastTargetObj = null;
+
+            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
             if (currentTargMat == ObjectMaterials.None)
             {
                 playerGameInfo.ObjMat = ObjectMaterials.None;
                 return;
             }
-
-            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
             currentTargMat = ObjectMaterials.None;
             CurrentTarget = CrosshairTarget.None;
