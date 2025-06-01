@@ -48,6 +48,8 @@ namespace Player
         private SpawnWithPool<Bullet> poolSpawner;
         private PlayerGameInfo playerGameInfo;
         private DestructibleObj lastTargetObj;
+        private Vector3? lastTargetHitPos;
+        private Quaternion? lastTargetHitRot;
 
         private int currentWeaponIndex, weaponsLen;
 
@@ -147,9 +149,19 @@ namespace Player
         #region Input
         public void ShotLMouseBut() // Aim at the 3D crosshair position
         {
-            Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
-            bullet.damage = currentDamage;
-            bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
+            switch (possibleWeapons[currentWeaponIndex].weaponType)
+            {
+                default:
+                case ShotType.obj:
+                    Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+                    bullet.damage = currentDamage;
+                    bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
+                    break;
+                case ShotType.ray:
+                    if(lastTargetObj != null && lastTargetHitPos.HasValue)
+                        lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
+                    break;
+            }
         }
 
         public void SwitchWeaponRMouseBut()
@@ -203,6 +215,12 @@ namespace Player
 
                     crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
 
+                    if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
+                    {
+                        lastTargetHitPos = hit.point;
+                        lastTargetHitRot = Quaternion.LookRotation(transform.position - hit.point);
+                    }
+
                     if (currentTargMat == obj.thisObjMaterial && lastTargetObj == obj)
                     {
                         return;
@@ -220,6 +238,8 @@ namespace Player
             }
 
             lastTargetObj = null;
+            lastTargetHitPos = null;
+            lastTargetHitRot = null;
 
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
@@ -251,5 +271,5 @@ public enum CrosshairTarget { None, Destroy, CantDestroy }
 
 public interface IDamageable
 {
-    void TakeDamage(int amount, Vector3 pos);
+    void TakeDamage(int amount, Vector3 pos, Quaternion? rot = null);
 }

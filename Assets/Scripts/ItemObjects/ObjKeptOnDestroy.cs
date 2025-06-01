@@ -7,9 +7,9 @@ namespace DestrObj
         [SerializeField] private ParticleSystem onHitParticles;
 
 
-        public override void TakeDamage(int damage, Vector3 hitPos)
+        public override void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot)
         {
-            base.TakeDamage(damage, hitPos);
+            base.TakeDamage(damage, hitPos, hitRot);
 
             if (damage != 0)
             {

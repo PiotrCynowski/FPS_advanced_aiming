@@ -9,20 +9,22 @@ namespace DestrObj
         private Vector3 onHitDirection;
         private Quaternion hitRotation;
 
-        public override void TakeDamage(int damage, Vector3 hitPos)
+        public override void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot)
         {
-            base.TakeDamage(damage, hitPos);
+            base.TakeDamage(damage, hitPos, hitRot);
 
             if (damage != 0)
             {
                 onHitDirection = hitPos - transform.position;
 
-                hitRotation = Quaternion.Euler(
-                    0f,
-                    (Mathf.Atan2(onHitDirection.x, onHitDirection.z) * Mathf.Rad2Deg),
-                    0f);
-
-                ParticleSystem liquidParticles = Instantiate(onHitParticles, hitPos, hitRotation);
+                if (!hitRot.HasValue)
+                {
+                    hitRotation = Quaternion.Euler(
+                        0f,
+                        (Mathf.Atan2(onHitDirection.x, onHitDirection.z) * Mathf.Rad2Deg),
+                        0f);
+                }
+                ParticleSystem liquidParticles = Instantiate(onHitParticles, hitPos, hitRot ?? hitRotation);
                 liquidParticles.transform.parent = transform;
 
                 liquidParticles.Play();

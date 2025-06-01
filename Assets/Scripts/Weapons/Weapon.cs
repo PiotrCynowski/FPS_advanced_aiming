@@ -9,6 +9,7 @@ namespace Weapons
         public ShotType weaponType;
         public WeaponCanDestroySetup[] canDestroy;
         public Bullet bulletTemplate;
+        public GameObject weaponOnHit;
 
         [Serializable]
         public class WeaponCanDestroySetup

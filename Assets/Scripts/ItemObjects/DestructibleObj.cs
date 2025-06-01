@@ -11,7 +11,7 @@ namespace DestrObj
         [SerializeField] UnityEvent onObjectDestroyed;
 
 
-        public virtual void TakeDamage(int damage, Vector3 hitPos)
+        public virtual void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot)
         {
             currentHealth -= damage;
 
