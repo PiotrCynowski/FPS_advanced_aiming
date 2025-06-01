@@ -6,6 +6,7 @@ namespace Weapons
     [CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/NewWeapon")]
     public class Weapon : ScriptableObject
     {
+        public ShotType weaponType;
         public WeaponCanDestroySetup[] canDestroy;
         public Bullet bulletTemplate;
 

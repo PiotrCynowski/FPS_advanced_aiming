@@ -244,6 +244,8 @@ namespace Player
 #region enums
 public enum ObjectMaterials { None, Iron, Wood, Conrete, Steel, EnergyField }
 
+public enum ShotType { obj, ray }
+
 public enum CrosshairTarget { None, Destroy, CantDestroy }
 #endregion
 
