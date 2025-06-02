@@ -269,12 +269,18 @@ namespace Player
                     Vector3 pos = lastTargetHitPos.Value;
                     Quaternion rot = lastTargetHitRot.Value;
                     yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * delayM);
-                    if(target !=null)
+                    if (target != null)
                         target.TakeDamage(currentDamage, pos, rot);
                 }
                 else
-                    lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
+                    lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);             
             }
+
+            //if (possibleWeapons[currentWeaponIndex].weaponOnHit != null)
+            //{
+                // Instantiate(possibleWeapons[currentWeaponIndex].weaponOnHit); //TODO
+            //}
+
             yield return null;
         }
     }

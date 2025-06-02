@@ -20,3 +20,4 @@ MonoBehaviour:
     damagePerBullet: 3
   bulletTemplate: {fileID: -7947652486305263299, guid: a4aba794d9659714ebe74eb494454573, type: 3}
   weaponOnHit: {fileID: 0}
+  onHitDelayMultiplayer: 0.005
