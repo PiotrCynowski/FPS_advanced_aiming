@@ -6,16 +6,9 @@ using Weapons;
 [CustomEditor(typeof(Weapon))]
 public class WeaponDataEditor : Editor
 {
-    private SerializedProperty _bulletTemplate, _weaponOnHit;
-
-    private void OnEnable()
-    {
-        _bulletTemplate = serializedObject.FindProperty("bulletTemplate");
-    }
-
     public override void OnInspectorGUI()
     {
-        DrawPropertiesExcluding(serializedObject, "bulletTemplate" , "weaponOnHit");
+        DrawPropertiesExcluding(serializedObject, "bulletTemplate" , "weaponOnHit", "onHitDelayMultiplayer");
 
         ShotType weaponType = (ShotType)serializedObject.FindProperty("weaponType").enumValueIndex;
 
@@ -27,6 +20,7 @@ public class WeaponDataEditor : Editor
         if (weaponType == ShotType.ray)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("weaponOnHit"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("onHitDelayMultiplayer"));
         }
 
         serializedObject.ApplyModifiedProperties();

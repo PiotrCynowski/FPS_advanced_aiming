@@ -2,7 +2,7 @@ using UnityEngine;
 using PoolSpawner;
 using Weapons;
 using DestrObj;
-using static UnityEngine.GraphicsBuffer;
+using System.Collections;
 
 namespace Player
 {
@@ -158,8 +158,7 @@ namespace Player
                     bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
                 case ShotType.ray:
-                    if(lastTargetObj != null && lastTargetHitPos.HasValue)
-                        lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
+                    StartCoroutine(DelayedBulletHit());
                     break;
             }
         }
@@ -257,6 +256,26 @@ namespace Player
         {
             isGround = isJump;
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
+        }
+
+        private IEnumerator DelayedBulletHit()
+        {
+            if (lastTargetObj != null && lastTargetHitPos.HasValue)
+            {
+                float delayM = possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer * 0.01f;
+                if (delayM > 0)
+                {
+                    Debug.Log("delayd " + delayM);
+
+                    float waitFor = (transform.position - lastTargetHitPos.Value).sqrMagnitude * delayM;
+
+                    Debug.Log("wait for: " +  waitFor);
+
+                    yield return new WaitForSeconds(waitFor);
+                }
+                lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
+            }
+            yield return null;
         }
     }
 }

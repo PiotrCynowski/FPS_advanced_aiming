@@ -10,6 +10,7 @@ namespace Weapons
         public WeaponCanDestroySetup[] canDestroy;
         public Bullet bulletTemplate;
         public GameObject weaponOnHit;
+        public float onHitDelayMultiplayer;
 
         [Serializable]
         public class WeaponCanDestroySetup

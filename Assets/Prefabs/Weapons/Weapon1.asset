@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399f67dcacd780741a999f44043cb219, type: 3}
   m_Name: Weapon1
   m_EditorClassIdentifier: 
+  weaponType: 1
   canDestroy:
   - canDestroyMat: 1
     damagePerBullet: 2
   - canDestroyMat: 2
     damagePerBullet: 3
   bulletTemplate: {fileID: -7947652486305263299, guid: a4aba794d9659714ebe74eb494454573, type: 3}
+  weaponOnHit: {fileID: 0}
