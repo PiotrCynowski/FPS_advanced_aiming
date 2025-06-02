@@ -265,15 +265,15 @@ namespace Player
                 float delayM = possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer * 0.01f;
                 if (delayM > 0)
                 {
-                    Debug.Log("delayd " + delayM);
-
-                    float waitFor = (transform.position - lastTargetHitPos.Value).sqrMagnitude * delayM;
-
-                    Debug.Log("wait for: " +  waitFor);
-
-                    yield return new WaitForSeconds(waitFor);
+                    DestructibleObj target = lastTargetObj;
+                    Vector3 pos = lastTargetHitPos.Value;
+                    Quaternion rot = lastTargetHitRot.Value;
+                    yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * delayM);
+                    if(target !=null)
+                        target.TakeDamage(currentDamage, pos, rot);
                 }
-                lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
+                else
+                    lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
             }
             yield return null;
         }
