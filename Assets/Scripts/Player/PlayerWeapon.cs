@@ -262,7 +262,7 @@ namespace Player
         {
             if (lastTargetObj != null && lastTargetHitPos.HasValue)
             {
-                float delayM = possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer * 0.01f;
+                float delayM = possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer;
                 if (delayM > 0)
                 {
                     DestructibleObj target = lastTargetObj;
