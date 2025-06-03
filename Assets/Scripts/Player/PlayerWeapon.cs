@@ -158,7 +158,13 @@ namespace Player
                     bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
                 case ShotType.ray:
-                    StartCoroutine(DelayedBulletHit());
+                    if (lastTargetObj != null && lastTargetHitPos.HasValue)
+                    {
+                        if (possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer > 0)
+                            StartCoroutine(DelayedBulletHit());
+                        else
+                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
+                    }
                     break;
             }
         }
@@ -260,25 +266,16 @@ namespace Player
 
         private IEnumerator DelayedBulletHit()
         {
-            if (lastTargetObj != null && lastTargetHitPos.HasValue)
-            {
-                float delayM = possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer;
-                if (delayM > 0)
-                {
-                    DestructibleObj target = lastTargetObj;
-                    Vector3 pos = lastTargetHitPos.Value;
-                    Quaternion rot = lastTargetHitRot.Value;
-                    yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * delayM);
-                    if (target != null)
-                        target.TakeDamage(currentDamage, pos, rot);
-                }
-                else
-                    lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);             
-            }
+            DestructibleObj target = lastTargetObj;
+            Vector3 pos = lastTargetHitPos.Value;
+            Quaternion rot = lastTargetHitRot.Value;
+            yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
+            if (target != null)
+                target.TakeDamage(currentDamage, pos, rot);
 
             //if (possibleWeapons[currentWeaponIndex].weaponOnHit != null)
             //{
-                // Instantiate(possibleWeapons[currentWeaponIndex].weaponOnHit); //TODO
+            // Instantiate(possibleWeapons[currentWeaponIndex].weaponOnHit); //TODO
             //}
 
             yield return null;
@@ -289,7 +286,7 @@ namespace Player
 #region enums
 public enum ObjectMaterials { None, Iron, Wood, Conrete, Steel, EnergyField }
 
-public enum ShotType { obj, ray }
+public enum ShotType { obj, ray, grenade }
 
 public enum CrosshairTarget { None, Destroy, CantDestroy }
 #endregion
