@@ -8,15 +8,31 @@ namespace Weapons
     public abstract class Bullet : MonoBehaviour, IPoolable<Bullet>
     {      
         public float speed;
+        [HideInInspector] public int damage;
         [SerializeField] private int lifeTime;
         [SerializeField] private LayerMask targetLayer;
+        private Vector3 direction;
+        private int id;
 
         private Coroutine returnCoroutine;
-
         private Action<Bullet, int> returnToPool;
-        private int id;
-        [HideInInspector] public int damage;
-        private Vector3 direction;
+       
+        private void OnEnable()
+        {
+            if (returnCoroutine != null)
+            {
+                StopCoroutine(returnCoroutine);
+            }
+            returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
+        }
+
+        private void OnDisable()
+        {
+            if (returnCoroutine != null)
+            {
+                StopCoroutine(returnCoroutine);
+            }
+        }
 
         protected void OnTriggerEnter(Collider other)
         {
@@ -64,26 +80,6 @@ namespace Weapons
         {
             yield return new WaitForSeconds(lifeTime);
             ReturnToPool();
-        }
-        #endregion
-
-
-        #region enable/disable
-        private void OnEnable()
-        {
-            if (returnCoroutine != null)
-            {
-                StopCoroutine(returnCoroutine);
-            }
-            returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
-        }
-
-        private void OnDisable()
-        {
-            if (returnCoroutine != null)
-            {
-                StopCoroutine(returnCoroutine);
-            }
         }
         #endregion
     }
