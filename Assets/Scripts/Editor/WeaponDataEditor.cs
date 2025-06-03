@@ -8,7 +8,7 @@ public class WeaponDataEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        DrawPropertiesExcluding(serializedObject, "bulletTemplate" , "weaponOnHit", "onHitDelayMultiplayer");
+        DrawPropertiesExcluding(serializedObject, "bulletTemplate", "onHitDelayMultiplayer");
 
         ShotType weaponType = (ShotType)serializedObject.FindProperty("weaponType").enumValueIndex;
 
@@ -19,7 +19,6 @@ public class WeaponDataEditor : Editor
 
         if (weaponType == ShotType.ray)
         {
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("weaponOnHit"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("onHitDelayMultiplayer"));
         }
 

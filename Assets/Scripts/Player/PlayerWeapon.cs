@@ -81,6 +81,7 @@ namespace Player
         private void Start()
         {
             poolSpawner = new();
+            onHitEffectPoolSpawner = new();
             playerGameInfo = new();
 
             PrepareWeapons();
@@ -169,6 +170,7 @@ namespace Player
                     break;
                 case ShotType.grenade:
                     BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
+                    grenate.SetAction(OnHitWeaponAction);
                     grenate.damage = currentDamage;
                     grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
@@ -204,7 +206,9 @@ namespace Player
             for (int i = 0; i < weaponsLen; i++)
             {
                 if (possibleWeapons[i].bulletTemplate != null)
+                {
                     poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate, i);
+                }
 
                 if (possibleWeapons[i].weaponOnHit != null)
                     onHitEffectPoolSpawner.AddPoolForGameObject(possibleWeapons[i].weaponOnHit, i);
@@ -276,6 +280,8 @@ namespace Player
 
         private void OnHitWeaponAction(Transform pos, int weaponId)
         {
+            Debug.Log("OnHitWeaponAction" + pos.position + " " + weaponId);
+
             onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId).Play();
         }
 

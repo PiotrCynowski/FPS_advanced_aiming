@@ -14,6 +14,7 @@ namespace Weapons
 
         protected override void OnDisable()
         {
+           OnWeaponHitEffect?.Invoke(transform, id);
            rb.velocity = Vector3.zero;
            base.OnDisable();
         }

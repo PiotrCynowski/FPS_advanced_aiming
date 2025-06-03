@@ -8,15 +8,16 @@ namespace Weapons
     public abstract class Bullet : MonoBehaviour, IPoolable<Bullet>
     {      
         public float speed;
+        public int id;
         [HideInInspector] public int damage;
         [SerializeField] private int lifeTime;
         [SerializeField] private LayerMask targetLayer;
         private Vector3 direction;
-        private int id;
-
         private Coroutine returnCoroutine;
+
+        public Action<Transform, int> OnWeaponHitEffect;
         private Action<Bullet, int> returnToPool;
-       
+    
         private void OnEnable()
         {
             if (returnCoroutine != null)
@@ -46,6 +47,11 @@ namespace Weapons
         {
             direction = dir.normalized;
             transform.forward = direction;
+        }
+
+        public void SetAction(Action<Transform, int> OnWeaponHitEffect)
+        {
+            this.OnWeaponHitEffect = OnWeaponHitEffect;
         }
 
         protected void OnHitTarget(GameObject target)

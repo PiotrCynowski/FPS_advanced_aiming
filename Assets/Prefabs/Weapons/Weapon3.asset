@@ -17,6 +17,6 @@ MonoBehaviour:
   - canDestroyMat: 5
     damagePerBullet: 1
   bulletTemplate: {fileID: -8162744521551289336, guid: 480a98acdbdc5e6439ce405fb1ed558e, type: 3}
-  weaponOnHit: {fileID: 0}
+  weaponOnHit: {fileID: 7245935349723635382, guid: 1a7fd1aefacc3ad48b4407d3b990f087, type: 3}
   muzzle: {fileID: 0}
   onHitDelayMultiplayer: 0
