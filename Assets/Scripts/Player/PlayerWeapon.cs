@@ -167,7 +167,9 @@ namespace Player
                     }
                     break;
                 case ShotType.grenade:
-                   
+                    BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
+                    grenate.damage = currentDamage;
+                    grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
             }
         }
@@ -200,7 +202,7 @@ namespace Player
 
             for (int i = 0; i < weaponsLen; i++)
             {
-                if (possibleWeapons[i].weaponType != ShotType.ray)
+                if (possibleWeapons[i].bulletTemplate != null)
                     poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate.gameObject, i);
             }
 

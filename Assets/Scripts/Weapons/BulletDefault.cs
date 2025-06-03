@@ -4,7 +4,7 @@ namespace Weapons
 {
     public class BulletDefault : Bullet
     {
-        public override void UpdateBullet()
+        public void Update()
         {
             transform.Translate(speed * Time.deltaTime * Vector3.forward);
         }

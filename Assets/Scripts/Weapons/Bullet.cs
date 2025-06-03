@@ -42,13 +42,6 @@ namespace Weapons
             }
         }
 
-        private void Update()
-        {
-            UpdateBullet();
-        }
-
-        public abstract void UpdateBullet();
-
         public void SetDirection(Vector3 dir)
         {
             direction = dir.normalized;
