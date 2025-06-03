@@ -11,5 +11,11 @@ namespace Weapons
         {
             rb.AddForce(direction * itemThrowForce, ForceMode.Impulse);
         }
+
+        protected override void OnDisable()
+        {
+           rb.velocity = Vector3.zero;
+           base.OnDisable();
+        }
     }
 }

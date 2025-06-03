@@ -26,7 +26,7 @@ namespace Weapons
             returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             if (returnCoroutine != null)
             {

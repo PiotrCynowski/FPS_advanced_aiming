@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399f67dcacd780741a999f44043cb219, type: 3}
   m_Name: Weapon3
   m_EditorClassIdentifier: 
+  weaponType: 2
   canDestroy:
   - canDestroyMat: 5
     damagePerBullet: 1
-  bulletTemplate: {fileID: -6763388722690537771, guid: 480a98acdbdc5e6439ce405fb1ed558e, type: 3}
+  bulletTemplate: {fileID: -8162744521551289336, guid: 480a98acdbdc5e6439ce405fb1ed558e, type: 3}
+  weaponOnHit: {fileID: 0}
+  muzzle: {fileID: 0}
+  onHitDelayMultiplayer: 0
