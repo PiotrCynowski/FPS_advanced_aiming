@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using PoolSpawner;
 using System.Collections;
+using Player;
 
 namespace Weapons
 {
@@ -12,12 +13,18 @@ namespace Weapons
         [HideInInspector] public int damage;
         [SerializeField] private int lifeTime;
         [SerializeField] private LayerMask targetLayer;
+
         private Vector3 direction;
         private Coroutine returnCoroutine;
 
-        public Action<Transform, int> OnWeaponHitEffect;
+        public Action<Vector3, int> OnWeaponHitEffect;
         private Action<Bullet, int> returnToPool;
-    
+
+        private void Start()
+        {
+            OnWeaponHitEffect += PlayerWeapon.OnHitEffect;
+        }
+
         private void OnEnable()
         {
             if (returnCoroutine != null)
@@ -47,11 +54,6 @@ namespace Weapons
         {
             direction = dir.normalized;
             transform.forward = direction;
-        }
-
-        public void SetAction(Action<Transform, int> OnWeaponHitEffect)
-        {
-            this.OnWeaponHitEffect = OnWeaponHitEffect;
         }
 
         protected void OnHitTarget(GameObject target)

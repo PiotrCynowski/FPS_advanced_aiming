@@ -10,10 +10,10 @@ namespace PoolSpawner
         private readonly int maxPoolSize = 20;
 
         private Transform elementsContainer;
-        private Transform startPosition;
+        private Vector3 startPos;
+        private Quaternion startRot;
 
         private readonly Dictionary<int, ObjectPool<T>> poolObjList = new();
-
 
         public void AddPoolForGameObject(T toSpawn, int id)
         {
@@ -40,24 +40,30 @@ namespace PoolSpawner
             poolObjList.Add(id, pool);
         }
 
-        public void Spawn(Transform _pos, int _id)
+        public void Spawn(Transform _tr, int _id)
         {
-            startPosition = _pos;
+            startPos = _tr.position;
+            startRot = _tr.rotation;
             poolObjList[_id].Get();
         }
 
-        public T GetSpawnObject(Transform pos, int id)
+        public T GetSpawnObject(Transform _tr, int id)
         {
-            startPosition = pos;
+            startPos = _tr.position;
+            startRot = _tr.rotation;
             return poolObjList[id].Get();
         }
 
+        public T GetSpawnObject(Vector3 pos, int id)
+        {
+            startPos = pos;
+            return poolObjList[id].Get();
+        }
 
         private void ThisObjReleased(T obj, int id)
         {
             poolObjList[id].Release(obj);
         }
-
 
         #region poolOperations
         private void OnReturnedToPool(T system)
@@ -67,11 +73,10 @@ namespace PoolSpawner
 
         private void OnTakeFromPool(T system)
         {
-            system.transform.SetPositionAndRotation(startPosition.position, startPosition.rotation);
+            system.transform.SetPositionAndRotation(startPos, startRot);
             system.gameObject.SetActive(true);
         }
 
-        // If the pool capacity is reached then any items returned will be destroyed.
         private void OnDestroyPoolObject(T system)
         {
             GameObject.Destroy(system.gameObject);

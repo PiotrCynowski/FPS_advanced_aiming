@@ -3,6 +3,7 @@ using PoolSpawner;
 using Weapons;
 using DestrObj;
 using System.Collections;
+using System;
 
 namespace Player
 {
@@ -78,6 +79,13 @@ namespace Player
         public delegate void OnObjTarget(CrosshairTarget target);
         public static event OnObjTarget OnDestObjTarget;
 
+        public static Action<Vector3, int> OnHitEffect;
+
+        private void Awake()
+        {
+            OnHitEffect = OnHitWeaponAction;
+        }
+
         private void Start()
         {
             poolSpawner = new();
@@ -116,6 +124,7 @@ namespace Player
         private void OnDestroy()
         {
             PlayerMovement.onJump -= OnJumpOrLandAction;
+            OnHitEffect = null;
         }
 
         public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)
@@ -170,7 +179,6 @@ namespace Player
                     break;
                 case ShotType.grenade:
                     BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
-                    grenate.SetAction(OnHitWeaponAction);
                     grenate.damage = currentDamage;
                     grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
@@ -278,10 +286,9 @@ namespace Player
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
         }
 
-        private void OnHitWeaponAction(Transform pos, int weaponId)
+        public void OnHitWeaponAction(Vector3 pos, int weaponId)
         {
-            Debug.Log("OnHitWeaponAction" + pos.position + " " + weaponId);
-
+            Debug.Log("OnHitWeaponAction" + pos + " " + weaponId);
             onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId).Play();
         }
 
