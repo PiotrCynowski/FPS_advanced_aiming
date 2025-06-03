@@ -46,6 +46,7 @@ namespace Player
         private Vector3 initialLocalPos, targetOffset;
 
         private SpawnWithPool<Bullet> poolSpawner;
+        private SpawnWithPool<ParticleSystem> onHitEffectPoolSpawner;
         private PlayerGameInfo playerGameInfo;
         private DestructibleObj lastTargetObj;
         private Vector3? lastTargetHitPos;
@@ -203,7 +204,10 @@ namespace Player
             for (int i = 0; i < weaponsLen; i++)
             {
                 if (possibleWeapons[i].bulletTemplate != null)
-                    poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate.gameObject, i);
+                    poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate, i);
+
+                if (possibleWeapons[i].weaponOnHit != null)
+                    onHitEffectPoolSpawner.AddPoolForGameObject(possibleWeapons[i].weaponOnHit, i);
             }
 
             currentWeaponIndex = 0;
@@ -268,6 +272,11 @@ namespace Player
         {
             isGround = isJump;
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
+        }
+
+        private void OnHitWeaponAction(Transform pos, int weaponId)
+        {
+            onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId).Play();
         }
 
         private IEnumerator DelayedBulletHit()

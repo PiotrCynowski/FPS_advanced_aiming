@@ -15,7 +15,7 @@ namespace PoolSpawner
         private readonly Dictionary<int, ObjectPool<T>> poolObjList = new();
 
 
-        public void AddPoolForGameObject(GameObject toSpawn, int id)
+        public void AddPoolForGameObject(T toSpawn, int id)
         {
             if (elementsContainer == null)
             {
