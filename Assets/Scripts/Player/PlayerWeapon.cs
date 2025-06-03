@@ -200,7 +200,8 @@ namespace Player
 
             for (int i = 0; i < weaponsLen; i++)
             {
-                poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate.gameObject, i);
+                if (possibleWeapons[i].weaponType != ShotType.ray)
+                    poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate.gameObject, i);
             }
 
             currentWeaponIndex = 0;
