@@ -166,6 +166,9 @@ namespace Player
                             lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
                     }
                     break;
+                case ShotType.grenade:
+                   
+                    break;
             }
         }
 

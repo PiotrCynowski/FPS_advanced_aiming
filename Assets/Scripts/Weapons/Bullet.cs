@@ -5,9 +5,9 @@ using System.Collections;
 
 namespace Weapons
 {
-    public class Bullet : MonoBehaviour, IPoolable<Bullet>
+    public abstract class Bullet : MonoBehaviour, IPoolable<Bullet>
     {      
-        [SerializeField] private float speed;
+        public float speed;
         [SerializeField] private int lifeTime;
         [SerializeField] private LayerMask targetLayer;
 
@@ -28,8 +28,10 @@ namespace Weapons
 
         private void Update()
         {
-            transform.Translate(speed * Time.deltaTime * Vector3.forward);
+            UpdateBullet();
         }
+
+        public abstract void UpdateBullet();
 
         public void SetDirection(Vector3 dir)
         {
