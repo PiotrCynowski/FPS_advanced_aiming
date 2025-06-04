@@ -47,7 +47,7 @@ namespace Player
         private Vector3 initialLocalPos, targetOffset;
 
         private SpawnWithPool<Bullet> poolSpawner;
-        private SpawnWithPool<ParticleSystem> onHitEffectPoolSpawner;
+        private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
         private PlayerGameInfo playerGameInfo;
         private DestructibleObj lastTargetObj;
         private Vector3? lastTargetHitPos;
@@ -288,8 +288,7 @@ namespace Player
 
         public void OnHitWeaponAction(Vector3 pos, int weaponId)
         {
-            Debug.Log("OnHitWeaponAction" + pos + " " + weaponId);
-            onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId).Play();
+            onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId);
         }
 
         private IEnumerator DelayedBulletHit()
@@ -300,12 +299,6 @@ namespace Player
             yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             if (target != null)
                 target.TakeDamage(currentDamage, pos, rot);
-
-            //if (possibleWeapons[currentWeaponIndex].weaponOnHit != null)
-            //{
-            // Instantiate(possibleWeapons[currentWeaponIndex].weaponOnHit); //TODO
-            //}
-
             yield return null;
         }
     }

@@ -84,7 +84,6 @@ namespace PoolSpawner
         #endregion  
     }
 
-
     public interface IPoolable<T> where T : Component
     {
         void Initialize(System.Action<T, int> returnAction, int id);
