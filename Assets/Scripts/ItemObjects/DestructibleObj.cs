@@ -10,6 +10,7 @@ namespace DestrObj
 
         [SerializeField] UnityEvent onObjectDestroyed;
 
+        public ObjectType ObjectType => thisObjMaterial;
 
         public virtual void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot)
         {

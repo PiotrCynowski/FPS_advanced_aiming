@@ -317,4 +317,5 @@ public enum CrosshairTarget { None, Destroy, CantDestroy }
 public interface IDamageable
 {
     void TakeDamage(int amount, Vector3 pos, Quaternion? rot = null);
+    ObjectType ObjectType { get; }
 }

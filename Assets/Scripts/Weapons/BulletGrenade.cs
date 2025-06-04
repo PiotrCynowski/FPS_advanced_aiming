@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Weapons
@@ -7,6 +8,8 @@ namespace Weapons
         [SerializeField] private float itemThrowForce;
         [SerializeField] private Rigidbody rb;
         [SerializeField] private float radius;
+
+        private Dictionary<ObjectType, int> grenadeDamage = new Dictionary<ObjectType, int>();
 
         public void ThrowItem(Vector3 direction)
         {
@@ -31,9 +34,20 @@ namespace Weapons
             {
                 if (nearbyObject.TryGetComponent<IDamageable>(out var damageable))
                 {
-                    damageable.TakeDamage(damage, transform.position);
+                    damageable.TakeDamage(GetDamageInfo(damageable.ObjectType), transform.position);
                 }
             }
+        }
+
+        public int GetDamageInfo(ObjectType objMat)
+        {
+            if (grenadeDamage.TryGetValue(objMat, out int value))
+                return value;
+
+            if (grenadeDamage.TryGetValue(ObjectType.Everything, out int all))
+                return all;
+
+            return 0;
         }
 
 #if UNITY_EDITOR
