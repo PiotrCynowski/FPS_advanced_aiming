@@ -37,12 +37,12 @@ namespace UI.Elements
         }
 
         #region update text
-        private void UpdateWeaponState(ObjectMaterials[] canDestroyInfo)
+        private void UpdateWeaponState(ObjectType[] canDestroyInfo)
         {
             playerWeaponStateText.text = "Weapon can destroy: " + string.Join(", ", canDestroyInfo);
         }
 
-        private void UpdateDestrObjState(ObjectMaterials objMat, int objHP)
+        private void UpdateDestrObjState(ObjectType objMat, int objHP)
         {
             playerTargetStateText.text = objMat + " ,HP:" + objHP;
         }

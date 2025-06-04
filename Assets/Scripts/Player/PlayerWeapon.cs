@@ -56,7 +56,7 @@ namespace Player
         private int currentWeaponIndex, weaponsLen;
 
         private int currentDamage;
-        private ObjectMaterials currentTargMat = ObjectMaterials.None;
+        private ObjectType currentTargMat = ObjectType.None;
         private CrosshairTarget currentTarget = CrosshairTarget.None;
 
         public CrosshairTarget CurrentTarget
@@ -197,7 +197,7 @@ namespace Player
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
 
-            if (currentTargMat == ObjectMaterials.None)
+            if (currentTargMat == ObjectType.None)
             {
                 CurrentTarget = CrosshairTarget.None;
                 return;
@@ -213,6 +213,8 @@ namespace Player
 
             for (int i = 0; i < weaponsLen; i++)
             {
+                possibleWeapons[i].PrepareWeapon();
+
                 if (possibleWeapons[i].bulletTemplate != null)
                 {
                     poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate, i);
@@ -270,13 +272,13 @@ namespace Player
 
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
-            if (currentTargMat == ObjectMaterials.None)
+            if (currentTargMat == ObjectType.None)
             {
-                playerGameInfo.ObjMat = ObjectMaterials.None;
+                playerGameInfo.ObjMat = ObjectType.None;
                 return;
             }
 
-            currentTargMat = ObjectMaterials.None;
+            currentTargMat = ObjectType.None;
             CurrentTarget = CrosshairTarget.None;
         }
 
@@ -305,7 +307,7 @@ namespace Player
 }
 
 #region enums
-public enum ObjectMaterials { None, Iron, Wood, Conrete, Steel, EnergyField }
+public enum ObjectType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
 
 public enum ShotType { obj, ray, grenade }
 

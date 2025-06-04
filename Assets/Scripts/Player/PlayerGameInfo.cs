@@ -2,12 +2,12 @@ using System;
 
 public class PlayerGameInfo
 {
-    public static event Action<ObjectMaterials[]> OnPlayerWeaponChanged;
-    public static event Action<ObjectMaterials, int> OnPlayerDestrObjChanged;
+    public static event Action<ObjectType[]> OnPlayerWeaponChanged;
+    public static event Action<ObjectType, int> OnPlayerDestrObjChanged;
 
-    private ObjectMaterials[] currentWeaponMatInfo;
+    private ObjectType[] currentWeaponMatInfo;
 
-    public ObjectMaterials[] CurrentWeaponMatInfo
+    public ObjectType[] CurrentWeaponMatInfo
     {
         get { return currentWeaponMatInfo; }
         set
@@ -20,9 +20,9 @@ public class PlayerGameInfo
         }
     }
 
-    private ObjectMaterials objMat;
+    private ObjectType objMat;
 
-    public ObjectMaterials ObjMat
+    public ObjectType ObjMat
     {
         get { return objMat; }
         set

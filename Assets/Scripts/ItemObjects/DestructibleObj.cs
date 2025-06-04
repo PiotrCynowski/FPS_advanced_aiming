@@ -6,7 +6,7 @@ namespace DestrObj
     public abstract class DestructibleObj : MonoBehaviour, IDamageable
     {
         public int currentHealth;
-        public ObjectMaterials thisObjMaterial;
+        public ObjectType thisObjMaterial;
 
         [SerializeField] UnityEvent onObjectDestroyed;
 

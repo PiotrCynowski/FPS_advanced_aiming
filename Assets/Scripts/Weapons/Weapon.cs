@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Weapons
@@ -8,6 +9,7 @@ namespace Weapons
     {
         public ShotType weaponType;
         public WeaponCanDestroySetup[] canDestroy;
+        private Dictionary<ObjectType, int> canDestroyDict;
         public Bullet bulletTemplate;
         public PoolableOnHit weaponOnHit;
         public ParticleSystem muzzle;
@@ -16,13 +18,13 @@ namespace Weapons
         [Serializable]
         public class WeaponCanDestroySetup
         {
-            public ObjectMaterials canDestroyMat;
+            public ObjectType canDestroyMat;
             public int damagePerBullet;
         }
 
-        public ObjectMaterials[] GetMaterialInfo()
+        public ObjectType[] GetMaterialInfo()
         {
-            ObjectMaterials[] canDestroyTheseMat = new ObjectMaterials[canDestroy.Length];
+            ObjectType[] canDestroyTheseMat = new ObjectType[canDestroy.Length];
 
             for (int i = 0; i < canDestroy.Length; i++)
             {
@@ -32,15 +34,23 @@ namespace Weapons
             return canDestroyTheseMat;
         }
 
-        public int GetDamageInfo(ObjectMaterials objMat)
+        public void PrepareWeapon()
         {
+            canDestroyDict = new Dictionary<ObjectType, int>();
             foreach (WeaponCanDestroySetup setup in canDestroy)
             {
-                if (setup.canDestroyMat == objMat)
-                {
-                    return setup.damagePerBullet;
-                }
+                canDestroyDict.Add(setup.canDestroyMat, setup.damagePerBullet);
             }
+        }
+
+        public int GetDamageInfo(ObjectType objMat)
+        {
+            if (canDestroyDict.TryGetValue(objMat, out int value))
+                return value;
+
+            if(canDestroyDict.TryGetValue(ObjectType.Everything, out int all))
+                return all;
+
             return 0;
         }
     }
