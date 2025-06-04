@@ -85,7 +85,7 @@ namespace Player
         private void Awake()
         {
             OnHitEffect = OnHitWeaponAction;
-            OnRadiusHit = DelayedGrenadeHit;
+            OnRadiusHit = OnRadiusHitAction;
         }
 
         private void Start()
@@ -184,6 +184,9 @@ namespace Player
                     BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
                     grenate.damage = currentDamage;
                     grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
+                    break;
+                case ShotType.white:
+                   
                     break;
             }
         }
@@ -291,7 +294,7 @@ namespace Player
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
         }
 
-        public void OnHitWeaponAction(Vector3 pos, int weaponId)
+        private void OnHitWeaponAction(Vector3 pos, int weaponId)
         {
             onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId);
         }
@@ -307,7 +310,7 @@ namespace Player
             yield return null;
         }
 
-        private void DelayedGrenadeHit(Vector3 position, int radius, int Id)
+        private void OnRadiusHitAction(Vector3 position, int radius, int Id)
         {
             Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
 
@@ -323,7 +326,7 @@ namespace Player
 #region enums
 public enum ObjectType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
 
-public enum ShotType { obj, ray, grenade }
+public enum ShotType { obj, ray, grenade, white }
 
 public enum CrosshairTarget { None, Destroy, CantDestroy }
 #endregion
