@@ -21,11 +21,11 @@ namespace DestrObj
             len = movePos.Length;
         }
 
-        public override void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot)
+        public override void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot, bool onHitEffect = true)
         {
-            base.TakeDamage(damage, hitPos, hitRot);
+            base.TakeDamage(damage, hitPos, hitRot, onHitEffect);
 
-            if (damage != 0)
+            if (onHitEffect && damage != 0)
             {
                 onHitParticles.transform.position = hitPos;
                 onHitParticles.Play();

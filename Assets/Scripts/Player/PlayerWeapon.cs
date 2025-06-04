@@ -80,10 +80,12 @@ namespace Player
         public static event OnObjTarget OnDestObjTarget;
 
         public static Action<Vector3, int> OnHitEffect;
+        public static Action<Vector3, int, int> OnRadiusHit;
 
         private void Awake()
         {
             OnHitEffect = OnHitWeaponAction;
+            OnRadiusHit = DelayedGrenadeHit;
         }
 
         private void Start()
@@ -125,6 +127,7 @@ namespace Player
         {
             PlayerMovement.onJump -= OnJumpOrLandAction;
             OnHitEffect = null;
+            OnRadiusHit = null;
         }
 
         public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)
@@ -174,7 +177,7 @@ namespace Player
                         if (possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer > 0)
                             StartCoroutine(DelayedBulletHit());
                         else
-                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value);
+                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value, true);
                     }
                     break;
                 case ShotType.grenade:
@@ -300,8 +303,19 @@ namespace Player
             Quaternion rot = lastTargetHitRot.Value;
             yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             if (target != null)
-                target.TakeDamage(currentDamage, pos, rot);
+                target.TakeDamage(currentDamage, pos, rot, true);
             yield return null;
+        }
+
+        private void DelayedGrenadeHit(Vector3 position, int radius, int Id)
+        {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+
+            foreach (Collider nearbyObject in colliders)
+            {
+                if (nearbyObject.TryGetComponent<IDamageable>(out var damageable))
+                    damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), transform.position, onHitEffect: false);
+            }
         }
     }
 }
@@ -316,6 +330,6 @@ public enum CrosshairTarget { None, Destroy, CantDestroy }
 
 public interface IDamageable
 {
-    void TakeDamage(int amount, Vector3 pos, Quaternion? rot = null);
+    void TakeDamage(int amount, Vector3 pos, Quaternion? rot = null, bool onHitEffect = true);
     ObjectType ObjectType { get; }
 }

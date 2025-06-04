@@ -9,7 +9,7 @@ namespace Weapons
     {
         public ShotType weaponType;
         public WeaponCanDestroySetup[] canDestroy;
-        private Dictionary<ObjectType, int> canDestroyDict;
+        public Dictionary<ObjectType, int> canDestroyDict;
         public Bullet bulletTemplate;
         public PoolableOnHit weaponOnHit;
         public ParticleSystem muzzle;

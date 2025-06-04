@@ -20,7 +20,7 @@ namespace Weapons
         public Action<Vector3, int> OnWeaponHitEffect;
         private Action<Bullet, int> returnToPool;
 
-        private void Start()
+        protected virtual void Start()
         {
             OnWeaponHitEffect += PlayerWeapon.OnHitEffect;
         }
@@ -40,6 +40,11 @@ namespace Weapons
             {
                 StopCoroutine(returnCoroutine);
             }
+        }
+
+        private void OnDestroy()
+        {
+            OnWeaponHitEffect -= PlayerWeapon.OnHitEffect;
         }
 
         protected void OnTriggerEnter(Collider other)

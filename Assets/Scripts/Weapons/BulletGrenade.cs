@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using Player;
+using System;
 using UnityEngine;
 
 namespace Weapons
@@ -7,48 +8,35 @@ namespace Weapons
     {
         [SerializeField] private float itemThrowForce;
         [SerializeField] private Rigidbody rb;
-        [SerializeField] private float radius;
+        [SerializeField] private int radius;
+        public Action<Vector3, int, int> OnGrenadeRayDamage;
 
-        private Dictionary<ObjectType, int> grenadeDamage = new Dictionary<ObjectType, int>();
-
-        public void ThrowItem(Vector3 direction)
+        protected override void Start()
         {
-            rb.AddForce(direction * itemThrowForce, ForceMode.Impulse);
+            base.Start();
+            OnGrenadeRayDamage += PlayerWeapon.OnRadiusHit; 
         }
-
+       
         protected override void OnDisable()
         {
            Vector3 pos = transform.position;
            OnWeaponHitEffect?.Invoke(pos, id);
 
            rb.velocity = Vector3.zero;
-           OnGrenadeRayDamage();
+           OnGrenadeRayDamage?.Invoke(pos, radius, id);
            base.OnDisable();
         }
 
-        private void OnGrenadeRayDamage()
+        private void OnDestroy()
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-
-            foreach (Collider nearbyObject in colliders)
-            {
-                if (nearbyObject.TryGetComponent<IDamageable>(out var damageable))
-                {
-                    damageable.TakeDamage(GetDamageInfo(damageable.ObjectType), transform.position);
-                }
-            }
+            OnGrenadeRayDamage -= PlayerWeapon.OnRadiusHit;
         }
 
-        public int GetDamageInfo(ObjectType objMat)
+        public void ThrowItem(Vector3 direction)
         {
-            if (grenadeDamage.TryGetValue(objMat, out int value))
-                return value;
-
-            if (grenadeDamage.TryGetValue(ObjectType.Everything, out int all))
-                return all;
-
-            return 0;
+            rb.AddForce(direction * itemThrowForce, ForceMode.Impulse);
         }
+
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
