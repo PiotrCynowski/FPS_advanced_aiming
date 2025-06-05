@@ -1149,6 +1149,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1006186858387648350, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_Name
+      value: GunBarrel
+      objectReference: {fileID: 0}
     - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: crosshairUI
       value: 
@@ -1199,6 +1203,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1891586907174809492, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3453455418410640681, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584578259814033493, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_Name
+      value: GunBarrel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6754704746343433331, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.011
+      objectReference: {fileID: 0}
+    - target: {fileID: 6754704746343433331, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.558
+      objectReference: {fileID: 0}
+    - target: {fileID: 7429411125580272423, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.011
+      objectReference: {fileID: 0}
+    - target: {fileID: 7429411125580272423, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.496
+      objectReference: {fileID: 0}
+    - target: {fileID: 8089207625946330984, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8380162294679094699, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

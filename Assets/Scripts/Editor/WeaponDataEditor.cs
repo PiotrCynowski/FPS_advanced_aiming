@@ -8,9 +8,10 @@ public class WeaponDataEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        DrawPropertiesExcluding(serializedObject, "bulletTemplate", "onHitDelayMultiplayer");
+        DrawPropertiesExcluding(serializedObject, "bulletTemplate", "onHitDelayMultiplayer", "shotInterval");
 
         ShotType weaponType = (ShotType)serializedObject.FindProperty("weaponType").enumValueIndex;
+        RifleType rifleType = (RifleType)serializedObject.FindProperty("rifleType").enumValueIndex;
 
         if (weaponType == ShotType.obj || weaponType == ShotType.grenade)
         {
@@ -20,6 +21,11 @@ public class WeaponDataEditor : Editor
         if (weaponType == ShotType.ray)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("onHitDelayMultiplayer"));
+        }
+
+        if(rifleType == RifleType.automatic)
+        {
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("shotInterval"));
         }
 
         serializedObject.ApplyModifiedProperties();

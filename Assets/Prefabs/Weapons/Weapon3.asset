@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Weapon3
   m_EditorClassIdentifier: 
   weaponType: 2
+  rifleType: 0
+  shotInterval: 0
   canDestroy:
   - canDestroyMat: 5
     damagePerBullet: 1
@@ -22,3 +24,5 @@ MonoBehaviour:
   weaponOnHit: {fileID: 6994094962344593498, guid: 1a7fd1aefacc3ad48b4407d3b990f087, type: 3}
   muzzle: {fileID: 0}
   onHitDelayMultiplayer: 0
+  weaponModel: {fileID: 5009131972161329909, guid: a82bef3f9649d6f48b0eaf5229709118, type: 3}
+  gunBarrelPos: {x: 0, y: 0.011, z: 0.496}
