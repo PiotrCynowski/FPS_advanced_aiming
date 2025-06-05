@@ -10,6 +10,7 @@ namespace GameInput
         [SerializeField] private PlayerMovement movement;
         [SerializeField] private PlayerMouseLook mouseLook;
         [SerializeField] private PlayerWeapon weapon;
+        [SerializeField] private PlayerWeaponAnimation weaponAnim;
         [SerializeField] private PlayerGrabController grabController;
         [SerializeField] private PlayerUICrosshair playerCrosshair;
 
@@ -32,8 +33,8 @@ namespace GameInput
             playerActions.Sprint.performed += _ => movement.OnSprintPressed(true);
             playerActions.Sprint.canceled += _ => movement.OnSprintPressed(false);
 
-            playerActions.Sprint.performed += _ => weapon.OnWeaponSprint(true);
-            playerActions.Sprint.canceled += _ => weapon.OnWeaponSprint(false);
+            playerActions.Sprint.performed += _ => weaponAnim.OnWeaponSprint(true);
+            playerActions.Sprint.canceled += _ => weaponAnim.OnWeaponSprint(false);
 
             playerActions.MouseX.performed += ctx => mouseInput.x = ctx.ReadValue<float>();
             playerActions.MouseY.performed += ctx => mouseInput.y = ctx.ReadValue<float>();
@@ -66,7 +67,7 @@ namespace GameInput
             mouseLook.ReceiveInput(mouseInput);
 
             playerCrosshair.UpdateCrosshair(mouseInput, horizontalInput);
-            weapon.WeaponUpdate(mouseInput, horizontalInput);
+            weaponAnim.WeaponUpdate(mouseInput, horizontalInput);
         }
 
         private void EscapeButPerformed()
