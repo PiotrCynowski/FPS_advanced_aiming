@@ -38,7 +38,8 @@ namespace GameInput
             playerActions.MouseX.performed += ctx => mouseInput.x = ctx.ReadValue<float>();
             playerActions.MouseY.performed += ctx => mouseInput.y = ctx.ReadValue<float>();
 
-            playerActions.Shot1.performed += _ => OnShot1LMB();
+            playerActions.Shot1.performed += _ => OnShot1LMB(true);
+            playerActions.Shot1.canceled += _ => OnShot1LMB(false);
             playerActions.WeaponSwitch.performed += _ => weapon.SwitchWeaponRMouseBut();
 
             playerActions.Grab.performed += ctx => { grabController.OnMouseRMB(true); isRMB = true; };
@@ -79,15 +80,15 @@ namespace GameInput
             controls.Enable();
         }
 
-        private void OnShot1LMB() 
+        private void OnShot1LMB(bool isPerformed)
+        {
+            if (isRMB)
             {
-            if (isRMB) 
-                {
                 grabController.OnMouseLMB(true);
             }
-            else 
+            else
             {
-                weapon.ShotLMouseBut();
+                weapon.ShotLMouseBut(isPerformed);
             }
         }
     }

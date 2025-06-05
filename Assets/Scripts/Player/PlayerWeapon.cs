@@ -56,6 +56,8 @@ namespace Player
         private int currentWeaponIndex, weaponsLen;
 
         private int currentDamage;
+        private bool isShooting;
+        private Coroutine shootingRoutine;
         private ObjectType currentTargMat = ObjectType.None;
         private CrosshairTarget currentTarget = CrosshairTarget.None;
 
@@ -161,34 +163,21 @@ namespace Player
         }
 
         #region Input
-        public void ShotLMouseBut() // Aim at the 3D crosshair position
+        public void ShotLMouseBut(bool isPerformed) // Aim at the 3D crosshair position
         {
-            switch (possibleWeapons[currentWeaponIndex].weaponType)
+            if (!isPerformed && (shootingRoutine != null))
             {
-                default:
-                case ShotType.obj:
-                    Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
-                    bullet.damage = currentDamage;
-                    bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
-                    break;
-                case ShotType.ray:
-                    if (lastTargetObj != null && lastTargetHitPos.HasValue)
-                    {
-                        if (possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer > 0)
-                            StartCoroutine(DelayedBulletHit());
-                        else
-                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value, true);
-                    }
-                    break;
-                case ShotType.grenade:
-                    BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
-                    grenate.damage = currentDamage;
-                    grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
-                    break;
-                case ShotType.white:
-                   
-                    break;
+                StopCoroutine(shootingRoutine);
+                return;
             }
+
+            if (possibleWeapons[currentWeaponIndex].rifleType == RifleType.automatic)
+            {
+                if(shootingRoutine != null) StopCoroutine(shootingRoutine);
+                shootingRoutine = StartCoroutine(DelayedShot(possibleWeapons[currentWeaponIndex].shotInterval));
+            }
+            else
+                Shot();
         }
 
         public void SwitchWeaponRMouseBut()
@@ -320,6 +309,47 @@ namespace Player
                     damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), transform.position, onHitEffect: false);
             }
         }
+
+        #region Shooting
+        private IEnumerator DelayedShot(float interval)
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(interval);
+                Shot();
+            }
+        }
+
+        private void Shot()
+        {
+            switch (possibleWeapons[currentWeaponIndex].weaponType)
+            {
+                default:
+                case ShotType.obj:
+                    Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+                    bullet.damage = currentDamage;
+                    bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
+                    break;
+                case ShotType.ray:
+                    if (lastTargetObj != null && lastTargetHitPos.HasValue)
+                    {
+                        if (possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer > 0)
+                            StartCoroutine(DelayedBulletHit());
+                        else
+                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value, true);
+                    }
+                    break;
+                case ShotType.grenade:
+                    BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
+                    grenate.damage = currentDamage;
+                    grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
+                    break;
+                case ShotType.white:
+
+                    break;
+            }
+        }
+        #endregion
     }
 }
 
@@ -327,6 +357,8 @@ namespace Player
 public enum ObjectType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
 
 public enum ShotType { obj, ray, grenade, white }
+
+public enum RifleType { single, automatic }
 
 public enum CrosshairTarget { None, Destroy, CantDestroy }
 #endregion

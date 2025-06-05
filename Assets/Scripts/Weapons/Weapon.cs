@@ -8,6 +8,8 @@ namespace Weapons
     public class Weapon : ScriptableObject
     {
         public ShotType weaponType;
+        public RifleType rifleType;
+        public float shotInterval;
         public WeaponCanDestroySetup[] canDestroy;
         public Dictionary<ObjectType, int> canDestroyDict;
         public Bullet bulletTemplate;
