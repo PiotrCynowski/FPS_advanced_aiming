@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Weapon2
   m_EditorClassIdentifier: 
   weaponType: 0
+  rifleType: 1
+  shotInterval: 0.1
   canDestroy:
   - canDestroyMat: 3
     damagePerBullet: 2

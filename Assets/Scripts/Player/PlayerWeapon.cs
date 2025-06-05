@@ -237,8 +237,8 @@ namespace Player
         {
             while (true)
             {
-                yield return new WaitForSeconds(interval);
                 Shot();
+                yield return new WaitForSeconds(interval);
             }
         }
 
@@ -266,9 +266,6 @@ namespace Player
                     grenate.damage = currentDamage;
                     grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
-                case ShotType.white:
-
-                    break;
             }
         }
         #endregion
@@ -278,7 +275,7 @@ namespace Player
 #region enums
 public enum ObjectType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
 
-public enum ShotType { obj, ray, grenade, white }
+public enum ShotType { obj, ray, grenade }
 
 public enum RifleType { single, automatic }
 
