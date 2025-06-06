@@ -11,7 +11,7 @@ namespace DestrObj
         {
             base.TakeDamage(damage, hitPos, hitRot, onHitEffect);
 
-            if (onHitEffect & damage != 0)
+            if (onHitEffect & damage != 0 && onHitParticles !=null)
             {
                 onHitParticles.transform.position = hitPos;
                 onHitParticles.Play();

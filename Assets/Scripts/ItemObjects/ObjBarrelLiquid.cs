@@ -13,6 +13,12 @@ namespace DestrObj
         {
             base.TakeDamage(damage, hitPos, hitRot, onHitEffect);
 
+            if (currentHealth <= 0)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             if (onHitEffect && damage != 0)
             {
                 onHitDirection = hitPos - transform.position;
@@ -28,12 +34,7 @@ namespace DestrObj
                 liquidParticles.transform.parent = transform;
 
                 liquidParticles.Play();
-            }
-
-            if (currentHealth <= 0)
-            {
-                Destroy(gameObject);
-            }
+            }  
         }
     }
 }

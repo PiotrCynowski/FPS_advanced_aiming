@@ -10,10 +10,11 @@ namespace Weapons
     {      
         public float speed;
         public int id;
+        public Rigidbody rb;
         [HideInInspector] public int damage;
         [SerializeField] private int lifeTime;
         [SerializeField] private LayerMask targetLayer;
-
+       
         private Vector3 direction;
         private Coroutine returnCoroutine;
 
@@ -40,6 +41,7 @@ namespace Weapons
             {
                 StopCoroutine(returnCoroutine);
             }
+            rb.velocity = Vector3.zero;
         }
 
         private void OnDestroy()
@@ -52,6 +54,8 @@ namespace Weapons
             if (targetLayer == (targetLayer | (1 << other.gameObject.layer)))
             {
                 OnHitTarget(other.gameObject);
+                GameObject gameObject = new GameObject();
+                gameObject.transform.position = transform.position;
             }
         }
 

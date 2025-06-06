@@ -78,7 +78,7 @@ namespace GameInput
                     ""name"": ""WeaponSwitch"",
                     ""type"": ""Value"",
                     ""id"": ""d30c8349-f7ae-4c87-97ba-bfd7ef8d6a2a"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -87,7 +87,7 @@ namespace GameInput
                     ""name"": ""Grab"",
                     ""type"": ""Value"",
                     ""id"": ""7f578a9b-12e4-43b4-bd31-183e25b5cb21"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -160,6 +160,17 @@ namespace GameInput
                     ""name"": """",
                     ""id"": ""8bc5e2ce-ac2e-49b9-91b1-94c26d54a0cb"",
                     ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2c02528f-ddce-422a-955b-1806fd52eb58"",
+                    ""path"": ""<Mouse>/scroll"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

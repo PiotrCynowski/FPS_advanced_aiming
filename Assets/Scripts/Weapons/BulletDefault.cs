@@ -4,9 +4,9 @@ namespace Weapons
 {
     public class BulletDefault : Bullet
     {
-        public void Update()
+        public void FixedUpdate()
         {
-            transform.Translate(speed * Time.deltaTime * Vector3.forward);
+            rb.MovePosition(rb.position + speed * Time.deltaTime * transform.forward);
         }
     }
 }

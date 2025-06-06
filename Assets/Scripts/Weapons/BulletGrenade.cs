@@ -6,8 +6,7 @@ namespace Weapons
 {
     public class BulletGrenade : Bullet
     {
-        [SerializeField] private float itemThrowForce;
-        [SerializeField] private Rigidbody rb;
+        [SerializeField] private float itemThrowForce;      
         [SerializeField] private int radius;
         public Action<Vector3, int, int> OnGrenadeRayDamage;
 
@@ -21,9 +20,8 @@ namespace Weapons
         {
            Vector3 pos = transform.position;
            OnWeaponHitEffect?.Invoke(pos, id);
-
-           rb.velocity = Vector3.zero;
            OnGrenadeRayDamage?.Invoke(pos, radius, id);
+
            base.OnDisable();
         }
 

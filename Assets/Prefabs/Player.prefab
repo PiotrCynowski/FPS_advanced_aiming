@@ -334,7 +334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cef0964aedd8940429da9f0ae885bfbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponGO: {fileID: 0}
   crosshairTarget: {fileID: 5189079693135766729}
   rotationSpeed: 5
   moveSwayAmount: 0.03
