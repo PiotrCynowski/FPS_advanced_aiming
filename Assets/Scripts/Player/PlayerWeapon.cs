@@ -4,6 +4,7 @@ using Weapons;
 using DestrObj;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace Player
 {
@@ -17,8 +18,10 @@ namespace Player
         [SerializeField] private LayerMask targetLayerForCrosshair;
 
         [Header("Weapon Settings")]
-        [SerializeField] private Transform gunBarrel;
+        [SerializeField] private Transform gunBarrel, weaponsContainer;
         [SerializeField] private Weapon[] possibleWeapons;
+        private Dictionary<int , (GameObject, Transform)> weaponsCollection;
+        private GameObject currentWeapon;
 
         private SpawnWithPool<Bullet> poolSpawner;
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
@@ -56,6 +59,7 @@ namespace Player
 
         public static Action<Vector3, int> OnHitEffect;
         public static Action<Vector3, int, int> OnRadiusHit;
+        public static Action<Transform> OnWeaponSwitch;
 
         private void Awake()
         {
@@ -117,6 +121,8 @@ namespace Player
                 currentWeaponIndex = 0;
             }
 
+            WeaponModelSwitch(currentWeaponIndex);
+
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
 
@@ -133,10 +139,19 @@ namespace Player
         private void PrepareWeapons()
         {
             weaponsLen = possibleWeapons.Length;
+            weaponsCollection = new();
 
             for (int i = 0; i < weaponsLen; i++)
             {
                 possibleWeapons[i].PrepareWeapon();
+
+                GameObject weapon = Instantiate(possibleWeapons[i].weaponModel, weaponsContainer);
+                weapon.transform.localPosition = possibleWeapons[i].weaponPos;
+                GameObject gunBarrel = new("GunBarrel");
+                gunBarrel.transform.parent = weapon.transform;
+                gunBarrel.transform.localPosition = possibleWeapons[i].gunBarrelPos;
+                weaponsCollection.Add(i, (weapon, gunBarrel.transform));
+                weapon.SetActive(false);
 
                 if (possibleWeapons[i].bulletTemplate != null)
                 {
@@ -148,7 +163,9 @@ namespace Player
             }
 
             currentWeaponIndex = 0;
-            playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();          
+            playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
+
+            WeaponModelSwitch(currentWeaponIndex);
         }
 
         private void GunBarrelInfo()
@@ -229,6 +246,18 @@ namespace Player
             {
                 if (nearbyObject.TryGetComponent<IDamageable>(out var damageable))
                     damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), transform.position, onHitEffect: false);
+            }
+        }
+
+        private void WeaponModelSwitch(int currentWeaponIndex)
+        {
+            if (weaponsCollection.TryGetValue(currentWeaponIndex, out (GameObject weapon, Transform barrel) gun))
+            {
+                if(currentWeapon !=null) currentWeapon.SetActive(false);
+                gun.weapon.SetActive(true);
+                gunBarrel = gun.barrel;
+                OnWeaponSwitch?.Invoke(gun.weapon.transform);
+                currentWeapon = gun.weapon;
             }
         }
 

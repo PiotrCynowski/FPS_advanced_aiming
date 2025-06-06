@@ -4,9 +4,9 @@ namespace Player
 {
     public class PlayerWeaponAnimation : MonoBehaviour
     {
-        [SerializeField] private Transform weaponGO;
         [SerializeField] private Transform crosshairTarget;
         [SerializeField] private float rotationSpeed = 5f;
+        private Transform weaponGO;
 
         [Header("Sway Settings")]
         [SerializeField] private float moveSwayAmount = 0.03f;
@@ -34,14 +34,15 @@ namespace Player
 
         public void Start()
         {
-            initialLocalPos = weaponGO.localPosition;
-
+            PlayerWeapon.OnWeaponSwitch += OnWeaponSwitchModel;
 
             PlayerMovement.onJump += OnJumpOrLandAction;
         }
 
         public void Update()
         {
+            if(weaponGO == null) return;
+
             weaponGO.localPosition = Vector3.Lerp(weaponGO.localPosition, initialLocalPos + targetOffset, Time.deltaTime * swaySmooth);
 
             Quaternion targetRotation = Quaternion.LookRotation(crosshairTarget.position - weaponGO.position);
@@ -56,6 +57,8 @@ namespace Player
         private void OnDestroy()
         {
             PlayerMovement.onJump -= OnJumpOrLandAction;
+
+            PlayerWeapon.OnWeaponSwitch -= OnWeaponSwitchModel;
         }
 
         public void OnWeaponSprint(bool isPlayerSprint)
@@ -92,6 +95,12 @@ namespace Player
         {
             isGround = isJump;
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
+        }
+
+        private void OnWeaponSwitchModel(Transform weaponRef)
+        {
+            initialLocalPos = weaponRef.localPosition;
+            weaponGO = weaponRef;
         }
     }
 }
