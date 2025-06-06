@@ -97,9 +97,9 @@ namespace Player
         #region Input
         public void ShotLMouseBut(bool isPerformed) // Aim at the 3D crosshair position
         {
-            if (!isPerformed && (shootingRoutine != null))
+            if (!isPerformed)
             {
-                StopCoroutine(shootingRoutine);
+                if (shootingRoutine != null) StopCoroutine(shootingRoutine);
                 return;
             }
 
