@@ -9,7 +9,7 @@ namespace Weapons
     public abstract class Bullet : MonoBehaviour, IPoolable<Bullet>
     {      
         public float speed;
-        public int id;
+        protected int id;
         public Rigidbody rb;
         [HideInInspector] public int damage;
         [SerializeField] private int lifeTime;
@@ -49,13 +49,12 @@ namespace Weapons
             OnWeaponHitEffect -= PlayerWeapon.OnHitEffect;
         }
 
-        protected void OnTriggerEnter(Collider other)
+        protected void OnCollisionEnter(UnityEngine.Collision collision)
         {
-            if (targetLayer == (targetLayer | (1 << other.gameObject.layer)))
+            if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
             {
-                OnHitTarget(other.gameObject);
-                GameObject gameObject = new GameObject();
-                gameObject.transform.position = transform.position;
+                rb.velocity = Vector3.zero;
+                OnHitTarget(collision.gameObject);
             }
         }
 

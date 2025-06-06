@@ -6,7 +6,7 @@ namespace Weapons
     {
         public void FixedUpdate()
         {
-            rb.MovePosition(rb.position + speed * Time.deltaTime * transform.forward);
+            rb.MovePosition(rb.position + speed * Time.fixedDeltaTime * transform.forward);
         }
     }
 }

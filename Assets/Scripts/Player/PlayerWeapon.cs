@@ -121,6 +121,7 @@ namespace Player
                 currentWeaponIndex = 0;
             }
 
+            if (shootingRoutine != null) StopCoroutine(shootingRoutine);
             WeaponModelSwitch(currentWeaponIndex);
 
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
@@ -183,7 +184,7 @@ namespace Player
                     playerGameInfo.ObjHP = obj.currentHealth;
 
                     crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
-
+                   
                     if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
                     {
                         lastTargetHitPos = hit.point;
