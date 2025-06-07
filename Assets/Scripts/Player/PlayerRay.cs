@@ -15,6 +15,8 @@ namespace Player
         [SerializeField] PlayerWeapon weapon;
         [SerializeField] PlayerGrabController grabbing;
 
+        private bool isMatchedRay;
+
         private Ray ray;
         private RaycastHit hit;
         private const int rayDistance = 25;
@@ -63,24 +65,29 @@ namespace Player
             {
                 if (hit.transform.TryGetComponent<InteractableObj>(out var obj))
                 {
-                    switch (obj)
+                    isMatchedRay = false;
+
+                    if (obj is ICanBeGrabbed grabbable)
                     {
-                        case ICanBeGrabbed grabbable:                     
-                            if (obj == lastTargetObj)
-                                return;
+                        if (obj != lastTargetObj)
+                        {
                             CurrentTarget = CrosshairRayTarget.Grabbable;
                             lastTargetObj = obj;
-                            break;
-                        case IDamageable damageable:
-                            CurrentTarget = CrosshairRayTarget.Damageable;
-                            crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
-                            weapon.GunBarrelInfo(damageable, hit.point);
-                            break;
-
-                        default:
-                            ResetRay();
-                            break;
+                        }
+                        isMatchedRay = true;
                     }
+
+                    if (obj is IDamageable damageable)
+                    {
+                        CurrentTarget = CrosshairRayTarget.Damageable;
+                        crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
+                        weapon.GunBarrelInfo(damageable, hit.point);
+                        isMatchedRay = true;
+                    }
+
+                    if (!isMatchedRay)
+                        ResetRay();
+
                     return;
                 }  
             }
