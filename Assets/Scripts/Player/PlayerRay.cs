@@ -1,5 +1,6 @@
 using DestrObj;
 using UnityEngine;
+using Player.WeaponData;
 
 namespace Player
 {
@@ -66,7 +67,9 @@ namespace Player
                     switch (obj)
                     {
                         case ICanBeGrabbed grabbable:
-                           
+                            if (obj == lastTargetObj)
+                                return;
+                            lastTargetObj = obj;
                             break;
 
                         case IDamageable damageable:
@@ -75,6 +78,7 @@ namespace Player
 
                       
                         default:
+                            weapon.GunBarrelInfo(null);
                             break;
                     }
                 }
@@ -85,4 +89,4 @@ namespace Player
     }
 }
 
-public enum CrosshairTarget { None, CanDestroy, Other, Interactable }
+public enum CrosshairRayTarget { None, CanDestroy, Interactable, Grabbable }

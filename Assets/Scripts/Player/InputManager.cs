@@ -1,5 +1,6 @@
 using UnityEngine;
 using Player;
+using Player.WeaponData;
 using System;
 using UI.Elements;
 

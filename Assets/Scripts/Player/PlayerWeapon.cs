@@ -6,16 +6,13 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-namespace Player
+namespace Player.WeaponData
 {
     public class PlayerWeapon : MonoBehaviour
     {
         [Header("Crosshair Settings")]
         [SerializeField] private Transform crosshairTarget; 
-        //[SerializeField] private float defaultAimDistance = 10f;
         [SerializeField] private RectTransform crosshairUI;
-        //[SerializeField] private Camera fpsCamera;
-        //[SerializeField] private LayerMask targetLayerForCrosshair;
 
         [Header("Weapon Settings")]
         [SerializeField] private Transform gunBarrel, weaponsContainer;
@@ -25,7 +22,7 @@ namespace Player
 
         private SpawnWithPool<Bullet> poolSpawner;
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
-        private PlayerGameInfo playerGameInfo;
+        private PlayerWeaponInfo weaponInfo;
         private IDamageable lastTargetObj;
         private Vector3? lastTargetHitPos;
         private Quaternion? lastTargetHitRot;
@@ -35,9 +32,9 @@ namespace Player
         private int currentDamage, currentAmmo, currentMagazines, magazine;
         private Coroutine shootingRoutine, reloadRoutine;
         private TargetType currentTargMat = TargetType.None;
-        private Target currentTarget = Target.None;
+        private CrosshairTarget currentTarget = CrosshairTarget.None;
 
-        public Target CurrentTarget
+        public CrosshairTarget CurrentTarget
         {
             get { return currentTarget; }
             set
@@ -49,10 +46,6 @@ namespace Player
                 }
             }
         }
-
-        //private Ray ray;
-        //private RaycastHit hit;    
-        //private const int rayDistance = 25;
 
         public delegate void OnObjTarget(CrosshairTarget target);
         public static event OnObjTarget OnDestObjTarget;
@@ -72,21 +65,10 @@ namespace Player
         {
             poolSpawner = new();
             onHitEffectPoolSpawner = new();
-            playerGameInfo = new();
+            weaponInfo = new();
 
             PrepareWeapons();
-            //OnDestObjTarget?.Invoke(CrosshairTarget.None);
-
-            //ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
-            //crosshairTarget.position = ray.GetPoint(defaultAimDistance);
-
         }
-
-        //private void Update()
-        //{
-        //    if ((Time.frameCount & 1) == 0)
-        //        GunBarrelInfo();
-        //}
 
         private void OnDestroy()
         {
@@ -140,7 +122,7 @@ namespace Player
             }
             if (reloadRoutine != null) StopCoroutine(reloadRoutine);
 
-            playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
+            weaponInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
             magazine = weaponsCollection[currentWeaponIndex].magazine;
 
@@ -148,11 +130,11 @@ namespace Player
 
             if (currentTargMat == TargetType.None)
             {
-                CurrentTarget = Target.None;
+                CurrentTarget = CrosshairTarget.None;
                 return;
             }
 
-            CurrentTarget = currentDamage > 0 ? Target.Destroy : Target.CantDestroy;
+            CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
         }
         #endregion
 
@@ -183,65 +165,58 @@ namespace Player
             }
 
             currentWeaponIndex = 0;
-            playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
+            weaponInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             magazine = weaponsCollection[currentWeaponIndex].magazine;
 
             WeaponModelSwitch(currentWeaponIndex);
         }
 
-        public void GunBarrelInfo(IDamageable target, RaycastHit hit, Vector3 rayDirection)
+        public void GunBarrelInfo(IDamageable target, RaycastHit? hit = null, Vector3? rayDirection = null)
         {
-            //ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
+            if (target != null)
+            {
+                weaponInfo.ObjHP = target.CurrentHealth;
 
-            //if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
-            //{
-                if (target !=null)
+                crosshairTarget.position = hit.Value.point + rayDirection.Value.normalized * 0.25f;
+
+                if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
                 {
-                    playerGameInfo.ObjHP = target.CurrentHealth;
+                    lastTargetHitPos = hit.Value.point;
+                    lastTargetHitRot = Quaternion.LookRotation(transform.position - hit.Value.point);
+                }
 
-                    crosshairTarget.position = hit.point + rayDirection.normalized * 0.25f;
-                   
-                    if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
-                    {
-                        lastTargetHitPos = hit.point;
-                        lastTargetHitRot = Quaternion.LookRotation(transform.position - hit.point);
-                    }
-
-                    if (currentTargMat == target.ObjectType && lastTargetObj == target)
-                    {
-                        return;
-                    }
-                    lastTargetObj = target;
-                    currentTargMat = target.ObjectType;
-
-                    currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
-                    CurrentTarget = currentDamage > 0 ? Target.Destroy : Target.CantDestroy;
-
-                    playerGameInfo.ObjMat = currentTargMat;
-                  
+                if (currentTargMat == target.ObjectType && lastTargetObj == target)
+                {
                     return;
                 }
-            //}
+                lastTargetObj = target;
+                currentTargMat = target.ObjectType;
+
+                currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
+                CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
+
+                weaponInfo.ObjMat = currentTargMat;
+
+                return;
+            }
 
             lastTargetObj = null;
             lastTargetHitPos = null;
             lastTargetHitRot = null;
 
-            //crosshairTarget.position = ray.GetPoint(defaultAimDistance);
-
             if (currentTargMat == TargetType.None)
             {
-                playerGameInfo.ObjMat = TargetType.None;
+                weaponInfo.ObjMat = TargetType.None;
                 return;
             }
 
             currentTargMat = TargetType.None;
-            CurrentTarget = Target.None;
+            CurrentTarget = CrosshairTarget.None;
         }
 
         private IEnumerator DelayedBulletHit()
         {
-            DestructibleObj target = lastTargetObj;
+            IDamageable target = lastTargetObj;
             Vector3 pos = lastTargetHitPos.Value;
             Quaternion rot = lastTargetHitRot.Value;
             yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
@@ -379,7 +354,7 @@ public enum ShotType { obj, ray, grenade }
 
 public enum RifleType { single, automatic }
 
-public enum Target { None, Destroy, CantDestroy }
+public enum CrosshairTarget { None, Destroy, CantDestroy }
 #endregion
 
 public interface IDamageable

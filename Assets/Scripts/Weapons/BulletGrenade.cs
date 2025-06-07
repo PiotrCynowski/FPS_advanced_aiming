@@ -1,6 +1,6 @@
-using Player;
 using System;
 using UnityEngine;
+using Player.WeaponData;
 
 namespace Weapons
 {

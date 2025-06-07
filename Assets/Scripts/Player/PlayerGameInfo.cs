@@ -1,51 +1,54 @@
 using System;
 
-public class PlayerGameInfo
+namespace Player.WeaponData
 {
-    public static event Action<ObjectType[]> OnPlayerWeaponChanged;
-    public static event Action<ObjectType, int> OnPlayerDestrObjChanged;
-
-    private ObjectType[] currentWeaponMatInfo;
-
-    public ObjectType[] CurrentWeaponMatInfo
+    public class PlayerWeaponInfo
     {
-        get { return currentWeaponMatInfo; }
-        set
+        public static event Action<TargetType[]> OnPlayerWeaponChanged;
+        public static event Action<TargetType, int> OnPlayerDestrObjChanged;
+
+        private TargetType[] currentWeaponMatInfo;
+
+        internal TargetType[] CurrentWeaponMatInfo
         {
-            if (currentWeaponMatInfo != value)
+            get { return currentWeaponMatInfo; }
+            set
             {
-                currentWeaponMatInfo = value;
-                OnPlayerWeaponChanged?.Invoke(currentWeaponMatInfo);
+                if (currentWeaponMatInfo != value)
+                {
+                    currentWeaponMatInfo = value;
+                    OnPlayerWeaponChanged?.Invoke(currentWeaponMatInfo);
+                }
             }
         }
-    }
 
-    private ObjectType objMat;
+        private TargetType objMat;
 
-    public ObjectType ObjMat
-    {
-        get { return objMat; }
-        set
+        internal TargetType ObjMat
         {
-            if (objMat != value)
+            get { return objMat; }
+            set
             {
-                objMat = value;
-                OnPlayerDestrObjChanged?.Invoke(objMat, objHP);
+                if (objMat != value)
+                {
+                    objMat = value;
+                    OnPlayerDestrObjChanged?.Invoke(objMat, objHP);
+                }
             }
         }
-    }
 
-    private int objHP;
+        private int objHP;
 
-    public int ObjHP
-    {
-        get { return objHP; }
-        set
+        internal int ObjHP
         {
-            if (objHP != value)
+            get { return objHP; }
+            set
             {
-                objHP = value;
-                OnPlayerDestrObjChanged?.Invoke(objMat, objHP);
+                if (objHP != value)
+                {
+                    objHP = value;
+                    OnPlayerDestrObjChanged?.Invoke(objMat, objHP);
+                }
             }
         }
     }

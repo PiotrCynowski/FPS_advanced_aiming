@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Player.WeaponData;
 using Player;
 
 namespace UI.Elements 
@@ -20,8 +21,8 @@ namespace UI.Elements
 
         private void OnEnable()
         {
-            PlayerGameInfo.OnPlayerWeaponChanged += UpdateWeaponState;
-            PlayerGameInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
+            PlayerWeaponInfo.OnPlayerWeaponChanged += UpdateWeaponState;
+            PlayerWeaponInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
 
             PlayerWeapon.OnDestObjTarget += CrosshairTargetInformation;
             PlayerWeapon.OnAmmoChange += OnAmmoChange;
@@ -31,8 +32,8 @@ namespace UI.Elements
 
         private void OnDisable()
         {
-            PlayerGameInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
-            PlayerGameInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
+            PlayerWeaponInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
+            PlayerWeaponInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
 
             PlayerWeapon.OnDestObjTarget -= CrosshairTargetInformation;
             PlayerWeapon.OnAmmoChange -= OnAmmoChange;
@@ -46,12 +47,12 @@ namespace UI.Elements
         }
 
         #region update text
-        private void UpdateWeaponState(ObjectType[] canDestroyInfo)
+        private void UpdateWeaponState(TargetType[] canDestroyInfo)
         {
             playerWeaponStateText.text = "Weapon can destroy: " + string.Join(", ", canDestroyInfo);
         }
 
-        private void UpdateDestrObjState(ObjectType objMat, int objHP)
+        private void UpdateDestrObjState(TargetType objMat, int objHP)
         {
             playerTargetStateText.text = objMat + " ,HP:" + objHP;
         }

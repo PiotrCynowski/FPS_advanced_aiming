@@ -12,6 +12,8 @@ namespace DestrObj
 
         public TargetType ObjectType => thisObjMaterial;
 
+        public int CurrentHealth => currentHealth;
+
         public virtual void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot, bool onHitEffect)
         {
             currentHealth -= damage;

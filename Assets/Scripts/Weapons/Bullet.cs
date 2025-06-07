@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using PoolSpawner;
 using System.Collections;
-using Player;
+using Player.WeaponData;
 
 namespace Weapons
 {
