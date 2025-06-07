@@ -10,6 +10,7 @@ namespace Player
         [SerializeField] private LayerMask targetLayerForCrosshair;
 
         [SerializeField] PlayerWeapon weapon;
+        [SerializeField] PlayerGrabController grabbing;
 
         private Ray ray;
         private RaycastHit hit;
