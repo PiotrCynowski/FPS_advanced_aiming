@@ -344,7 +344,7 @@ MonoBehaviour:
   impulseDecayTime: 0.2
   bobFrequency: 8
   bobSprintFrequency: 15
-  bobAmplitude: 0.015
+  bobAmplitude: 0.05
   bobSpeedThreshold: 0.1
   bobSwayLerp: 8
 --- !u!1 &3158219347606296571

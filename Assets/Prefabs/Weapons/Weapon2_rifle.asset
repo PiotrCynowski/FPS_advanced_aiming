@@ -27,3 +27,6 @@ MonoBehaviour:
   weaponModel: {fileID: 8704157780076046412, guid: b46ebc8d3cc29bc45861f2ba1311e3c7, type: 3}
   gunBarrelPos: {x: 0, y: 0.01100001, z: 0.7320001}
   weaponPos: {x: 0.426, y: -0.292, z: 0.642}
+  magazine: 30
+  maxMagazines: 5
+  reloadTime: 3
