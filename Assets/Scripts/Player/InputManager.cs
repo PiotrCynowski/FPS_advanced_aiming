@@ -47,7 +47,8 @@ namespace GameInput
             playerActions.Shot1.performed += _ => OnShot1LMB(true);
             playerActions.Shot1.canceled += _ => OnShot1LMB(false);
 
-            playerActions.WeaponSwitch.performed += _ => weapon.SwitchWeaponRMouseBut();
+            playerActions.WeaponSwitchNext.performed += _ => weapon.SwitchWeaponMouseButScroll(true);
+            playerActions.WeaponSwitchPrevious.performed += _ => weapon.SwitchWeaponMouseButScroll(false);
 
             playerActions.Grab.performed += ctx => { grabController.OnMouseRMB(true); isRMB = true; };
             playerActions.Grab.canceled += ctx => { grabController.OnMouseRMB(false); isRMB = false; };

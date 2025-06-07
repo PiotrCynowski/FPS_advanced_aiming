@@ -60,6 +60,7 @@ namespace Player
         public static Action<Vector3, int> OnHitEffect;
         public static Action<Vector3, int, int> OnRadiusHit;
         public static Action<Transform> OnWeaponSwitch;
+        public static Action<int, int> OnAmmoChange;
 
         private void Awake()
         {
@@ -112,13 +113,20 @@ namespace Player
                 Shot();
         }
 
-        public void SwitchWeaponRMouseBut()
+        public void SwitchWeaponMouseButScroll(bool isNext)
         {
-            currentWeaponIndex++;
+            if (isNext)
+                currentWeaponIndex++;
+            else
+                currentWeaponIndex--;
 
             if (currentWeaponIndex >= weaponsLen)
             {
                 currentWeaponIndex = 0;
+            }
+            else if (currentWeaponIndex < 0)
+            {
+                currentWeaponIndex = weaponsLen - 1;
             }
 
             if (shootingRoutine != null) StopCoroutine(shootingRoutine);
@@ -151,7 +159,7 @@ namespace Player
                 GameObject gunBarrel = new("GunBarrel");
                 gunBarrel.transform.parent = weapon.transform;
                 gunBarrel.transform.localPosition = possibleWeapons[i].gunBarrelPos;
-                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].capacity));
+                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].capacity, possibleWeapons[i].maxAmmo));
                 weapon.SetActive(false);
 
                 if (possibleWeapons[i].bulletTemplate != null)
@@ -258,6 +266,7 @@ namespace Player
                 data.modelRef.SetActive(true);
                 gunBarrel = data.barrel;
                 OnWeaponSwitch?.Invoke(data.modelRef.transform);
+                OnAmmoChange?.Invoke(data.currentAmmo, data.maxAmmo);
                 currentWeapon = data.modelRef;
             }
         }
@@ -305,13 +314,15 @@ namespace Player
     {
         public GameObject modelRef;
         public Transform barrel;
-        public float currentAmmo;
+        public int currentAmmo, capacity, maxAmmo;
 
-        public WeaponData(GameObject modelRef, Transform gunBarrel, float currentAmmo)
+        public WeaponData(GameObject modelRef, Transform gunBarrel, int capacity, int maxAmmo)
         {
             this.modelRef = modelRef;
             this.barrel = gunBarrel;
-            this.currentAmmo = currentAmmo;
+            this.currentAmmo = capacity;
+            this.capacity = capacity;
+            this.maxAmmo = maxAmmo;
         }
     }
 }

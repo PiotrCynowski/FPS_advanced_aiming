@@ -6,20 +6,26 @@ namespace UI.Elements
 {
     public class PlayerUI : MonoBehaviour
     {
+        [Header("Weapon")]
         [SerializeField] private Text playerWeaponStateText;
         [SerializeField] private Text playerTargetStateText;
         [SerializeField] private GameObject playerTargetPanel;
-
+        [Header("Crosshair")]
         [SerializeField] private Image crosshair;
-
+        [Header("Stamina")]
         [SerializeField] private GameObject staminaContainer;
         [SerializeField] private Image stamina;
+        [Header("Ammo")]
+        [SerializeField] private Text ammoInfo;
 
         private void OnEnable()
         {
             PlayerGameInfo.OnPlayerWeaponChanged += UpdateWeaponState;
             PlayerGameInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
+
             PlayerWeapon.OnDestObjTarget += CrosshairTargetInformation;
+            PlayerWeapon.OnAmmoChange += OnAmmoChange;
+
             PlayerMovement.OnStaminaChanged += OnStaminaChanged;
         }
 
@@ -27,7 +33,10 @@ namespace UI.Elements
         {
             PlayerGameInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
             PlayerGameInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
+
             PlayerWeapon.OnDestObjTarget -= CrosshairTargetInformation;
+            PlayerWeapon.OnAmmoChange -= OnAmmoChange;
+
             PlayerMovement.OnStaminaChanged -= OnStaminaChanged;
         }
 
@@ -82,6 +91,11 @@ namespace UI.Elements
             {
                 staminaContainer.SetActive(false);
             }
+        }
+
+        private void OnAmmoChange(int currentAmmo, int maxAmmo)
+        {
+            ammoInfo.text = currentAmmo.ToString() + " / " + maxAmmo.ToString();
         }
     }  
 }
