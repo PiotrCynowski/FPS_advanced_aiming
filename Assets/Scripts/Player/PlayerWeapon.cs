@@ -32,8 +32,8 @@ namespace Player
 
         private int currentWeaponIndex, weaponsLen;
 
-        private int currentDamage;
-        private Coroutine shootingRoutine;
+        private int currentDamage, currentAmmo, currentMagazines, magazine;
+        private Coroutine shootingRoutine, reloadRoutine;
         private ObjectType currentTargMat = ObjectType.None;
         private CrosshairTarget currentTarget = CrosshairTarget.None;
 
@@ -115,25 +115,28 @@ namespace Player
 
         public void SwitchWeaponMouseButScroll(bool isNext)
         {
+            weaponsCollection[currentWeaponIndex].currentAmmo = currentAmmo;
+            weaponsCollection[currentWeaponIndex].currentMagazines = currentMagazines;
+
             if (isNext)
                 currentWeaponIndex++;
             else
                 currentWeaponIndex--;
 
             if (currentWeaponIndex >= weaponsLen)
-            {
                 currentWeaponIndex = 0;
-            }
             else if (currentWeaponIndex < 0)
-            {
                 currentWeaponIndex = weaponsLen - 1;
-            }
 
             if (shootingRoutine != null) StopCoroutine(shootingRoutine);
+            if (reloadRoutine != null) StopCoroutine(reloadRoutine);
             WeaponModelSwitch(currentWeaponIndex);
 
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
+            currentAmmo = weaponsCollection[currentWeaponIndex].currentAmmo;
+            currentMagazines = weaponsCollection[currentWeaponIndex].currentMagazines;
+            magazine = weaponsCollection[currentWeaponIndex].magazine;
 
             if (currentTargMat == ObjectType.None)
             {
@@ -159,7 +162,7 @@ namespace Player
                 GameObject gunBarrel = new("GunBarrel");
                 gunBarrel.transform.parent = weapon.transform;
                 gunBarrel.transform.localPosition = possibleWeapons[i].gunBarrelPos;
-                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].capacity, possibleWeapons[i].maxAmmo));
+                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].magazine, possibleWeapons[i].maxMagazines));
                 weapon.SetActive(false);
 
                 if (possibleWeapons[i].bulletTemplate != null)
@@ -266,7 +269,7 @@ namespace Player
                 data.modelRef.SetActive(true);
                 gunBarrel = data.barrel;
                 OnWeaponSwitch?.Invoke(data.modelRef.transform);
-                OnAmmoChange?.Invoke(data.currentAmmo, data.maxAmmo);
+                OnAmmoChange?.Invoke(data.currentAmmo, data.currentMagazines);
                 currentWeapon = data.modelRef;
             }
         }
@@ -283,6 +286,21 @@ namespace Player
 
         private void Shot()
         {
+            if(reloadRoutine != null)
+                return;
+
+            if(currentAmmo > 0)
+            {
+                if (shootingRoutine != null)
+                {
+                    StopCoroutine(shootingRoutine);
+                    return;
+                }
+
+                reloadRoutine = StartCoroutine(OnReload());
+                return;
+            }
+
             switch (possibleWeapons[currentWeaponIndex].weaponType)
             {
                 default:
@@ -306,6 +324,19 @@ namespace Player
                     grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
             }
+            currentAmmo--;
+            OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
+        }
+
+        private IEnumerator OnReload()
+        {
+            if (currentMagazines > 0)
+            {
+                yield return new WaitForSeconds(possibleWeapons[currentWeaponIndex].reloadTime);
+                currentMagazines--;
+                currentAmmo = magazine;
+                reloadRoutine = null;
+            }
         }
         #endregion
     }
@@ -314,15 +345,17 @@ namespace Player
     {
         public GameObject modelRef;
         public Transform barrel;
-        public int currentAmmo, capacity, maxAmmo;
+        public int currentAmmo, currentMagazines;
+        public int magazine, maxMagazines;
 
-        public WeaponData(GameObject modelRef, Transform gunBarrel, int capacity, int maxAmmo)
+        public WeaponData(GameObject modelRef, Transform gunBarrel, int magazine, int maxMagazines)
         {
             this.modelRef = modelRef;
             this.barrel = gunBarrel;
-            this.currentAmmo = capacity;
-            this.capacity = capacity;
-            this.maxAmmo = maxAmmo;
+            this.currentAmmo = magazine;
+            this.currentMagazines = 1;
+            this.magazine = magazine;
+            this.maxMagazines = maxMagazines;
         }
     }
 }
