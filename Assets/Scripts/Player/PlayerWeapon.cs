@@ -1,7 +1,6 @@
 using UnityEngine;
 using PoolSpawner;
 using Weapons;
-using DestrObj;
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -75,6 +74,45 @@ namespace Player.WeaponData
          
             OnHitEffect = null;
             OnRadiusHit = null;
+        }
+
+        public void GunBarrelInfo(IDamageable target, Vector3? point = null)
+        {
+            if (target != null)
+            {
+                weaponInfo.ObjHP = target.CurrentHealth;
+
+                if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
+                {
+                    lastTargetHitPos = point.Value;
+                    lastTargetHitRot = Quaternion.LookRotation(transform.position - point.Value);
+                }
+
+                if (currentTargMat == target.ObjectType && lastTargetObj == target)
+                    return;
+
+                lastTargetObj = target;
+                currentTargMat = target.ObjectType;
+
+                currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
+                CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
+
+                weaponInfo.ObjMat = currentTargMat;
+                return;
+            }
+
+            lastTargetObj = null;
+            lastTargetHitPos = null;
+            lastTargetHitRot = null;
+
+            if (currentTargMat == TargetType.None)
+            {
+                weaponInfo.ObjMat = TargetType.None;
+                return;
+            }
+
+            currentTargMat = TargetType.None;
+            CurrentTarget = CrosshairTarget.None;
         }
 
         #region Input
@@ -171,43 +209,22 @@ namespace Player.WeaponData
             WeaponModelSwitch(currentWeaponIndex);
         }
 
-        public void GunBarrelInfo(IDamageable target, Vector3? point = null)
+        private void WeaponModelSwitch(int currentWeaponIndex)
         {
-            if (target != null)
+            if (weaponsCollection.TryGetValue(currentWeaponIndex, out WeaponData data))
             {
-                weaponInfo.ObjHP = target.CurrentHealth;
+                if (currentWeapon != null) currentWeapon.SetActive(false);
+                data.modelRef.SetActive(true);
+                gunBarrel = data.barrel;
+                currentWeapon = data.modelRef;
 
-                if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
-                {
-                    lastTargetHitPos = point.Value;
-                    lastTargetHitRot = Quaternion.LookRotation(transform.position - point.Value);
-                }
+                currentAmmo = data.currentAmmo;
+                currentMagazines = data.currentMagazines;
 
-                if (currentTargMat == target.ObjectType && lastTargetObj == target)
-                    return;
+                OnWeaponSwitch?.Invoke(data.modelRef.transform);
 
-                lastTargetObj = target;
-                currentTargMat = target.ObjectType;
-
-                currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
-                CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
-
-                weaponInfo.ObjMat = currentTargMat;
-                return;
+                OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
             }
-
-            lastTargetObj = null;
-            lastTargetHitPos = null;
-            lastTargetHitRot = null;
-
-            if (currentTargMat == TargetType.None)
-            {
-                weaponInfo.ObjMat = TargetType.None;
-                return;
-            }
-
-            currentTargMat = TargetType.None;
-            CurrentTarget = CrosshairTarget.None;
         }
 
         private IEnumerator DelayedBulletHit()
@@ -234,24 +251,6 @@ namespace Player.WeaponData
             {
                 if (nearbyObject.TryGetComponent<IDamageable>(out var damageable))
                     damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), transform.position, onHitEffect: false);
-            }
-        }
-
-        private void WeaponModelSwitch(int currentWeaponIndex)
-        {
-            if (weaponsCollection.TryGetValue(currentWeaponIndex, out WeaponData data))
-            {
-                if(currentWeapon !=null) currentWeapon.SetActive(false);
-                data.modelRef.SetActive(true);
-                gunBarrel = data.barrel;          
-                currentWeapon = data.modelRef;
-
-                currentAmmo = data.currentAmmo;
-                currentMagazines = data.currentMagazines;
-            
-                OnWeaponSwitch?.Invoke(data.modelRef.transform);
-
-                OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
             }
         }
 
