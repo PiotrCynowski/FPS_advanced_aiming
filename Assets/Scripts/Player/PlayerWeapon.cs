@@ -134,8 +134,6 @@ namespace Player
 
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
-            currentAmmo = weaponsCollection[currentWeaponIndex].currentAmmo;
-            currentMagazines = weaponsCollection[currentWeaponIndex].currentMagazines;
             magazine = weaponsCollection[currentWeaponIndex].magazine;
 
             if (currentTargMat == ObjectType.None)
@@ -234,11 +232,6 @@ namespace Player
             CurrentTarget = CrosshairTarget.None;
         }
 
-        private void OnHitWeaponAction(Vector3 pos, int weaponId)
-        {
-            onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId);
-        }
-
         private IEnumerator DelayedBulletHit()
         {
             DestructibleObj target = lastTargetObj;
@@ -248,6 +241,11 @@ namespace Player
             if (target != null)
                 target.TakeDamage(currentDamage, pos, rot, true);
             yield return null;
+        }
+
+        private void OnHitWeaponAction(Vector3 pos, int weaponId)
+        {
+            onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId);
         }
 
         private void OnRadiusHitAction(Vector3 position, int radius, int Id)
@@ -267,10 +265,14 @@ namespace Player
             {
                 if(currentWeapon !=null) currentWeapon.SetActive(false);
                 data.modelRef.SetActive(true);
-                gunBarrel = data.barrel;
-                OnWeaponSwitch?.Invoke(data.modelRef.transform);
-                OnAmmoChange?.Invoke(data.currentAmmo, data.currentMagazines);
+                gunBarrel = data.barrel;          
                 currentWeapon = data.modelRef;
+
+                currentAmmo = data.currentAmmo;
+                currentMagazines = data.currentMagazines;
+            
+                OnWeaponSwitch?.Invoke(data.modelRef.transform);
+                OnAmmoChange?.Invoke(data.currentAmmo, data.currentMagazines * magazine);
             }
         }
 
