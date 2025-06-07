@@ -35,27 +35,27 @@ namespace Player
         private int currentDamage, currentAmmo, currentMagazines, magazine;
         private Coroutine shootingRoutine, reloadRoutine;
         private TargetType currentTargMat = TargetType.None;
-        //private CrosshairTarget currentTarget = CrosshairTarget.None;
+        private Target currentTarget = Target.None;
 
-        //public CrosshairTarget CurrentTarget
-        //{
-        //    get { return currentTarget; }
-        //    set
-        //    {
-        //        if (currentTarget != value)
-        //        {
-        //            currentTarget = value;
-        //            OnDestObjTarget?.Invoke(currentTarget);
-        //        }
-        //    }
-        //}
+        public Target CurrentTarget
+        {
+            get { return currentTarget; }
+            set
+            {
+                if (currentTarget != value)
+                {
+                    currentTarget = value;
+                    OnDestObjTarget?.Invoke(currentTarget);
+                }
+            }
+        }
 
         //private Ray ray;
         //private RaycastHit hit;    
         //private const int rayDistance = 25;
 
-        //public delegate void OnObjTarget(CrosshairTarget target);
-        //public static event OnObjTarget OnDestObjTarget;
+        public delegate void OnObjTarget(CrosshairTarget target);
+        public static event OnObjTarget OnDestObjTarget;
 
         public static Action<Vector3, int> OnHitEffect;
         public static Action<Vector3, int, int> OnRadiusHit;
@@ -148,11 +148,11 @@ namespace Player
 
             if (currentTargMat == TargetType.None)
             {
-                CurrentTarget = CrosshairTarget.None;
+                CurrentTarget = Target.None;
                 return;
             }
 
-            CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
+            CurrentTarget = currentDamage > 0 ? Target.Destroy : Target.CantDestroy;
         }
         #endregion
 
@@ -189,12 +189,12 @@ namespace Player
             WeaponModelSwitch(currentWeaponIndex);
         }
 
-        private void GunBarrelInfo(IDamageable target, RaycastHit hit, Vector3 rayDirection)
+        public void GunBarrelInfo(IDamageable target, RaycastHit hit, Vector3 rayDirection)
         {
             //ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
 
-            if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
-            {
+            //if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
+            //{
                 if (target !=null)
                 {
                     playerGameInfo.ObjHP = target.CurrentHealth;
@@ -215,19 +215,19 @@ namespace Player
                     currentTargMat = target.ObjectType;
 
                     currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
-                    CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
+                    CurrentTarget = currentDamage > 0 ? Target.Destroy : Target.CantDestroy;
 
                     playerGameInfo.ObjMat = currentTargMat;
                   
                     return;
                 }
-            }
+            //}
 
             lastTargetObj = null;
             lastTargetHitPos = null;
             lastTargetHitRot = null;
 
-            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+            //crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
             if (currentTargMat == TargetType.None)
             {
@@ -236,7 +236,7 @@ namespace Player
             }
 
             currentTargMat = TargetType.None;
-            CurrentTarget = CrosshairTarget.None;
+            CurrentTarget = Target.None;
         }
 
         private IEnumerator DelayedBulletHit()
@@ -378,6 +378,8 @@ public enum TargetType { None, Iron, Wood, Conrete, Steel, EnergyField, Everythi
 public enum ShotType { obj, ray, grenade }
 
 public enum RifleType { single, automatic }
+
+public enum Target { None, Destroy, CantDestroy }
 #endregion
 
 public interface IDamageable

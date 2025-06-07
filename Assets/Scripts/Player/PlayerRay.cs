@@ -19,6 +19,8 @@ namespace Player
         private RaycastHit hit;
         private const int rayDistance = 25;
 
+        private InteractableObj lastTargetObj;
+
         private CrosshairTarget currentTarget = CrosshairTarget.None;
         public CrosshairTarget CurrentTarget
         {
@@ -76,6 +78,8 @@ namespace Player
                             break;
                     }
                 }
+
+                crosshairTarget.position = ray.GetPoint(defaultAimDistance);
             }
         }
     }
