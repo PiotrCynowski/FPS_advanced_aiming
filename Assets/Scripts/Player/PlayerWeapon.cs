@@ -101,12 +101,17 @@ namespace Player
             if (!isPerformed)
             {
                 if (shootingRoutine != null) StopCoroutine(shootingRoutine);
+                shootingRoutine = null;
                 return;
             }
 
             if (possibleWeapons[currentWeaponIndex].rifleType == RifleType.automatic)
             {
-                if(shootingRoutine != null) StopCoroutine(shootingRoutine);
+                if (shootingRoutine != null)
+                {
+                    StopCoroutine(shootingRoutine);
+                    shootingRoutine = null;
+                }
                 shootingRoutine = StartCoroutine(DelayedShot(possibleWeapons[currentWeaponIndex].shotInterval));
             }
             else
@@ -128,9 +133,13 @@ namespace Player
             else if (currentWeaponIndex < 0)
                 currentWeaponIndex = weaponsLen - 1;
 
-            if (shootingRoutine != null) StopCoroutine(shootingRoutine);
+            if (shootingRoutine != null)
+            {
+                StopCoroutine(shootingRoutine);
+                shootingRoutine = null;
+            }
             if (reloadRoutine != null) StopCoroutine(reloadRoutine);
-          
+
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
             magazine = weaponsCollection[currentWeaponIndex].magazine;
@@ -294,11 +303,12 @@ namespace Player
             if(reloadRoutine != null)
                 return;
 
-            if(currentAmmo > 0)
+            if (currentAmmo <= 0)
             {
                 if (shootingRoutine != null)
                 {
                     StopCoroutine(shootingRoutine);
+                    shootingRoutine = null;
                     return;
                 }
 
@@ -341,6 +351,7 @@ namespace Player
                 currentMagazines--;
                 currentAmmo = magazine;
                 reloadRoutine = null;
+                OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
             }
         }
         #endregion
