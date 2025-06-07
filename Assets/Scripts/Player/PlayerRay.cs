@@ -68,7 +68,7 @@ namespace Player
                             break;
 
                         case IDamageable damageable:
-                           
+                            weapon.GunBarrelInfo(damageable, hit, ray.direction);
                             break;
 
                       
