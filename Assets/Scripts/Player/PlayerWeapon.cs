@@ -12,10 +12,10 @@ namespace Player
     {
         [Header("Crosshair Settings")]
         [SerializeField] private Transform crosshairTarget; 
-        [SerializeField] private float defaultAimDistance = 10f;
+        //[SerializeField] private float defaultAimDistance = 10f;
         [SerializeField] private RectTransform crosshairUI;
-        [SerializeField] private Camera fpsCamera;
-        [SerializeField] private LayerMask targetLayerForCrosshair;
+        //[SerializeField] private Camera fpsCamera;
+        //[SerializeField] private LayerMask targetLayerForCrosshair;
 
         [Header("Weapon Settings")]
         [SerializeField] private Transform gunBarrel, weaponsContainer;
@@ -34,28 +34,28 @@ namespace Player
 
         private int currentDamage, currentAmmo, currentMagazines, magazine;
         private Coroutine shootingRoutine, reloadRoutine;
-        private ObjectType currentTargMat = ObjectType.None;
-        private CrosshairTarget currentTarget = CrosshairTarget.None;
+        private TargetType currentTargMat = TargetType.None;
+        //private CrosshairTarget currentTarget = CrosshairTarget.None;
 
-        public CrosshairTarget CurrentTarget
-        {
-            get { return currentTarget; }
-            set
-            {
-                if (currentTarget != value)
-                {
-                    currentTarget = value;
-                    OnDestObjTarget?.Invoke(currentTarget);
-                }
-            }
-        }
+        //public CrosshairTarget CurrentTarget
+        //{
+        //    get { return currentTarget; }
+        //    set
+        //    {
+        //        if (currentTarget != value)
+        //        {
+        //            currentTarget = value;
+        //            OnDestObjTarget?.Invoke(currentTarget);
+        //        }
+        //    }
+        //}
 
-        private Ray ray;
-        private RaycastHit hit;    
-        private const int rayDistance = 25;
+        //private Ray ray;
+        //private RaycastHit hit;    
+        //private const int rayDistance = 25;
 
-        public delegate void OnObjTarget(CrosshairTarget target);
-        public static event OnObjTarget OnDestObjTarget;
+        //public delegate void OnObjTarget(CrosshairTarget target);
+        //public static event OnObjTarget OnDestObjTarget;
 
         public static Action<Vector3, int> OnHitEffect;
         public static Action<Vector3, int, int> OnRadiusHit;
@@ -75,18 +75,18 @@ namespace Player
             playerGameInfo = new();
 
             PrepareWeapons();
-            OnDestObjTarget?.Invoke(CrosshairTarget.None);
+            //OnDestObjTarget?.Invoke(CrosshairTarget.None);
 
-            ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
-            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+            //ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
+            //crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
         }
 
-        private void Update()
-        {
-            if ((Time.frameCount & 1) == 0)
-                GunBarrelInfo();
-        }
+        //private void Update()
+        //{
+        //    if ((Time.frameCount & 1) == 0)
+        //        GunBarrelInfo();
+        //}
 
         private void OnDestroy()
         {
@@ -191,11 +191,7 @@ namespace Player
 
         private void GunBarrelInfo()
         {
-            ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
-
-#if UNITY_EDITOR
-            Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red);
-#endif
+            //ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
 
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
@@ -233,13 +229,13 @@ namespace Player
 
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
-            if (currentTargMat == ObjectType.None)
+            if (currentTargMat == TargetType.None)
             {
-                playerGameInfo.ObjMat = ObjectType.None;
+                playerGameInfo.ObjMat = TargetType.None;
                 return;
             }
 
-            currentTargMat = ObjectType.None;
+            currentTargMat = TargetType.None;
             CurrentTarget = CrosshairTarget.None;
         }
 
@@ -377,17 +373,15 @@ namespace Player
 }
 
 #region enums
-public enum ObjectType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
+public enum TargetType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
 
 public enum ShotType { obj, ray, grenade }
 
 public enum RifleType { single, automatic }
-
-public enum CrosshairTarget { None, Destroy, CantDestroy }
 #endregion
 
 public interface IDamageable
 {
     void TakeDamage(int amount, Vector3 pos, Quaternion? rot = null, bool onHitEffect = true);
-    ObjectType ObjectType { get; }
+    TargetType ObjectType { get; }
 }

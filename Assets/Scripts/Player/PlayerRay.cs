@@ -5,9 +5,12 @@ namespace Player
 {
     public class PlayerRay : MonoBehaviour
     {
+        [SerializeField] private Transform crosshairTarget;
+
         [SerializeField] private RectTransform crosshairUI;
         [SerializeField] private Camera fpsCamera;
         [SerializeField] private LayerMask targetLayerForCrosshair;
+        [SerializeField] private float defaultAimDistance = 10f;
 
         [SerializeField] PlayerWeapon weapon;
         [SerializeField] PlayerGrabController grabbing;
@@ -25,20 +28,19 @@ namespace Player
                 if (currentTarget != value)
                 {
                     currentTarget = value;
-                    OnDestObjTarget?.Invoke(currentTarget);
+                    OnObjTargetInfo?.Invoke(currentTarget);
                 }
             }
         }
 
-
         public delegate void OnObjTarget(CrosshairTarget target);
-        public static event OnObjTarget OnDestObjTarget;
-
+        public static event OnObjTarget OnObjTargetInfo;
 
         private void Start()
         {
+            OnObjTargetInfo?.Invoke(CrosshairTarget.None);
             ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
-
+            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
         }
 
         private void Update()
@@ -57,15 +59,26 @@ namespace Player
 
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
-                if (hit.transform.TryGetComponent<DestructibleObj>(out var obj))
+                if (hit.transform.TryGetComponent<InteractableObj>(out var obj))
                 {
-                  //  weapon.GunBarrelInfo(obj);
-                }
-                else
-                {
-                   // weapon.GunBarrelInfo(null);
+                    switch (obj)
+                    {
+                        case ICanBeGrabbed grabbable:
+                           
+                            break;
+
+                        case IDamageable damageable:
+                           
+                            break;
+
+                      
+                        default:
+                            break;
+                    }
                 }
             }
         }
     }
 }
+
+public enum CrosshairTarget { None, CanDestroy, Other, Interactable }

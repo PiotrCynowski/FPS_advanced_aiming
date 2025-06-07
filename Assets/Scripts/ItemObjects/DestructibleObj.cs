@@ -3,14 +3,14 @@ using UnityEngine.Events;
 
 namespace DestrObj
 {
-    public abstract class DestructibleObj : MonoBehaviour, IDamageable
+    public abstract class DestructibleObj : InteractableObj, IDamageable
     {
         public int currentHealth;
-        public ObjectType thisObjMaterial;
+        public TargetType thisObjMaterial;
 
         [SerializeField] UnityEvent onObjectDestroyed;
 
-        public ObjectType ObjectType => thisObjMaterial;
+        public TargetType ObjectType => thisObjMaterial;
 
         public virtual void TakeDamage(int damage, Vector3 hitPos, Quaternion? hitRot, bool onHitEffect)
         {
