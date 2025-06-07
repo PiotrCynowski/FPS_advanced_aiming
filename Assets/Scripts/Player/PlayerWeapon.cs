@@ -20,7 +20,7 @@ namespace Player
         [Header("Weapon Settings")]
         [SerializeField] private Transform gunBarrel, weaponsContainer;
         [SerializeField] private Weapon[] possibleWeapons;
-        private Dictionary<int , (GameObject, Transform)> weaponsCollection;
+        private Dictionary<int , WeaponData> weaponsCollection;
         private GameObject currentWeapon;
 
         private SpawnWithPool<Bullet> poolSpawner;
@@ -151,7 +151,7 @@ namespace Player
                 GameObject gunBarrel = new("GunBarrel");
                 gunBarrel.transform.parent = weapon.transform;
                 gunBarrel.transform.localPosition = possibleWeapons[i].gunBarrelPos;
-                weaponsCollection.Add(i, (weapon, gunBarrel.transform));
+                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].capacity));
                 weapon.SetActive(false);
 
                 if (possibleWeapons[i].bulletTemplate != null)
@@ -252,13 +252,13 @@ namespace Player
 
         private void WeaponModelSwitch(int currentWeaponIndex)
         {
-            if (weaponsCollection.TryGetValue(currentWeaponIndex, out (GameObject weapon, Transform barrel) gun))
+            if (weaponsCollection.TryGetValue(currentWeaponIndex, out WeaponData data))
             {
                 if(currentWeapon !=null) currentWeapon.SetActive(false);
-                gun.weapon.SetActive(true);
-                gunBarrel = gun.barrel;
-                OnWeaponSwitch?.Invoke(gun.weapon.transform);
-                currentWeapon = gun.weapon;
+                data.modelRef.SetActive(true);
+                gunBarrel = data.barrel;
+                OnWeaponSwitch?.Invoke(data.modelRef.transform);
+                currentWeapon = data.modelRef;
             }
         }
 
@@ -299,6 +299,20 @@ namespace Player
             }
         }
         #endregion
+    }
+
+    public class WeaponData
+    {
+        public GameObject modelRef;
+        public Transform barrel;
+        public float currentAmmo;
+
+        public WeaponData(GameObject modelRef, Transform gunBarrel, float currentAmmo)
+        {
+            this.modelRef = modelRef;
+            this.barrel = gunBarrel;
+            this.currentAmmo = currentAmmo;
+        }
     }
 }
 

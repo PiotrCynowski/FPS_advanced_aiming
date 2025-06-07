@@ -18,6 +18,7 @@ namespace Weapons
         public float onHitDelayMultiplayer;
         public GameObject weaponModel;
         public Vector3 gunBarrelPos, weaponPos;
+        public int capacity, fullAmmo;
 
         [Serializable]
         public class WeaponCanDestroySetup
