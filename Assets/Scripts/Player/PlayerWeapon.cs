@@ -171,24 +171,21 @@ namespace Player.WeaponData
             WeaponModelSwitch(currentWeaponIndex);
         }
 
-        public void GunBarrelInfo(IDamageable target, RaycastHit? hit = null, Vector3? rayDirection = null)
+        public void GunBarrelInfo(IDamageable target, Vector3? point = null)
         {
             if (target != null)
             {
                 weaponInfo.ObjHP = target.CurrentHealth;
 
-                crosshairTarget.position = hit.Value.point + rayDirection.Value.normalized * 0.25f;
-
                 if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
                 {
-                    lastTargetHitPos = hit.Value.point;
-                    lastTargetHitRot = Quaternion.LookRotation(transform.position - hit.Value.point);
+                    lastTargetHitPos = point.Value;
+                    lastTargetHitRot = Quaternion.LookRotation(transform.position - point.Value);
                 }
 
                 if (currentTargMat == target.ObjectType && lastTargetObj == target)
-                {
                     return;
-                }
+
                 lastTargetObj = target;
                 currentTargMat = target.ObjectType;
 
@@ -196,7 +193,6 @@ namespace Player.WeaponData
                 CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
 
                 weaponInfo.ObjMat = currentTargMat;
-
                 return;
             }
 

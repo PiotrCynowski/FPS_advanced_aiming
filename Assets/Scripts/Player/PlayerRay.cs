@@ -70,9 +70,9 @@ namespace Player
                                 return;
                             lastTargetObj = obj;
                             break;
-
                         case IDamageable damageable:
-                            weapon.GunBarrelInfo(damageable, hit, ray.direction);
+                            crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
+                            weapon.GunBarrelInfo(damageable, hit.point);
                             break;
 
 
@@ -83,10 +83,15 @@ namespace Player
                 }
                 else
                 {
+                    crosshairTarget.position = ray.GetPoint(defaultAimDistance);
                     weapon.GunBarrelInfo(null);
-                }
-                crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+                }    
             }
+            else
+            {
+                weapon.GunBarrelInfo(null);
+                crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+            }   
         }
     }
 }
