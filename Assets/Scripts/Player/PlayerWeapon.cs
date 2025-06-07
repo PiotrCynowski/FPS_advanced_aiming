@@ -26,7 +26,7 @@ namespace Player
         private SpawnWithPool<Bullet> poolSpawner;
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
         private PlayerGameInfo playerGameInfo;
-        private DestructibleObj lastTargetObj;
+        private IDamageable lastTargetObj;
         private Vector3? lastTargetHitPos;
         private Quaternion? lastTargetHitRot;
 
@@ -146,7 +146,7 @@ namespace Player
 
             WeaponModelSwitch(currentWeaponIndex);
 
-            if (currentTargMat == ObjectType.None)
+            if (currentTargMat == TargetType.None)
             {
                 CurrentTarget = CrosshairTarget.None;
                 return;
@@ -189,17 +189,17 @@ namespace Player
             WeaponModelSwitch(currentWeaponIndex);
         }
 
-        private void GunBarrelInfo()
+        private void GunBarrelInfo(IDamageable target, RaycastHit hit, Vector3 rayDirection)
         {
             //ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
 
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
-                if (hit.transform.TryGetComponent<DestructibleObj>(out var obj))
+                if (target !=null)
                 {
-                    playerGameInfo.ObjHP = obj.currentHealth;
+                    playerGameInfo.ObjHP = target.CurrentHealth;
 
-                    crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
+                    crosshairTarget.position = hit.point + rayDirection.normalized * 0.25f;
                    
                     if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
                     {
@@ -207,12 +207,12 @@ namespace Player
                         lastTargetHitRot = Quaternion.LookRotation(transform.position - hit.point);
                     }
 
-                    if (currentTargMat == obj.thisObjMaterial && lastTargetObj == obj)
+                    if (currentTargMat == target.ObjectType && lastTargetObj == target)
                     {
                         return;
                     }
-                    lastTargetObj = obj;
-                    currentTargMat = obj.thisObjMaterial;
+                    lastTargetObj = target;
+                    currentTargMat = target.ObjectType;
 
                     currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
                     CurrentTarget = currentDamage > 0 ? CrosshairTarget.Destroy : CrosshairTarget.CantDestroy;
@@ -384,4 +384,5 @@ public interface IDamageable
 {
     void TakeDamage(int amount, Vector3 pos, Quaternion? rot = null, bool onHitEffect = true);
     TargetType ObjectType { get; }
+    int CurrentHealth {  get; }
 }

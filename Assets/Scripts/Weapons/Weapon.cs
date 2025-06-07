@@ -11,7 +11,7 @@ namespace Weapons
         public RifleType rifleType;
         public float shotInterval;
         public WeaponCanDestroySetup[] canDestroy;
-        public Dictionary<ObjectType, int> canDestroyDict;
+        public Dictionary<TargetType, int> canDestroyDict;
         public Bullet bulletTemplate;
         public PoolableOnHit weaponOnHit;
         public ParticleSystem muzzle;
@@ -24,13 +24,13 @@ namespace Weapons
         [Serializable]
         public class WeaponCanDestroySetup
         {
-            public ObjectType canDestroyMat;
+            public TargetType canDestroyMat;
             public int damagePerBullet;
         }
 
-        public ObjectType[] GetMaterialInfo()
+        public TargetType[] GetMaterialInfo()
         {
-            ObjectType[] canDestroyTheseMat = new ObjectType[canDestroy.Length];
+            TargetType[] canDestroyTheseMat = new TargetType[canDestroy.Length];
 
             for (int i = 0; i < canDestroy.Length; i++)
             {
@@ -42,19 +42,19 @@ namespace Weapons
 
         public void PrepareWeapon()
         {
-            canDestroyDict = new Dictionary<ObjectType, int>();
+            canDestroyDict = new Dictionary<TargetType, int>();
             foreach (WeaponCanDestroySetup setup in canDestroy)
             {
                 canDestroyDict.Add(setup.canDestroyMat, setup.damagePerBullet);
             }
         }
 
-        public int GetDamageInfo(ObjectType objMat)
+        public int GetDamageInfo(TargetType objMat)
         {
             if (canDestroyDict.TryGetValue(objMat, out int value))
                 return value;
 
-            if(canDestroyDict.TryGetValue(ObjectType.Everything, out int all))
+            if(canDestroyDict.TryGetValue(TargetType.Everything, out int all))
                 return all;
 
             return 0;
