@@ -42,13 +42,13 @@ namespace Player.WeaponData
                 if (currentTarget != value)
                 {
                     currentTarget = value;
-                    OnDestObjTarget?.Invoke(currentTarget);
+                    OnWeaponObjTarget?.Invoke(currentTarget);
                 }
             }
         }
 
         public delegate void OnObjTarget(CrosshairTarget target);
-        public static event OnObjTarget OnDestObjTarget;
+        public static event OnObjTarget OnWeaponObjTarget;
 
         public static Action<Vector3, int> OnHitEffect;
         public static Action<Vector3, int, int> OnRadiusHit;

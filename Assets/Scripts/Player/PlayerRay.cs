@@ -1,4 +1,3 @@
-using DestrObj;
 using UnityEngine;
 using Player.WeaponData;
 
@@ -76,13 +75,16 @@ namespace Player
                             weapon.GunBarrelInfo(damageable, hit, ray.direction);
                             break;
 
-                      
+
                         default:
                             weapon.GunBarrelInfo(null);
                             break;
                     }
                 }
-
+                else
+                {
+                    weapon.GunBarrelInfo(null);
+                }
                 crosshairTarget.position = ray.GetPoint(defaultAimDistance);
             }
         }

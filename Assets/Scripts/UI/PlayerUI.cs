@@ -24,7 +24,7 @@ namespace UI.Elements
             PlayerWeaponInfo.OnPlayerWeaponChanged += UpdateWeaponState;
             PlayerWeaponInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
 
-            PlayerWeapon.OnDestObjTarget += CrosshairTargetInformation;
+            PlayerWeapon.OnWeaponObjTarget += CrosshairTargetInformation;
             PlayerWeapon.OnAmmoChange += OnAmmoChange;
 
             PlayerMovement.OnStaminaChanged += OnStaminaChanged;
@@ -35,7 +35,7 @@ namespace UI.Elements
             PlayerWeaponInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
             PlayerWeaponInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
 
-            PlayerWeapon.OnDestObjTarget -= CrosshairTargetInformation;
+            PlayerWeapon.OnWeaponObjTarget -= CrosshairTargetInformation;
             PlayerWeapon.OnAmmoChange -= OnAmmoChange;
 
             PlayerMovement.OnStaminaChanged -= OnStaminaChanged;
