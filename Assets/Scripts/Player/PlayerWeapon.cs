@@ -130,11 +130,12 @@ namespace Player
 
             if (shootingRoutine != null) StopCoroutine(shootingRoutine);
             if (reloadRoutine != null) StopCoroutine(reloadRoutine);
-            WeaponModelSwitch(currentWeaponIndex);
-
+          
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
             magazine = weaponsCollection[currentWeaponIndex].magazine;
+
+            WeaponModelSwitch(currentWeaponIndex);
 
             if (currentTargMat == ObjectType.None)
             {
@@ -174,6 +175,7 @@ namespace Player
 
             currentWeaponIndex = 0;
             playerGameInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
+            magazine = weaponsCollection[currentWeaponIndex].magazine;
 
             WeaponModelSwitch(currentWeaponIndex);
         }
@@ -272,7 +274,8 @@ namespace Player
                 currentMagazines = data.currentMagazines;
             
                 OnWeaponSwitch?.Invoke(data.modelRef.transform);
-                OnAmmoChange?.Invoke(data.currentAmmo, data.currentMagazines * magazine);
+
+                OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
             }
         }
 
