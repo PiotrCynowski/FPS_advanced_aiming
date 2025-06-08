@@ -809,6 +809,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 498179828304237899, guid: 8d59ad5c594ce0a49b1f1b9ba75d39d4, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 498179828464398028, guid: 8d59ad5c594ce0a49b1f1b9ba75d39d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1502,6 +1506,33 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5447043037039058144, guid: 619b8329ef240724fb34f7713c23807e, type: 3}
+--- !u!114 &6385597586602584312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707077872060180289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daaa3bff6a4858541bba6e96ded72d46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onInteraction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &6610223648350386290
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1738,6 +1769,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2473062098489336092, guid: 8837704f397fafb4cb249f9ba35a32dd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6385597586602584310}
+    - targetCorrespondingSourceObject: {fileID: 2473062098489336092, guid: 8837704f397fafb4cb249f9ba35a32dd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6385597586602584312}
   m_SourcePrefab: {fileID: 100100000, guid: 8837704f397fafb4cb249f9ba35a32dd, type: 3}
 --- !u!4 &8916821447076782111
 Transform:
