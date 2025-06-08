@@ -17,6 +17,7 @@ namespace Weapons
        
         private Vector3 direction;
         private Coroutine returnCoroutine;
+        private bool isReturned;
 
         public Action<Vector3, int> OnWeaponHitEffect;
         private Action<Bullet, int> returnToPool;
@@ -26,12 +27,13 @@ namespace Weapons
             OnWeaponHitEffect += PlayerWeapon.OnHitEffect;
         }
 
-        private void OnEnable()
+        protected void OnEnable()
         {
             if (returnCoroutine != null)
             {
                 StopCoroutine(returnCoroutine);
             }
+            isReturned = false; 
             returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
         }
 
@@ -44,12 +46,12 @@ namespace Weapons
             rb.velocity = Vector3.zero;
         }
 
-        private void OnDestroy()
+        protected void OnDestroy()
         {
             OnWeaponHitEffect -= PlayerWeapon.OnHitEffect;
         }
 
-        protected void OnCollisionEnter(UnityEngine.Collision collision)
+        protected virtual void OnCollisionEnter(UnityEngine.Collision collision)
         {
             if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
             {
@@ -82,13 +84,14 @@ namespace Weapons
 
         public void ReturnToPool()
         {
+            isReturned = true;
             returnToPool?.Invoke(this, id);
         }
 
         private IEnumerator ReturnToPoolAfterDelay()
         {
             yield return new WaitForSeconds(lifeTime);
-            ReturnToPool();
+            if(!isReturned) ReturnToPool();
         }
         #endregion
     }

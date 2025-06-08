@@ -14,10 +14,11 @@ namespace Player.WeaponData
         [SerializeField] private RectTransform crosshairUI;
 
         [Header("Weapon Settings")]
-        [SerializeField] private Transform gunBarrel, weaponsContainer;
+        [SerializeField] private Transform weaponsContainer;
         [SerializeField] private Weapon[] possibleWeapons;
         private Dictionary<int , WeaponData> weaponsCollection;
         private GameObject currentWeapon;
+        private Transform gunBarrel;
 
         private SpawnWithPool<Bullet> poolSpawner;
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
