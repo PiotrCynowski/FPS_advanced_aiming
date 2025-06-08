@@ -14,14 +14,13 @@ namespace Player
 
         [SerializeField] PlayerWeapon weapon;
         [SerializeField] PlayerGrabController grabController;
+        [SerializeField] PlayerInteract interact;
 
         private bool isMatchedRay;
 
         private Ray ray;
         private RaycastHit hit;
         private const int rayDistance = 25;
-
-        private InteractableObj lastTargetObj;
 
         #region properties
         private bool isTD; //Target Damageable
@@ -52,6 +51,22 @@ namespace Player
                 if (isTG != value)
                 {
                     isTG = value;
+                }
+            }
+        }
+
+        private bool isTI; //Target Interactable
+        public bool IsTI
+        {
+            get
+            {
+                return isTI;
+            }
+            set
+            {
+                if (isTI != value)
+                {
+                    isTI = value;
                 }
             }
         }
@@ -87,7 +102,6 @@ namespace Player
                     {
                         IsTG = true;
                         grabController.RaycastInfo(grabbable);
-                        lastTargetObj = obj;
                         isMatchedRay = true;
                     }
 
@@ -100,6 +114,13 @@ namespace Player
                     }
                     else
                         crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+
+                    if (obj is ICanBeInteracted interactable && hit.distance < 2)
+                    {
+                        IsTI = true;
+                        interact.RaycastInfo(interactable);
+                        isMatchedRay = true;
+                    }
 
                     if (!isMatchedRay)
                         ResetRay();
@@ -123,9 +144,14 @@ namespace Player
 
             if (IsTG)
             {
-                lastTargetObj = null;
                 grabController.RaycastInfo(null);
                 IsTG = false;
+            }
+
+            if (IsTI)
+            {        
+                interact.RaycastInfo(null);
+                IsTI = false;
             }
            
         }

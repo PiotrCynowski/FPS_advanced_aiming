@@ -14,6 +14,7 @@ namespace GameInput
         [SerializeField] private PlayerWeaponAnimation weaponAnim;
         [SerializeField] private PlayerGrabController grabController;
         [SerializeField] private PlayerUICrosshair playerCrosshair;
+        [SerializeField] private PlayerInteract playerInteract;
 
         private PlayerInputActions controls;
         private PlayerInputActions.PlayerActions playerActions;
@@ -53,7 +54,9 @@ namespace GameInput
 
             playerActions.Grab.performed += ctx => { grabController.OnMouseRMB(true); isRMB = true; };
             playerActions.Grab.canceled += ctx => { grabController.OnMouseRMB(false); isRMB = false; };
-            
+
+            playerActions.Interact.performed += _ => playerInteract.Interact();
+
             playerActions.PauseMenu.performed += _ => EscapeButPerformed();
 
             PanelPauseUI.OnPlayerPauseMenuOff += EnableControlls;

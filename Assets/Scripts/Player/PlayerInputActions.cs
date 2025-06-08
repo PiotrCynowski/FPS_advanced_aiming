@@ -118,6 +118,15 @@ namespace GameInput
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""58d94149-7c1d-49c0-8351-9b7685d0117c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -285,6 +294,17 @@ namespace GameInput
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9fbf0a60-6ca8-4566-8712-288edb33c629"",
+                    ""path"": ""<Keyboard>/#(E)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -303,6 +323,7 @@ namespace GameInput
             m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
             m_Player_PauseMenu = m_Player.FindAction("PauseMenu", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+            m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         }
 
         ~@PlayerInputActions()
@@ -379,6 +400,7 @@ namespace GameInput
         private readonly InputAction m_Player_Grab;
         private readonly InputAction m_Player_PauseMenu;
         private readonly InputAction m_Player_Sprint;
+        private readonly InputAction m_Player_Interact;
         public struct PlayerActions
         {
             private @PlayerInputActions m_Wrapper;
@@ -393,6 +415,7 @@ namespace GameInput
             public InputAction @Grab => m_Wrapper.m_Player_Grab;
             public InputAction @PauseMenu => m_Wrapper.m_Player_PauseMenu;
             public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+            public InputAction @Interact => m_Wrapper.m_Player_Interact;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -432,6 +455,9 @@ namespace GameInput
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -466,6 +492,9 @@ namespace GameInput
                 @Sprint.started -= instance.OnSprint;
                 @Sprint.performed -= instance.OnSprint;
                 @Sprint.canceled -= instance.OnSprint;
+                @Interact.started -= instance.OnInteract;
+                @Interact.performed -= instance.OnInteract;
+                @Interact.canceled -= instance.OnInteract;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -495,6 +524,7 @@ namespace GameInput
             void OnGrab(InputAction.CallbackContext context);
             void OnPauseMenu(InputAction.CallbackContext context);
             void OnSprint(InputAction.CallbackContext context);
+            void OnInteract(InputAction.CallbackContext context);
         }
     }
 }

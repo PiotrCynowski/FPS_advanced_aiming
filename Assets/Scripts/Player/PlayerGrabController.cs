@@ -60,7 +60,6 @@ namespace Player
             frameCount++;
             if (frameCount >= framesPerRaycast) 
             {
-                //PerformRaycast();
                 CheckItemDistByPlayerPos();
                 frameCount = 0;
             }

@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 1891586907174809481}
   - component: {fileID: 8273619602216081313}
   - component: {fileID: 7218699299293827298}
+  - component: {fileID: 7096957287928246497}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -312,7 +313,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crosshairTarget: {fileID: 5189079693135766729}
   crosshairUI: {fileID: 0}
-  gunBarrel: {fileID: 0}
   weaponsContainer: {fileID: 3475362246700101958}
   possibleWeapons:
   - {fileID: 11400000, guid: 1767736602f62e040876c0c4df0dd3d2, type: 2}
@@ -364,6 +364,18 @@ MonoBehaviour:
   defaultAimDistance: 10
   weapon: {fileID: 1891586907174809481}
   grabController: {fileID: 2309485029732512440}
+--- !u!114 &7096957287928246497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891586907174809490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e84ae88182cab9478b37728d979e462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3158219347606296571
 GameObject:
   m_ObjectHideFlags: 0
