@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 399f67dcacd780741a999f44043cb219, type: 3}
+  m_Name: Weapon1_distanceLaser
+  m_EditorClassIdentifier: 
+  weaponType: 3
+  rifleType: 0
+  shotInterval: 0
+  canDestroy:
+  - canDestroyMat: 1
+    damagePerBullet: 2
+  - canDestroyMat: 2
+    damagePerBullet: 3
+  bulletTemplate: {fileID: 0}
+  weaponOnHit: {fileID: -4557198358474936349, guid: f2f1068599ddbff42aa7036916862472, type: 3}
+  muzzle: {fileID: 0}
+  onHitDelayMultiplayer: 0.005
+  weaponModel: {fileID: 6385154978587273694, guid: cb21245bcf2bc524292dce140a7ec5ba, type: 3}
+  gunBarrelPos: {x: 0, y: 0.011, z: 0.558}
+  weaponPos: {x: 0.426, y: -0.292, z: 0.642}
+  magazine: 5
+  maxMagazines: 3
+  reloadTime: 2

@@ -18,7 +18,7 @@ public class WeaponDataEditor : Editor
             EditorGUILayout.PropertyField(serializedObject.FindProperty("bulletTemplate"));
         }
 
-        if (weaponType == ShotType.ray)
+        if (weaponType == ShotType.distanceRay)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("onHitDelayMultiplayer"));
         }

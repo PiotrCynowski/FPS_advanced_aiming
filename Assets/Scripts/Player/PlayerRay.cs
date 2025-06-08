@@ -24,38 +24,8 @@ namespace Player
         private RaycastHit hit, hitWeapon;
         private const int rayDistance = 2, weaponRayDistance = 25;
 
-        #region properties
-        private bool isTD; //Target Damageable
-        public bool IsTD
-        {
-            get
-            {
-                return isTD;
-            }
-            set
-            {
-                if (isTD != value)
-                {
-                    isTD = value;
-                }
-            }
-        }
-
+        #region Target Bool  
         private bool isTG; //Target Grabbable
-        public bool IsTG
-        {
-            get
-            {
-                return isTG;
-            }
-            set
-            {
-                if (isTG != value)
-                {
-                    isTG = value;
-                }
-            }
-        }
 
         public static event Action<bool> OnInteractableSwitch;
         private bool isTI; //Target Interactable
@@ -98,17 +68,17 @@ namespace Player
 
             if (Physics.Raycast(ray, out hitWeapon, weaponRayDistance, weaponLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
-                weapon.SetWeaponHit(hitWeapon.point);
                 if (hitWeapon.transform.TryGetComponent<IDamageable>(out var obj))
                 {
-                    IsTD = true;
                     crosshairTarget.position = hitWeapon.point + ray.direction.normalized * 0.25f;
-                    weapon.GunBarrelInfo(obj, hitWeapon.point);
+                    weapon.GunBarrelInfo(hitWeapon.point, obj);
                     isMatchedRay = true;
                     return;
                 }
+                else
+                    weapon.GunBarrelInfo(hitWeapon.point);
             }
-
+            
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
                 if (hit.transform.TryGetComponent<InteractableObj>(out var obj))
@@ -117,7 +87,7 @@ namespace Player
 
                     if (obj is ICanBeGrabbed grabbable)
                     {
-                        IsTG = true;
+                        isTG = true;
                         grabController.RaycastInfo(grabbable);
                         isMatchedRay = true;
                     }
@@ -130,32 +100,23 @@ namespace Player
                     }
 
                     if (!isMatchedRay)
-                        ResetRay(false);
+                        ResetRay();
 
                     return;
                 }  
             }
 
-            ResetRay(true);
+            ResetRay();
         }
 
-        private void ResetRay(bool isEmptySpace)
+        private void ResetRay()
         {
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
-            if(isEmptySpace)
-                weapon.ClearWeaponTarget();
-
-            if (isTD)
-            {
-                weapon.GunBarrelInfo(null);
-                IsTD = false;
-            }
-
-            if (IsTG)
+            if (isTG)
             {
                 grabController.RaycastInfo(null);
-                IsTG = false;
+                isTG = false;
             }
 
             if (IsTI)
