@@ -185,25 +185,30 @@ namespace Player
 
         public void RaycastInfo(ICanBeGrabbed grabbable)
         {
+            Debug.Log("RaycastInfo");
+
             if (grabbable != null)
             {
                 if (currentAim == null)
                 {
+                    Debug.Log("RaycastInfo 1");
                     currentAim = grabbable;
                     AimedObj = RaycastAimState.aimedAt;
                     return;
                 }
 
-                if (!ReferenceEquals(currentAim, grabbable))
-                {
-                    AimedObj = RaycastAimState.leftAlone;
+                //if (!ReferenceEquals(currentAim, grabbable))
+                //{
+                //    Debug.Log("RaycastInfo 2");
+                //    AimedObj = RaycastAimState.leftAlone;
 
-                    currentAim = grabbable;
-                    AimedObj = RaycastAimState.aimedAt;
-                }
+                //    currentAim = grabbable;
+                //    AimedObj = RaycastAimState.aimedAt;
+                //}
             }
             else
             {
+                Debug.Log("RaycastInfo 3");
                 AimedObj = RaycastAimState.leftAlone;
                 currentAim = null;
                 return;

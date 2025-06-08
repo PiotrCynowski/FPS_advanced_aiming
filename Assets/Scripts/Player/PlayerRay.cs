@@ -85,11 +85,12 @@ namespace Player
 
                     if (obj is ICanBeGrabbed grabbable)
                     {
-                        if (obj != lastTargetObj)
+                        if (!ReferenceEquals(lastTargetObj, obj))
                         {
                             IsTG = true;
-                            lastTargetObj = obj;
+                            
                             grabController.RaycastInfo(grabbable);
+                            lastTargetObj = obj;
                         }
                         isMatchedRay = true;
                     }
