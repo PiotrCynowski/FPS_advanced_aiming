@@ -18,6 +18,8 @@ namespace UI.Elements
         [SerializeField] private Image stamina;
         [Header("Ammo")]
         [SerializeField] private Text ammoInfo;
+        [Header("Info")]
+        [SerializeField] private GameObject infoInteract;
 
         private void OnEnable()
         {
@@ -26,6 +28,8 @@ namespace UI.Elements
 
             PlayerWeapon.OnWeaponObjTarget += CrosshairTargetInformation;
             PlayerWeapon.OnAmmoChange += OnAmmoChange;
+
+            PlayerRay.OnInteractableSwitch += OnInteractInfo;
 
             PlayerMovement.OnStaminaChanged += OnStaminaChanged;
         }
@@ -37,6 +41,8 @@ namespace UI.Elements
 
             PlayerWeapon.OnWeaponObjTarget -= CrosshairTargetInformation;
             PlayerWeapon.OnAmmoChange -= OnAmmoChange;
+
+            PlayerRay.OnInteractableSwitch -= OnInteractInfo;
 
             PlayerMovement.OnStaminaChanged -= OnStaminaChanged;
         }
@@ -97,6 +103,11 @@ namespace UI.Elements
         private void OnAmmoChange(int currentAmmo, int maxAmmo)
         {
             ammoInfo.text = currentAmmo.ToString() + " / " + maxAmmo.ToString();
+        }
+
+        private void OnInteractInfo(bool isOn)
+        {
+            infoInteract.SetActive(isOn);
         }
     }  
 }

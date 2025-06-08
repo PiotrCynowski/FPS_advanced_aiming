@@ -1,5 +1,6 @@
 using UnityEngine;
 using Player.WeaponData;
+using System;
 
 namespace Player
 {
@@ -55,6 +56,7 @@ namespace Player
             }
         }
 
+        public static event Action<bool> OnInteractableSwitch;
         private bool isTI; //Target Interactable
         public bool IsTI
         {
@@ -67,6 +69,7 @@ namespace Player
                 if (isTI != value)
                 {
                     isTI = value;
+                    OnInteractableSwitch?.Invoke(isTI);
                 }
             }
         }
