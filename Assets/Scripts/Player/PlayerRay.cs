@@ -23,6 +23,8 @@ namespace Player
         private RaycastHit hit;
         private const int rayDistance = 25;
 
+        public static Vector3 hitPoint;
+
         #region properties
         private bool isTD; //Target Damageable
         public bool IsTD
@@ -97,16 +99,10 @@ namespace Player
 
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
+                hitPoint = hit.point;
                 if (hit.transform.TryGetComponent<InteractableObj>(out var obj))
                 {
                     isMatchedRay = false;
-
-                    if (obj is ICanBeGrabbed grabbable && hit.distance < 2)
-                    {
-                        IsTG = true;
-                        grabController.RaycastInfo(grabbable);
-                        isMatchedRay = true;
-                    }
 
                     if (obj is IDamageable damageable)
                     {
@@ -118,11 +114,21 @@ namespace Player
                     else
                         crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
-                    if (obj is ICanBeInteracted interactable && hit.distance < 2)
+                    if (hit.distance < 2)
                     {
-                        IsTI = true;
-                        interact.RaycastInfo(interactable);
-                        isMatchedRay = true;
+                        if (obj is ICanBeGrabbed grabbable)
+                        {
+                            IsTG = true;
+                            grabController.RaycastInfo(grabbable);
+                            isMatchedRay = true;
+                        }
+
+                        if (obj is ICanBeInteracted interactable)
+                        {
+                            IsTI = true;
+                            interact.RaycastInfo(interactable);
+                            isMatchedRay = true;
+                        }
                     }
 
                     if (!isMatchedRay)

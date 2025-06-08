@@ -24,8 +24,8 @@ namespace Player.WeaponData
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
         private PlayerWeaponInfo weaponInfo;
         private IDamageable lastTargetObj;
-        private Vector3? lastTargetHitPos;
-        private Quaternion? lastTargetHitRot;
+        private Vector3 lastTargetHitPos;
+        private Quaternion lastTargetHitRot;
 
         private int currentWeaponIndex, weaponsLen;
 
@@ -83,12 +83,6 @@ namespace Player.WeaponData
             {
                 weaponInfo.ObjHP = target.CurrentHealth;
 
-                if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
-                {
-                    lastTargetHitPos = point.Value;
-                    lastTargetHitRot = Quaternion.LookRotation(transform.position - point.Value);
-                }
-
                 if (currentTargMat == target.ObjectType && lastTargetObj == target)
                     return;
 
@@ -103,8 +97,6 @@ namespace Player.WeaponData
             }
 
             lastTargetObj = null;
-            lastTargetHitPos = null;
-            lastTargetHitRot = null;
 
             if (currentTargMat == TargetType.None)
             {
@@ -136,7 +128,10 @@ namespace Player.WeaponData
                 shootingRoutine = StartCoroutine(DelayedShot(possibleWeapons[currentWeaponIndex].shotInterval));
             }
             else
+            {
+                UpdateRayTransforms();
                 Shot();
+            }
         }
 
         public void SwitchWeaponMouseButScroll(bool isNext)
@@ -231,8 +226,8 @@ namespace Player.WeaponData
         private IEnumerator DelayedBulletHit()
         {
             IDamageable target = lastTargetObj;
-            Vector3 pos = lastTargetHitPos.Value;
-            Quaternion rot = lastTargetHitRot.Value;
+            Vector3 pos = lastTargetHitPos;
+            Quaternion rot = lastTargetHitRot;
             yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             if (target != null)
                 target.TakeDamage(currentDamage, pos, rot, true);
@@ -260,8 +255,22 @@ namespace Player.WeaponData
         {
             while (true)
             {
+                UpdateRayTransforms();
                 Shot();
                 yield return new WaitForSeconds(interval);
+            }
+        }
+
+        private void UpdateRayTransforms()
+        {
+            if (possibleWeapons[currentWeaponIndex].weaponType == ShotType.ray)
+            {
+                GameObject hit = new("hit");
+
+                Vector3 hitPoint = PlayerRay.hitPoint;
+                hit.transform.position = hitPoint;
+                lastTargetHitPos = hitPoint;
+                lastTargetHitRot = Quaternion.LookRotation(transform.position - hitPoint);
             }
         }
 
@@ -291,14 +300,19 @@ namespace Player.WeaponData
                     bullet.damage = currentDamage;
                     bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
+                case ShotType.rayBullet:
+                   
+                    break;
                 case ShotType.ray:
-                    if (lastTargetObj != null && lastTargetHitPos.HasValue)
+                    if (lastTargetObj != null)
                     {
                         if (possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer > 0)
                             StartCoroutine(DelayedBulletHit());
                         else
-                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot.Value, true);
+                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos, lastTargetHitRot, true);
                     }
+                    if (possibleWeapons[currentWeaponIndex].weaponOnHit != null)
+                        OnHitWeaponAction(lastTargetHitPos, currentWeaponIndex);
                     break;
                 case ShotType.grenade:
                     BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
@@ -346,7 +360,7 @@ namespace Player.WeaponData
 #region enums
 public enum TargetType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
 
-public enum ShotType { obj, ray, grenade }
+public enum ShotType { obj, ray, grenade, rayBullet }
 
 public enum RifleType { single, automatic }
 
