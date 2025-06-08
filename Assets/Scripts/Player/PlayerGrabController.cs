@@ -7,21 +7,14 @@ namespace Player
     public class PlayerGrabController : MonoBehaviour 
     {
         [Header("References")]
-        [SerializeField]
-        private Transform itemHoldAnchor;
-        [SerializeField]
-        private Transform cameraRoot;
+        [SerializeField] private Transform itemHoldAnchor;
+        [SerializeField] private Transform cameraRoot;
         [Header("Settings")]
-        [SerializeField]
-        private float itemFlyToHandSpeed;
-        [SerializeField]
-        private float itemThrowForce;
-        [SerializeField]
-        private float interactionDistance;
-        [SerializeField]
-        private float pickableItemsIndicateDistance;
-        [SerializeField]
-        private LayerMask toRayInteract;
+        [SerializeField] private float itemFlyToHandSpeed;
+        [SerializeField] private float itemThrowForce;
+        [SerializeField] private float interactionDistance;
+        [SerializeField] private float pickableItemsIndicateDistance;
+        [SerializeField] private LayerMask toRayInteract;
 
         private GrabbableItem itemPicked;
         private List<GrabbableItem> itemCollCache;
@@ -120,16 +113,11 @@ namespace Player
         #region item interaction
         private void ItemGrab() 
         {
-            ray = new Ray(cameraRoot.position, cameraRoot.forward);
-
-            if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance, toRayInteract)) 
+            if (currentAim != null)
             {
-                if (hit.transform.TryGetComponent<GrabbableItem>(out var obj)) 
-                {
-                    obj.PickItem(true);
-                    itemPicked = obj;
-                    moveItemCoroutine = StartCoroutine(MoveItemToHoldPos());
-                }
+                currentAim.PickItem(true);
+                itemPicked = currentAim.GetInteractable();
+                moveItemCoroutine = StartCoroutine(MoveItemToHoldPos());
             }
         }
 
@@ -185,30 +173,25 @@ namespace Player
 
         public void RaycastInfo(ICanBeGrabbed grabbable)
         {
-            Debug.Log("RaycastInfo");
-
             if (grabbable != null)
             {
                 if (currentAim == null)
                 {
-                    Debug.Log("RaycastInfo 1");
                     currentAim = grabbable;
                     AimedObj = RaycastAimState.aimedAt;
                     return;
                 }
 
-                //if (!ReferenceEquals(currentAim, grabbable))
-                //{
-                //    Debug.Log("RaycastInfo 2");
-                //    AimedObj = RaycastAimState.leftAlone;
+                if (!ReferenceEquals(currentAim, grabbable))
+                {
+                    AimedObj = RaycastAimState.leftAlone;
 
-                //    currentAim = grabbable;
-                //    AimedObj = RaycastAimState.aimedAt;
-                //}
+                    currentAim = grabbable;
+                    AimedObj = RaycastAimState.aimedAt;
+                }
             }
             else
             {
-                Debug.Log("RaycastInfo 3");
                 AimedObj = RaycastAimState.leftAlone;
                 currentAim = null;
                 return;
@@ -256,6 +239,10 @@ namespace Player
 public interface ICanBeGrabbed 
 {
     void OnRaycastAim(RaycastAimState aimState);
+
+    void PickItem(bool isPicked);
+
+    GrabbableItem GetInteractable();
 }
 
 public enum RaycastAimState 

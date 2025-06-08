@@ -18,6 +18,11 @@ public class GrabbableItem : InteractableObj, ICanBeGrabbed
     }
 
     #region item interaction
+    public GrabbableItem GetInteractable()
+    {
+        return this;
+    }
+
     public void PickItem(bool isPicked)
     {
         rb.useGravity = !isPicked;
@@ -26,7 +31,6 @@ public class GrabbableItem : InteractableObj, ICanBeGrabbed
         isInHand = isPicked;
 
         DistIndicatorSwitch(!isPicked);
-      
     }
 
     public void ThrowItem(Vector3 direction, float force)
@@ -76,5 +80,6 @@ public class GrabbableItem : InteractableObj, ICanBeGrabbed
 
         indicatorDist.SetActive(isActive);
     }
+
     #endregion
 }

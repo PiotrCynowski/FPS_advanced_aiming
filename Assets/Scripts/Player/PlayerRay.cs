@@ -83,15 +83,11 @@ namespace Player
                 {
                     isMatchedRay = false;
 
-                    if (obj is ICanBeGrabbed grabbable)
+                    if (obj is ICanBeGrabbed grabbable && hit.distance < 2)
                     {
-                        if (!ReferenceEquals(lastTargetObj, obj))
-                        {
-                            IsTG = true;
-                            
-                            grabController.RaycastInfo(grabbable);
-                            lastTargetObj = obj;
-                        }
+                        IsTG = true;
+                        grabController.RaycastInfo(grabbable);
+                        lastTargetObj = obj;
                         isMatchedRay = true;
                     }
 
@@ -102,6 +98,8 @@ namespace Player
                         weapon.GunBarrelInfo(damageable, hit.point);
                         isMatchedRay = true;
                     }
+                    else
+                        crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
                     if (!isMatchedRay)
                         ResetRay();
@@ -119,9 +117,15 @@ namespace Player
 
             if (isTD)
             {
-                Debug.Log("Reset");
                 weapon.GunBarrelInfo(null);
                 IsTD = false;
+            }
+
+            if (IsTG)
+            {
+                lastTargetObj = null;
+                grabController.RaycastInfo(null);
+                IsTG = false;
             }
            
         }

@@ -360,7 +360,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 1891586906770210809}
   targetLayerForCrosshair:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1280
   defaultAimDistance: 10
   weapon: {fileID: 1891586907174809481}
   grabController: {fileID: 2309485029732512440}
