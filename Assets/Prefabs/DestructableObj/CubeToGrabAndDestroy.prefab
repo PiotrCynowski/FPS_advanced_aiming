@@ -5098,8 +5098,7 @@ GameObject:
   - component: {fileID: 6618889185984605383}
   - component: {fileID: 2289659582412251731}
   - component: {fileID: 5854040230774692646}
-  - component: {fileID: 4885451153347652384}
-  - component: {fileID: 3322243382383670991}
+  - component: {fileID: 3771344762581740647}
   m_Layer: 8
   m_Name: CubeToGrabAndDestroy
   m_TagString: Untagged
@@ -5225,7 +5224,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4885451153347652384
+--- !u!114 &3771344762581740647
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5234,66 +5233,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5336881085619228890}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6ade3f9079a6b5428cc1616d1e15684, type: 3}
+  m_Script: {fileID: 11500000, guid: 27b0cb93b75e3fc49831a880530fc695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   anchor: {fileID: 3252271251219349661}
   indicatorGrab: {fileID: 819347820890497735}
   indicatorDist: {fileID: 3084577014842731884}
---- !u!114 &3322243382383670991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5336881085619228890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48687c40de43db94fac72130e971b23c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHealth: 5
-  thisObjMaterial: 1
-  onObjectDestroyed:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3322243382383670991}
-        m_TargetAssemblyTypeName: DestrObj.DestructibleObj, Assembly-CSharp
-        m_MethodName: DetachThisElement
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1295191483141826097}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2436108195183240160}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 8864515516565808838}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onHitParticles: {fileID: 5453083777708106605}
+  type: 1
+  health: 5
 --- !u!1 &7402635490933877447
 GameObject:
   m_ObjectHideFlags: 0

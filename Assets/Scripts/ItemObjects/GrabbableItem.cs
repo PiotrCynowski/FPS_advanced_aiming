@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Item : InteractableObj, ICanBeGrabbed
+public class GrabbableItem : InteractableObj, ICanBeGrabbed
 {
     public Transform anchor;
 

@@ -23,26 +23,8 @@ namespace Player
 
         private InteractableObj lastTargetObj;
 
-        private CrosshairRayTarget currentTarget = CrosshairRayTarget.None;
-        public CrosshairRayTarget CurrentTarget
-        {
-            get { return currentTarget; }
-            set
-            {
-                if (currentTarget != value)
-                {
-                    currentTarget = value;
-                    OnRayTargetInfo?.Invoke(currentTarget);
-                }
-            }
-        }
-
-        public delegate void OnRayTarget(CrosshairRayTarget target);
-        public static event OnRayTarget OnRayTargetInfo;
-
         private void Start()
         {
-            OnRayTargetInfo?.Invoke(CrosshairRayTarget.None);
             ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
         }
@@ -69,17 +51,17 @@ namespace Player
 
                     if (obj is ICanBeGrabbed grabbable)
                     {
+                        Debug.Log("grabbable");
+
                         if (obj != lastTargetObj)
-                        {
-                            CurrentTarget = CrosshairRayTarget.Grabbable;
                             lastTargetObj = obj;
-                        }
                         isMatchedRay = true;
                     }
 
                     if (obj is IDamageable damageable)
                     {
-                        CurrentTarget = CrosshairRayTarget.Damageable;
+                        Debug.Log("damageable");
+
                         crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
                         weapon.GunBarrelInfo(damageable, hit.point);
                         isMatchedRay = true;
@@ -97,11 +79,8 @@ namespace Player
 
         private void ResetRay()
         {
-            CurrentTarget = CrosshairRayTarget.None;
             weapon.GunBarrelInfo(null);
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
         }
     }
 }
-
-public enum CrosshairRayTarget { None, Damageable, Interactable, Grabbable }

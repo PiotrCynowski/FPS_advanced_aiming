@@ -23,8 +23,8 @@ namespace Player
         [SerializeField]
         private LayerMask toRayInteract;
 
-        private Item itemPicked;
-        private List<Item> itemCollCache;
+        private GrabbableItem itemPicked;
+        private List<GrabbableItem> itemCollCache;
 
         private Coroutine moveItemCoroutine;
         private ICanBeGrabbed currentAim;
@@ -124,7 +124,7 @@ namespace Player
 
             if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance, toRayInteract)) 
             {
-                if (hit.transform.TryGetComponent<Item>(out var obj)) 
+                if (hit.transform.TryGetComponent<GrabbableItem>(out var obj)) 
                 {
                     obj.PickItem(true);
                     itemPicked = obj;
@@ -227,7 +227,7 @@ namespace Player
 
                 for (int i = 0; i < colliders.Length; i++) 
                 {
-                    if (colliders[i].TryGetComponent<Item>(out var obj)) 
+                    if (colliders[i].TryGetComponent<GrabbableItem>(out var obj)) 
                     {
                         itemCollCache.Add(obj);
                     }
