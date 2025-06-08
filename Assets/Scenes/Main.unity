@@ -1341,18 +1341,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanvasPlayerInfo
       objectReference: {fileID: 0}
-    - target: {fileID: 8554757744863340083, guid: 0b816f79fa0a0b0448a17cf6984a50fb, type: 3}
-      propertyPath: m_Name
-      value: TextInteractable
-      objectReference: {fileID: 0}
-    - target: {fileID: 8554757744863340083, guid: 0b816f79fa0a0b0448a17cf6984a50fb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8619782929706411763, guid: 0b816f79fa0a0b0448a17cf6984a50fb, type: 3}
-      propertyPath: m_Text
-      value: '[E] interact'
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
