@@ -1183,10 +1183,6 @@ PrefabInstance:
       propertyPath: crosshairUI
       value: 
       objectReference: {fileID: 238248649}
-    - target: {fileID: 7218699299293827298, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: targetLayerForCrosshair.m_Bits
-      value: 1408
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1695,7 +1691,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9110606445979844056, guid: 8837704f397fafb4cb249f9ba35a32dd, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

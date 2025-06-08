@@ -4,6 +4,7 @@ using Weapons;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using static UnityEditor.PlayerSettings;
 
 namespace Player.WeaponData
 {
@@ -22,6 +23,7 @@ namespace Player.WeaponData
 
         private SpawnWithPool<Bullet> poolSpawner;
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
+        private SpawnWithPool<RayBullet> rayBulletSpawner;
         private PlayerWeaponInfo weaponInfo;
         private IDamageable lastTargetObj;
         private Vector3? lastTargetHitPos;
@@ -52,6 +54,7 @@ namespace Player.WeaponData
 
         public static Action<Vector3?, int> OnHitEffect;
         public static Action<Vector3, int, int> OnRadiusHit;
+
         public static Action<Transform> OnWeaponSwitch;
         public static Action<int, int> OnAmmoChange;
 
@@ -65,6 +68,7 @@ namespace Player.WeaponData
         {
             poolSpawner = new();
             onHitEffectPoolSpawner = new();
+            rayBulletSpawner = new();
             weaponInfo = new();
 
             PrepareWeapons();
@@ -77,10 +81,18 @@ namespace Player.WeaponData
             OnRadiusHit = null;
         }
 
-        public void GunBarrelInfo(Vector3 point, IDamageable target = null)
-        { 
-            lastTargetHitPos = point;
-            lastTargetHitRot = Quaternion.LookRotation(transform.position - point);
+        public void GunBarrelInfo(Vector3? point, Vector3? direction, IDamageable target = null)
+        {
+            if (point.HasValue && direction.HasValue)
+            {
+                lastTargetHitPos = point.Value;
+                lastTargetHitRot = Quaternion.LookRotation(direction.Value);
+            }
+            else
+            {
+                lastTargetHitPos = null;
+                lastTargetHitRot = null;
+            }
             
             if (target != null)
             {
@@ -196,6 +208,11 @@ namespace Player.WeaponData
                     poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate, i);
                 }
 
+                if (possibleWeapons[i].bulletRayTemplate != null)
+                {
+                    rayBulletSpawner.AddPoolForGameObject(possibleWeapons[i].bulletRayTemplate, i);
+                }
+
                 if (possibleWeapons[i].weaponOnHit != null)
                     onHitEffectPoolSpawner.AddPoolForGameObject(possibleWeapons[i].weaponOnHit, i);
             }
@@ -253,14 +270,40 @@ namespace Player.WeaponData
 
         private IEnumerator DelayedBulletHit()
         {
-            IDamageable target = lastTargetObj;
-            Vector3 pos = lastTargetHitPos.Value;
-            Quaternion rot = lastTargetHitRot.Value;
-            yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
-            target?.TakeDamage(currentDamage, pos, rot, true);
+                IDamageable target = lastTargetObj;
+                Vector3 pos = lastTargetHitPos.Value;
+                Quaternion rot = lastTargetHitRot.Value;
+                yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
+                target?.TakeDamage(currentDamage, pos, rot, true);
+                if (lastTargetHitPos.HasValue)
+                    OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+                yield return null;
+        }
+
+        private IEnumerator DelayedBulletRay()
+        {
             if (lastTargetHitPos.HasValue)
-                OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
-            yield return null;
+            {
+                IDamageable target = lastTargetObj;
+                Vector3 pos = lastTargetHitPos.Value;
+                Quaternion rot = lastTargetHitRot.Value;
+
+                float time = (transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer;
+
+                RayBullet bullet = rayBulletSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+                bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, pos, time);
+
+                yield return new WaitForSeconds(time);
+                target?.TakeDamage(currentDamage, pos, rot, true);
+                if (lastTargetHitPos.HasValue)
+                    OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+                yield return null;
+            }
+            else
+            {
+                RayBullet bullet = rayBulletSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+                bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, crosshairTarget.position);
+            }
         }
 
         private void Shot()
@@ -291,6 +334,9 @@ namespace Player.WeaponData
                     break;
                 case ShotType.distanceRay:
                     StartCoroutine(DelayedBulletHit());
+                    break;
+                case ShotType.bulletRay:
+                    StartCoroutine(DelayedBulletRay());
                     break;
                 case ShotType.ray:
                     lastTargetObj?.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot, true);             
@@ -342,7 +388,7 @@ namespace Player.WeaponData
 
 #region enums
 public enum TargetType { None, Iron, Wood, Conrete, Steel, EnergyField, Everything }
-public enum ShotType { obj, ray, grenade, distanceRay }
+public enum ShotType { obj, ray, grenade, distanceRay, bulletRay }
 public enum RifleType { single, automatic }
 public enum CrosshairTarget { None, Destroy, CantDestroy }
 #endregion

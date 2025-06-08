@@ -71,14 +71,18 @@ namespace Player
                 if (hitWeapon.transform.TryGetComponent<IDamageable>(out var obj))
                 {
                     crosshairTarget.position = hitWeapon.point + ray.direction.normalized * 0.25f;
-                    weapon.GunBarrelInfo(hitWeapon.point, obj);
+                    weapon.GunBarrelInfo(hitWeapon.point, ray.direction, obj);
                     isMatchedRay = true;
                     return;
                 }
                 else
-                    weapon.GunBarrelInfo(hitWeapon.point);
+                    weapon.GunBarrelInfo(hitWeapon.point, ray.direction);
             }
-            
+            else
+            {
+                weapon.GunBarrelInfo(null, null);
+            }
+
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
                 if (hit.transform.TryGetComponent<InteractableObj>(out var obj))

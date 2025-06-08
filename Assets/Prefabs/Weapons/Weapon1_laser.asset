@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399f67dcacd780741a999f44043cb219, type: 3}
   m_Name: Weapon1_laser
   m_EditorClassIdentifier: 
-  weaponType: 1
+  weaponType: 4
   rifleType: 0
   shotInterval: 0
   canDestroy:
@@ -21,6 +21,7 @@ MonoBehaviour:
   - canDestroyMat: 2
     damagePerBullet: 3
   bulletTemplate: {fileID: 0}
+  bulletRayTemplate: {fileID: -7351852470068135591, guid: 20bde02a75c2f83439b3a35e82d7a2e0, type: 3}
   weaponOnHit: {fileID: -4557198358474936349, guid: f2f1068599ddbff42aa7036916862472, type: 3}
   muzzle: {fileID: 0}
   onHitDelayMultiplayer: 0.005
