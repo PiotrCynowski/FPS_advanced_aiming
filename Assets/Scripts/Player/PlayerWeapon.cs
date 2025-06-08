@@ -10,13 +10,13 @@ namespace Player.WeaponData
     public class PlayerWeapon : MonoBehaviour
     {
         [Header("Crosshair Settings")]
-        [SerializeField] private Transform crosshairTarget; 
+        [SerializeField] private Transform crosshairTarget;
         [SerializeField] private RectTransform crosshairUI;
 
         [Header("Weapon Settings")]
         [SerializeField] private Transform weaponsContainer;
         [SerializeField] private Weapon[] possibleWeapons;
-        private Dictionary<int , WeaponData> weaponsCollection;
+        private Dictionary<int, WeaponData> weaponsCollection;
         private GameObject currentWeapon;
         private Transform gunBarrel;
 
@@ -24,8 +24,8 @@ namespace Player.WeaponData
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
         private PlayerWeaponInfo weaponInfo;
         private IDamageable lastTargetObj;
-        private Vector3 lastTargetHitPos;
-        private Quaternion lastTargetHitRot;
+        private Vector3? lastTargetHitPos;
+        private Quaternion? lastTargetHitRot;
 
         private int currentWeaponIndex, weaponsLen;
 
@@ -50,7 +50,7 @@ namespace Player.WeaponData
         public delegate void OnObjTarget(CrosshairTarget target);
         public static event OnObjTarget OnWeaponObjTarget;
 
-        public static Action<Vector3, int> OnHitEffect;
+        public static Action<Vector3?, int> OnHitEffect;
         public static Action<Vector3, int, int> OnRadiusHit;
         public static Action<Transform> OnWeaponSwitch;
         public static Action<int, int> OnAmmoChange;
@@ -72,7 +72,7 @@ namespace Player.WeaponData
 
         private void OnDestroy()
         {
-         
+
             OnHitEffect = null;
             OnRadiusHit = null;
         }
@@ -106,6 +106,12 @@ namespace Player.WeaponData
 
             currentTargMat = TargetType.None;
             CurrentTarget = CrosshairTarget.None;
+        }
+
+        public void ClearWeaponTarget()
+        {
+            lastTargetHitPos = null;
+            lastTargetHitRot = null;
         }
 
         #region Input
@@ -226,17 +232,23 @@ namespace Player.WeaponData
         private IEnumerator DelayedBulletHit()
         {
             IDamageable target = lastTargetObj;
-            Vector3 pos = lastTargetHitPos;
-            Quaternion rot = lastTargetHitRot;
+            Vector3 pos = lastTargetHitPos.Value;
+            Quaternion rot = lastTargetHitRot.Value;
             yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             if (target != null)
+            {
                 target.TakeDamage(currentDamage, pos, rot, true);
+            }
+
+            if(lastTargetHitPos.HasValue)
+                OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
             yield return null;
         }
 
-        private void OnHitWeaponAction(Vector3 pos, int weaponId)
+        private void OnHitWeaponAction(Vector3? pos, int weaponId)
         {
-            onHitEffectPoolSpawner.GetSpawnObject(pos, weaponId);
+            if (possibleWeapons[currentWeaponIndex].weaponOnHit != null && pos.HasValue)
+                onHitEffectPoolSpawner.GetSpawnObject(pos.Value, weaponId);
         }
 
         private void OnRadiusHitAction(Vector3 position, int radius, int Id)
@@ -276,7 +288,7 @@ namespace Player.WeaponData
 
         private void Shot()
         {
-            if(reloadRoutine != null)
+            if (reloadRoutine != null)
                 return;
 
             if (currentAmmo <= 0)
@@ -301,7 +313,7 @@ namespace Player.WeaponData
                     bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
                 case ShotType.rayBullet:
-                   
+
                     break;
                 case ShotType.ray:
                     if (lastTargetObj != null)
@@ -309,10 +321,16 @@ namespace Player.WeaponData
                         if (possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer > 0)
                             StartCoroutine(DelayedBulletHit());
                         else
-                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos, lastTargetHitRot, true);
+                        {
+                            lastTargetObj.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot, true);
+                            OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+                        }
+                        return;
                     }
-                    if (possibleWeapons[currentWeaponIndex].weaponOnHit != null)
-                        OnHitWeaponAction(lastTargetHitPos, currentWeaponIndex);
+                    if (possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer > 0)
+                        StartCoroutine(DelayedBulletHit());
+                    else
+                        OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
                     break;
                 case ShotType.grenade:
                     BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
@@ -371,5 +389,5 @@ public interface IDamageable
 {
     void TakeDamage(int amount, Vector3 pos, Quaternion? rot = null, bool onHitEffect = true);
     TargetType ObjectType { get; }
-    int CurrentHealth {  get; }
+    int CurrentHealth { get; }
 }

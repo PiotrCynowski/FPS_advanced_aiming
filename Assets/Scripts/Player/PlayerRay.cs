@@ -132,18 +132,21 @@ namespace Player
                     }
 
                     if (!isMatchedRay)
-                        ResetRay();
+                        ResetRay(false);
 
                     return;
                 }  
             }
 
-            ResetRay();
+            ResetRay(true);
         }
 
-        private void ResetRay()
+        private void ResetRay(bool isEmptySpace)
         {
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+
+            if(isEmptySpace)
+                weapon.ClearWeaponTarget();
 
             if (isTD)
             {

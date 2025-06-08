@@ -19,7 +19,7 @@ namespace Weapons
         private Coroutine returnCoroutine;
         private bool isReturned;
 
-        public Action<Vector3, int> OnWeaponHitEffect;
+        public Action<Vector3?, int> OnWeaponHitEffect;
         private Action<Bullet, int> returnToPool;
 
         protected virtual void Start()
