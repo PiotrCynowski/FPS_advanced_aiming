@@ -29,6 +29,8 @@ namespace Player.WeaponData
 
         private int currentWeaponIndex, weaponsLen;
 
+        private Vector3 hitPoint;
+
         private int currentDamage, currentAmmo, currentMagazines, magazine;
         private Coroutine shootingRoutine, reloadRoutine;
         private TargetType currentTargMat = TargetType.None;
@@ -112,6 +114,11 @@ namespace Player.WeaponData
         {
             lastTargetHitPos = null;
             lastTargetHitRot = null;
+        }
+
+        public void SetWeaponHit(Vector3 point)
+        {
+            hitPoint = point;
         }
 
         #region Input
@@ -279,7 +286,6 @@ namespace Player.WeaponData
             {
                 GameObject hit = new("hit");
 
-                Vector3 hitPoint = PlayerRay.hitPoint;
                 hit.transform.position = hitPoint;
                 lastTargetHitPos = hitPoint;
                 lastTargetHitRot = Quaternion.LookRotation(transform.position - hitPoint);

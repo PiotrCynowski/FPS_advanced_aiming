@@ -11,6 +11,7 @@ namespace Player
         [SerializeField] private RectTransform crosshairUI;
         [SerializeField] private Camera fpsCamera;
         [SerializeField] private LayerMask targetLayerForCrosshair;
+        [SerializeField] private LayerMask weaponLayerForCrosshair;
         [SerializeField] private float defaultAimDistance = 10f;
 
         [SerializeField] PlayerWeapon weapon;
@@ -20,10 +21,8 @@ namespace Player
         private bool isMatchedRay;
 
         private Ray ray;
-        private RaycastHit hit;
-        private const int rayDistance = 25;
-
-        public static Vector3 hitPoint;
+        private RaycastHit hit, hitWeapon;
+        private const int rayDistance = 2, weaponRayDistance = 25;
 
         #region properties
         private bool isTD; //Target Damageable
@@ -97,38 +96,37 @@ namespace Player
             Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red);
 #endif
 
+            if (Physics.Raycast(ray, out hitWeapon, weaponRayDistance, weaponLayerForCrosshair, QueryTriggerInteraction.Ignore))
+            {
+                weapon.SetWeaponHit(hitWeapon.point);
+                if (hitWeapon.transform.TryGetComponent<IDamageable>(out var obj))
+                {
+                    IsTD = true;
+                    crosshairTarget.position = hitWeapon.point + ray.direction.normalized * 0.25f;
+                    weapon.GunBarrelInfo(obj, hitWeapon.point);
+                    isMatchedRay = true;
+                    return;
+                }
+            }
+
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
             {
-                hitPoint = hit.point;
                 if (hit.transform.TryGetComponent<InteractableObj>(out var obj))
                 {
                     isMatchedRay = false;
 
-                    if (obj is IDamageable damageable)
+                    if (obj is ICanBeGrabbed grabbable)
                     {
-                        IsTD = true;
-                        crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
-                        weapon.GunBarrelInfo(damageable, hit.point);
+                        IsTG = true;
+                        grabController.RaycastInfo(grabbable);
                         isMatchedRay = true;
                     }
-                    else
-                        crosshairTarget.position = ray.GetPoint(defaultAimDistance);
 
-                    if (hit.distance < 2)
+                    if (obj is ICanBeInteracted interactable)
                     {
-                        if (obj is ICanBeGrabbed grabbable)
-                        {
-                            IsTG = true;
-                            grabController.RaycastInfo(grabbable);
-                            isMatchedRay = true;
-                        }
-
-                        if (obj is ICanBeInteracted interactable)
-                        {
-                            IsTI = true;
-                            interact.RaycastInfo(interactable);
-                            isMatchedRay = true;
-                        }
+                        IsTI = true;
+                        interact.RaycastInfo(interactable);
+                        isMatchedRay = true;
                     }
 
                     if (!isMatchedRay)
