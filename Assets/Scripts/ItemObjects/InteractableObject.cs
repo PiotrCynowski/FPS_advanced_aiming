@@ -3,20 +3,30 @@ using UnityEngine.Events;
 
 public class InteractableObject : InteractableObj, ICanBeInteracted, ICanBeDoorAnimated
 {
-    [SerializeField] UnityEvent onInteraction;
-
-    public bool IsDoorOpen()
-    {
-        throw new System.NotImplementedException();
-    }
+    [SerializeField] UnityEvent<bool> onInteraction;
+    bool isOn = false;
 
     public void OnInteracted()
     {
-        onInteraction?.Invoke();
+        onInteraction?.Invoke(isOn);
+
+        isOn = !isOn;
+
+        if (isOn)
+            OpenDoor();
+        else 
+            CloseDoor();
     }
 
-    public void SwitchAnimOpenCloseDoor()
+    public void OpenDoor()
     {
-        throw new System.NotImplementedException();
+        DoorAnim.OpenDoor();
     }
+
+    public void CloseDoor()
+    {
+        DoorAnim?.CloseDoor();
+    }
+
+    public DoorBehaviour DoorAnim => GetComponent<DoorBehaviour>();
 }
