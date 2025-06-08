@@ -67,7 +67,7 @@ namespace Player
             frameCount++;
             if (frameCount >= framesPerRaycast) 
             {
-                PerformRaycast();
+                //PerformRaycast();
                 CheckItemDistByPlayerPos();
                 frameCount = 0;
             }
@@ -183,32 +183,30 @@ namespace Player
             currentAim = null;
         }
 
-        private void PerformRaycast() 
+        public void RaycastInfo(ICanBeGrabbed grabbable)
         {
-            ray.origin = cameraRoot.position;
-            ray.direction = cameraRoot.forward;
+            if (grabbable != null)
+            {
+                if (currentAim == null)
+                {
+                    currentAim = grabbable;
+                    AimedObj = RaycastAimState.aimedAt;
+                    return;
+                }
 
-            if (!Physics.Raycast(ray, out RaycastHit hit, interactionDistance, toRayInteract)) 
+                if (!ReferenceEquals(currentAim, grabbable))
+                {
+                    AimedObj = RaycastAimState.leftAlone;
+
+                    currentAim = grabbable;
+                    AimedObj = RaycastAimState.aimedAt;
+                }
+            }
+            else
             {
                 AimedObj = RaycastAimState.leftAlone;
                 currentAim = null;
                 return;
-            }
-            else {
-                if (hit.transform.TryGetComponent<ICanBeGrabbed>(out var obj)) {
-                    if (currentAim == null) {
-                        currentAim = obj;
-                        AimedObj = RaycastAimState.aimedAt;
-                        return;
-                    }
-
-                    if (!ReferenceEquals(currentAim, obj)) {
-                        AimedObj = RaycastAimState.leftAlone;
-
-                        currentAim = obj;
-                        AimedObj = RaycastAimState.aimedAt;
-                    }
-                }
             }
         }
 

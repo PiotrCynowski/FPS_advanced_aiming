@@ -13,7 +13,7 @@ namespace Player
         [SerializeField] private float defaultAimDistance = 10f;
 
         [SerializeField] PlayerWeapon weapon;
-        [SerializeField] PlayerGrabController grabbing;
+        [SerializeField] PlayerGrabController grabController;
 
         private bool isMatchedRay;
 
@@ -22,6 +22,40 @@ namespace Player
         private const int rayDistance = 25;
 
         private InteractableObj lastTargetObj;
+
+        #region properties
+        private bool isTD; //Target Damageable
+        public bool IsTD
+        {
+            get
+            {
+                return isTD;
+            }
+            set
+            {
+                if (isTD != value)
+                {
+                    isTD = value;
+                }
+            }
+        }
+
+        private bool isTG; //Target Grabbable
+        public bool IsTG
+        {
+            get
+            {
+                return isTG;
+            }
+            set
+            {
+                if (isTG != value)
+                {
+                    isTG = value;
+                }
+            }
+        }
+        #endregion
 
         private void Start()
         {
@@ -51,17 +85,18 @@ namespace Player
 
                     if (obj is ICanBeGrabbed grabbable)
                     {
-                        Debug.Log("grabbable");
-
                         if (obj != lastTargetObj)
+                        {
+                            IsTG = true;
                             lastTargetObj = obj;
+                            grabController.RaycastInfo(grabbable);
+                        }
                         isMatchedRay = true;
                     }
 
                     if (obj is IDamageable damageable)
                     {
-                        Debug.Log("damageable");
-
+                        IsTD = true;
                         crosshairTarget.position = hit.point + ray.direction.normalized * 0.25f;
                         weapon.GunBarrelInfo(damageable, hit.point);
                         isMatchedRay = true;
@@ -79,8 +114,15 @@ namespace Player
 
         private void ResetRay()
         {
-            weapon.GunBarrelInfo(null);
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+
+            if (isTD)
+            {
+                Debug.Log("Reset");
+                weapon.GunBarrelInfo(null);
+                IsTD = false;
+            }
+           
         }
     }
 }
