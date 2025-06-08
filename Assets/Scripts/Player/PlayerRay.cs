@@ -152,8 +152,7 @@ namespace Player
             {        
                 interact.RaycastInfo(null);
                 IsTI = false;
-            }
-           
+            }    
         }
     }
 }

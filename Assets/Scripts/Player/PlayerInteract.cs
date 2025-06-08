@@ -9,7 +9,10 @@ namespace Player
         public void RaycastInfo(ICanBeInteracted interactable)
         {
             if (interactable == null)
+            {
+                this.interactable = null;
                 return;
+            }
 
             if (!ReferenceEquals(this.interactable, interactable))
             {

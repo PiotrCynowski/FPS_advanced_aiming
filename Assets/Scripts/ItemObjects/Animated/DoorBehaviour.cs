@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class DoorBehaviour : MonoBehaviour
@@ -7,6 +8,7 @@ public class DoorBehaviour : MonoBehaviour
 
     private Quaternion closedRotation;
     private Quaternion openRotation;
+    private Coroutine currentAnimation;
     private bool isOpen = false;
     private bool isAnimating = false;
 
@@ -18,33 +20,40 @@ public class DoorBehaviour : MonoBehaviour
 
     public void OpenDoor()
     {
-        if (!isOpen && !isAnimating)
-            StartCoroutine(RotateDoor(openRotation));
+        StartDoorAnimation(openRotation);
+        isOpen = true;
     }
 
     public void CloseDoor()
     {
-        if (isOpen && !isAnimating)
-            StartCoroutine(RotateDoor(closedRotation));
+        StartDoorAnimation(closedRotation);
+        isOpen = false;
     }
 
-    private System.Collections.IEnumerator RotateDoor(Quaternion targetRotation)
+    private void StartDoorAnimation(Quaternion target)
     {
-        isAnimating = true;
+        if (currentAnimation != null)
+        {
+            StopCoroutine(currentAnimation);
+        }
+        currentAnimation = StartCoroutine(RotateDoor(target));
+    }
 
+    private IEnumerator RotateDoor(Quaternion targetRotation)
+    {
         Quaternion startRotation = transform.rotation;
+        float duration = animationTime * Quaternion.Angle(startRotation, targetRotation) / openAngle;
         float elapsed = 0f;
 
-        while (elapsed < animationTime)
+        while (elapsed < duration)
         {
-            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsed / animationTime);
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         transform.rotation = targetRotation;
-        isOpen = (targetRotation == openRotation);
-        isAnimating = false;
+        currentAnimation = null;
     }
 }
 
