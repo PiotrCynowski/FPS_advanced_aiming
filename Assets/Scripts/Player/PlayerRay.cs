@@ -50,6 +50,7 @@ namespace Player
         {
             ray = fpsCamera.ScreenPointToRay(RectTransformUtility.WorldToScreenPoint(null, crosshairUI.position));
             crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+            weapon.PrepareDefaultRayDistanceShot(crosshairTarget.position);
         }
 
         private void Update()
@@ -76,11 +77,14 @@ namespace Player
                     return;
                 }
                 else
+                {
                     weapon.GunBarrelInfo(hitWeapon.point, ray.direction);
+                }
             }
             else
             {
-                weapon.GunBarrelInfo(null, null);
+                crosshairTarget.position = ray.GetPoint(defaultAimDistance);
+                weapon.GunBarrelInfo(crosshairTarget.position); //look at air
             }
 
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))
@@ -115,8 +119,6 @@ namespace Player
 
         private void ResetRay()
         {
-            crosshairTarget.position = ray.GetPoint(defaultAimDistance);
-
             if (isTG)
             {
                 grabController.RaycastInfo(null);

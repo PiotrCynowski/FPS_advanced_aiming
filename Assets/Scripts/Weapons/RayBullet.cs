@@ -53,7 +53,7 @@ namespace Weapons
             this.id = id;
         }
 
-        public void SetDirection(Vector3 dir, Vector3 dest, float lifeTime = 5)
+        public void SetDirection(Vector3 dir, Vector3 dest, float lifeTime)
         {
             direction = dir.normalized;
             transform.forward = direction;

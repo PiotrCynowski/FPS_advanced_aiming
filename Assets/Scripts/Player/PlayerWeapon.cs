@@ -4,7 +4,6 @@ using Weapons;
 using System.Collections;
 using System;
 using System.Collections.Generic;
-using static UnityEditor.PlayerSettings;
 
 namespace Player.WeaponData
 {
@@ -31,6 +30,7 @@ namespace Player.WeaponData
 
         private int currentWeaponIndex, weaponsLen;
 
+        private float defaultRayDistance;
         private int currentDamage, currentAmmo, currentMagazines, magazine;
         private Coroutine shootingRoutine, reloadRoutine;
         private TargetType currentTargMat = TargetType.None;
@@ -81,19 +81,11 @@ namespace Player.WeaponData
             OnRadiusHit = null;
         }
 
-        public void GunBarrelInfo(Vector3? point, Vector3? direction, IDamageable target = null)
+        public void GunBarrelInfo(Vector3? point = null, Vector3? direction = null, IDamageable target = null)
         {
-            if (point.HasValue && direction.HasValue)
-            {
-                lastTargetHitPos = point.Value;
-                lastTargetHitRot = Quaternion.LookRotation(direction.Value);
-            }
-            else
-            {
-                lastTargetHitPos = null;
-                lastTargetHitRot = null;
-            }
-            
+            lastTargetHitPos = point.HasValue ? point.Value : null;
+            lastTargetHitRot = direction.HasValue ? Quaternion.LookRotation(direction.Value) : null;
+        
             if (target != null)
             {
                 weaponInfo.ObjHP = target.CurrentHealth;
@@ -259,6 +251,11 @@ namespace Player.WeaponData
         }
 
         #region Shooting
+        public void PrepareDefaultRayDistanceShot(Vector3 pos)
+        {
+            defaultRayDistance = (transform.position - pos).sqrMagnitude;
+        }
+
         private IEnumerator DelayedShot(float interval)
         {
             while (true)
@@ -282,7 +279,7 @@ namespace Player.WeaponData
 
         private IEnumerator DelayedBulletRay()
         {
-            if (lastTargetHitPos.HasValue)
+            if (lastTargetHitRot.HasValue)
             {
                 IDamageable target = lastTargetObj;
                 Vector3 pos = lastTargetHitPos.Value;
@@ -294,15 +291,18 @@ namespace Player.WeaponData
                 bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, pos, time);
 
                 yield return new WaitForSeconds(time);
+
                 target?.TakeDamage(currentDamage, pos, rot, true);
-                if (lastTargetHitPos.HasValue)
+
+                if (possibleWeapons[currentWeaponIndex].weaponOnHit !=null)
                     OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+
                 yield return null;
             }
             else
             {
                 RayBullet bullet = rayBulletSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
-                bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, crosshairTarget.position);
+                bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, crosshairTarget.position, defaultRayDistance * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             }
         }
 
