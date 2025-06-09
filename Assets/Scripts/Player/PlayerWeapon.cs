@@ -227,6 +227,7 @@ namespace Player.WeaponData
             }
         }
 
+        #region Callbacks
         private void OnHitWeaponAction(Vector3? pos, int weaponId)
         {
                 onHitEffectPoolSpawner.GetSpawnObject(pos.Value, weaponId);
@@ -242,11 +243,59 @@ namespace Player.WeaponData
                     damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), transform.position, onHitEffect: false);
             }
         }
+        #endregion
 
         #region Shooting
         public void PrepareDefaultRayDistanceShot(Vector3 pos)
         {
             defaultRayDistance = (transform.position - pos).sqrMagnitude;
+        }
+
+        private void Shot()
+        {
+            if (reloadRoutine != null)
+                return;
+
+            if (currentAmmo <= 0)
+            {
+                if (shootingRoutine != null)
+                {
+                    StopCoroutine(shootingRoutine);
+                    shootingRoutine = null;
+                    return;
+                }
+
+                reloadRoutine = StartCoroutine(OnReload());
+                return;
+            }
+
+            switch (possibleWeapons[currentWeaponIndex].weaponType)
+            {
+                default:
+                case ShotType.obj:
+                    Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+                    bullet.damage = currentDamage;
+                    bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, Vector3.zero, 0);
+                    break;
+                case ShotType.distanceRay:
+                    StartCoroutine(DelayedBulletHit());
+                    break;
+                case ShotType.bulletRay:
+                    StartCoroutine(DelayedBulletRay());
+                    break;
+                case ShotType.ray:
+                    lastTargetObj?.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot, true);
+                    if (possibleWeapons[currentWeaponIndex].weaponOnHit != null && lastTargetHitPos.HasValue)
+                        OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+                    break;
+                case ShotType.grenade:
+                    BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
+                    grenate.damage = currentDamage;
+                    grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
+                    break;
+            }
+            currentAmmo--;
+            OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
         }
 
         private IEnumerator DelayedShot(float interval)
@@ -297,53 +346,6 @@ namespace Player.WeaponData
                 Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
                 bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, crosshairTarget.position, defaultRayDistance * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             }
-        }
-
-        private void Shot()
-        {
-            if (reloadRoutine != null)
-                return;
-
-            if (currentAmmo <= 0)
-            {
-                if (shootingRoutine != null)
-                {
-                    StopCoroutine(shootingRoutine);
-                    shootingRoutine = null;
-                    return;
-                }
-
-                reloadRoutine = StartCoroutine(OnReload());
-                return;
-            }
-
-            switch (possibleWeapons[currentWeaponIndex].weaponType)
-            {
-                default:
-                case ShotType.obj:
-                    Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
-                    bullet.damage = currentDamage;
-                    bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, Vector3.zero, 0);
-                    break;
-                case ShotType.distanceRay:
-                    StartCoroutine(DelayedBulletHit());
-                    break;
-                case ShotType.bulletRay:
-                    StartCoroutine(DelayedBulletRay());
-                    break;
-                case ShotType.ray:
-                    lastTargetObj?.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot, true);             
-                    if (possibleWeapons[currentWeaponIndex].weaponOnHit != null && lastTargetHitPos.HasValue)
-                        OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
-                    break;
-                case ShotType.grenade:
-                    BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
-                    grenate.damage = currentDamage;
-                    grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
-                    break;
-            }
-            currentAmmo--;
-            OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
         }
 
         private IEnumerator OnReload()
