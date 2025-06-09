@@ -325,7 +325,7 @@ namespace Player.WeaponData
             {
                 IDamageable target = lastTargetObj;
                 Vector3 pos = lastTargetHitPos.Value;
-                Quaternion rot = lastTargetHitRot.Value;
+                Quaternion rot = lastTargetHitRot.Value * Quaternion.Euler(0,180,0);
 
                 float time = (transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer;
 
