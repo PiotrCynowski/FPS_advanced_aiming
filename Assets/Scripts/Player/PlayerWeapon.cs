@@ -59,8 +59,8 @@ namespace Player.WeaponData
 
         private void Awake()
         {
-            OnHitEffect = OnHitWeaponAction;
-            OnRadiusHit = OnRadiusHitAction;
+            OnHitEffect += OnHitWeaponAction;
+            OnRadiusHit += OnRadiusHitAction;
         }
 
         private void Start()
@@ -75,8 +75,8 @@ namespace Player.WeaponData
         private void OnDestroy()
         {
 
-            OnHitEffect = null;
-            OnRadiusHit = null;
+            OnHitEffect -= OnHitWeaponAction;
+            OnRadiusHit -= OnRadiusHitAction;
         }
 
         public void GunBarrelInfo(Vector3? point = null, Vector3? direction = null, IDamageable target = null)
@@ -118,8 +118,11 @@ namespace Player.WeaponData
         {
             if (!isPerformed)
             {
-                if (shootingRoutine != null) StopCoroutine(shootingRoutine);
-                shootingRoutine = null;
+                if (shootingRoutine != null)
+                {
+                    StopCoroutine(shootingRoutine);
+                    shootingRoutine = null;
+                }
                 return;
             }
 
@@ -289,9 +292,9 @@ namespace Player.WeaponData
                         OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
                     break;
                 case ShotType.grenade:
-                    BulletGrenade grenate = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
-                    grenate.damage = currentDamage;
-                    grenate.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
+                    BulletGrenade grenade = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex) as BulletGrenade;
+                    grenade.damage = currentDamage;
+                    grenade.ThrowItem((crosshairTarget.position - gunBarrel.position).normalized);
                     break;
             }
             currentAmmo--;
@@ -309,14 +312,17 @@ namespace Player.WeaponData
 
         private IEnumerator DelayedBulletHit()
         {
-                IDamageable target = lastTargetObj;
-                Vector3 pos = lastTargetHitPos.Value;
-                Quaternion rot = lastTargetHitRot.Value;
-                yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
-                target?.TakeDamage(currentDamage, pos, rot, true);
-                if (lastTargetHitPos.HasValue)
-                    OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
-                yield return null;
+            if (!lastTargetHitPos.HasValue || !lastTargetHitRot.HasValue)
+                yield break;
+
+            IDamageable target = lastTargetObj;
+            Vector3 pos = lastTargetHitPos.Value;
+            Quaternion rot = lastTargetHitRot.Value;
+            yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
+            target?.TakeDamage(currentDamage, pos, rot, true);
+            if (lastTargetHitPos.HasValue)
+                OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+            yield return null;
         }
 
         private IEnumerator DelayedBulletRay()
@@ -338,8 +344,6 @@ namespace Player.WeaponData
 
                 if (possibleWeapons[currentWeaponIndex].weaponOnHit !=null)
                     OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
-
-                yield return null;
             }
             else
             {
