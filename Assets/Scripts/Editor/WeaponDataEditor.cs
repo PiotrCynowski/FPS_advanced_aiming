@@ -13,7 +13,7 @@ public class WeaponDataEditor : Editor
         ShotType weaponType = (ShotType)serializedObject.FindProperty("weaponType").enumValueIndex;
         RifleType rifleType = (RifleType)serializedObject.FindProperty("rifleType").enumValueIndex;
 
-        if (weaponType == ShotType.obj || weaponType == ShotType.grenade)
+        if (weaponType != ShotType.ray)
         {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("bulletTemplate"));
         }

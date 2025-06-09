@@ -6,28 +6,40 @@ namespace Weapons
 {
     public class BulletGrenade : Bullet
     {
-        [SerializeField] private float itemThrowForce;      
+        [SerializeField] private float itemThrowForce;
         [SerializeField] private int radius;
+        [SerializeField] Rigidbody rb;
+        [SerializeField] private LayerMask targetLayer;
         public Action<Vector3, int, int> OnGrenadeRayDamage;
 
         protected override void Start()
         {
             base.Start();
-            OnGrenadeRayDamage += PlayerWeapon.OnRadiusHit; 
+            OnGrenadeRayDamage += PlayerWeapon.OnRadiusHit;
         }
-       
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            OnGrenadeRayDamage -= PlayerWeapon.OnRadiusHit;
+        }
+
         protected override void OnDisable()
         {
-           Vector3 pos = transform.position;
-           OnWeaponHitEffect?.Invoke(pos, id);
-           OnGrenadeRayDamage?.Invoke(pos, radius, id);
-
-           base.OnDisable();
+            Vector3 pos = transform.position;
+            OnWeaponHitEffect?.Invoke(pos, id);
+            OnGrenadeRayDamage?.Invoke(pos, radius, id);
+            rb.velocity = Vector3.zero;
+            base.OnDisable();
         }
 
-        private void OnDestroy()
+        protected virtual void OnCollisionEnter(UnityEngine.Collision collision)
         {
-            OnGrenadeRayDamage -= PlayerWeapon.OnRadiusHit;
+            if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
+            {
+                rb.velocity = Vector3.zero;
+                OnHitTarget(collision.gameObject);
+            }
         }
 
         public void ThrowItem(Vector3 direction)
@@ -35,6 +47,10 @@ namespace Weapons
             rb.AddForce(direction * itemThrowForce, ForceMode.Impulse);
         }
 
+        public override void SetDirection(Vector3 dir, Vector3 dest, float speed)
+        {
+
+        }
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()

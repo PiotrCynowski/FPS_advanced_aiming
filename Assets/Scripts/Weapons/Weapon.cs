@@ -13,7 +13,6 @@ namespace Weapons
         public WeaponCanDestroySetup[] canDestroy;
         public Dictionary<TargetType, int> canDestroyDict;
         public Bullet bulletTemplate;
-        public RayBullet bulletRayTemplate;
         public PoolableOnHit weaponOnHit;
         public ParticleSystem muzzle;
         public float onHitDelayMultiplayer;

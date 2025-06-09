@@ -22,7 +22,6 @@ namespace Player.WeaponData
 
         private SpawnWithPool<Bullet> poolSpawner;
         private SpawnWithPool<PoolableOnHit> onHitEffectPoolSpawner;
-        private SpawnWithPool<RayBullet> rayBulletSpawner;
         private PlayerWeaponInfo weaponInfo;
         private IDamageable lastTargetObj;
         private Vector3? lastTargetHitPos;
@@ -68,7 +67,6 @@ namespace Player.WeaponData
         {
             poolSpawner = new();
             onHitEffectPoolSpawner = new();
-            rayBulletSpawner = new();
             weaponInfo = new();
 
             PrepareWeapons();
@@ -200,11 +198,6 @@ namespace Player.WeaponData
                     poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate, i);
                 }
 
-                if (possibleWeapons[i].bulletRayTemplate != null)
-                {
-                    rayBulletSpawner.AddPoolForGameObject(possibleWeapons[i].bulletRayTemplate, i);
-                }
-
                 if (possibleWeapons[i].weaponOnHit != null)
                     onHitEffectPoolSpawner.AddPoolForGameObject(possibleWeapons[i].weaponOnHit, i);
             }
@@ -287,7 +280,7 @@ namespace Player.WeaponData
 
                 float time = (transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer;
 
-                RayBullet bullet = rayBulletSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+                Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
                 bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, pos, time);
 
                 yield return new WaitForSeconds(time);
@@ -301,7 +294,7 @@ namespace Player.WeaponData
             }
             else
             {
-                RayBullet bullet = rayBulletSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
+                Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
                 bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, crosshairTarget.position, defaultRayDistance * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             }
         }
@@ -330,7 +323,7 @@ namespace Player.WeaponData
                 case ShotType.obj:
                     Bullet bullet = poolSpawner.GetSpawnObject(gunBarrel, currentWeaponIndex);
                     bullet.damage = currentDamage;
-                    bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized);
+                    bullet.SetDirection((crosshairTarget.position - gunBarrel.position).normalized, Vector3.zero, 0);
                     break;
                 case ShotType.distanceRay:
                     StartCoroutine(DelayedBulletHit());

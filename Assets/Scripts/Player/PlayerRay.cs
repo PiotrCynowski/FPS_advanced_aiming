@@ -78,13 +78,14 @@ namespace Player
                 }
                 else
                 {
+                    crosshairTarget.position = ray.GetPoint(defaultAimDistance);
                     weapon.GunBarrelInfo(hitWeapon.point, ray.direction);
                 }
             }
             else
             {
                 crosshairTarget.position = ray.GetPoint(defaultAimDistance);
-                weapon.GunBarrelInfo(crosshairTarget.position); //look at air
+                weapon.GunBarrelInfo(crosshairTarget.position);
             }
 
             if (Physics.Raycast(ray, out hit, rayDistance, targetLayerForCrosshair, QueryTriggerInteraction.Ignore))

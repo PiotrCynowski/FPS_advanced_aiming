@@ -7,15 +7,13 @@ using Player.WeaponData;
 namespace Weapons
 {
     public abstract class Bullet : MonoBehaviour, IPoolable<Bullet>
-    {      
+    {
         public float speed;
         protected int id;
-        public Rigidbody rb;
+
         [HideInInspector] public int damage;
         [SerializeField] private int lifeTime;
-        [SerializeField] private LayerMask targetLayer;
-       
-        private Vector3 direction;
+
         private Coroutine returnCoroutine;
         private bool isReturned;
 
@@ -27,13 +25,13 @@ namespace Weapons
             OnWeaponHitEffect += PlayerWeapon.OnHitEffect;
         }
 
-        protected void OnEnable()
+        protected virtual void OnEnable()
         {
             if (returnCoroutine != null)
             {
                 StopCoroutine(returnCoroutine);
             }
-            isReturned = false; 
+            isReturned = false;
             returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
         }
 
@@ -43,27 +41,11 @@ namespace Weapons
             {
                 StopCoroutine(returnCoroutine);
             }
-            rb.velocity = Vector3.zero;
         }
 
-        protected void OnDestroy()
+        protected virtual void OnDestroy()
         {
             OnWeaponHitEffect -= PlayerWeapon.OnHitEffect;
-        }
-
-        protected virtual void OnCollisionEnter(UnityEngine.Collision collision)
-        {
-            if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
-            {
-                rb.velocity = Vector3.zero;
-                OnHitTarget(collision.gameObject);
-            }
-        }
-
-        public void SetDirection(Vector3 dir)
-        {
-            direction = dir.normalized;
-            transform.forward = direction;
         }
 
         protected void OnHitTarget(GameObject target)
@@ -74,6 +56,8 @@ namespace Weapons
             }
             ReturnToPool();
         }
+
+        public abstract void SetDirection(Vector3 dir, Vector3 dest, float speed);
 
         #region pool
         public void Initialize(Action<Bullet, int> returnAction, int _id)
@@ -91,7 +75,7 @@ namespace Weapons
         private IEnumerator ReturnToPoolAfterDelay()
         {
             yield return new WaitForSeconds(lifeTime);
-            if(!isReturned) ReturnToPool();
+            if (!isReturned) ReturnToPool();
         }
         #endregion
     }
