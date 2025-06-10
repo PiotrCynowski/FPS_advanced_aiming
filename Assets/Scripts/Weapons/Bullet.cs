@@ -67,9 +67,9 @@ namespace Weapons
         }
 
         public void ReturnToPool()
-        {
-            isReturned = true;
+        {           
             returnToPool?.Invoke(this, id);
+            isReturned = true;
         }
 
         private IEnumerator ReturnToPoolAfterDelay()

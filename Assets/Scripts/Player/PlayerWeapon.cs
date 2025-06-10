@@ -4,6 +4,7 @@ using Weapons;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using static UnityEditor.PlayerSettings;
 
 namespace Player.WeaponData
 {
@@ -343,7 +344,7 @@ namespace Player.WeaponData
                 target?.TakeDamage(currentDamage, pos, rot, true);
 
                 if (possibleWeapons[currentWeaponIndex].weaponOnHit !=null)
-                    OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+                    OnHitWeaponAction(pos, currentWeaponIndex);
             }
             else
             {

@@ -12,8 +12,7 @@ namespace Weapons
         {
             base.OnEnable();
 
-            isMoving = true;
-            startPos = transform.position;
+            isMoving = true; 
         }
 
         protected override void OnDisable()
@@ -37,6 +36,7 @@ namespace Weapons
 
         public override void SetDirection(Vector3 dir, Vector3 dest, float speed)
         {
+            startPos = transform.position;
             direction = dir.normalized;
             transform.forward = direction;
             this.dest = dest;
