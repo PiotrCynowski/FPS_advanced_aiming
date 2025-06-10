@@ -4,7 +4,6 @@ using Weapons;
 using System.Collections;
 using System;
 using System.Collections.Generic;
-using static UnityEditor.PlayerSettings;
 
 namespace Player.WeaponData
 {
@@ -28,6 +27,7 @@ namespace Player.WeaponData
         private Vector3? lastTargetHitPos;
         private Quaternion? lastTargetHitRot;
 
+        private ParticleSystem currentMuzzle;
         private int currentWeaponIndex, weaponsLen;
 
         private float defaultRayDistance;
@@ -194,7 +194,12 @@ namespace Player.WeaponData
                 GameObject gunBarrel = new("GunBarrel");
                 gunBarrel.transform.parent = weapon.transform;
                 gunBarrel.transform.localPosition = possibleWeapons[i].gunBarrelPos;
-                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].magazine, possibleWeapons[i].maxMagazines));
+
+                ParticleSystem muzzle = null;
+                if (possibleWeapons[i].muzzle != null)
+                    muzzle = Instantiate(possibleWeapons[i].muzzle, gunBarrel.transform);
+
+                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].magazine, possibleWeapons[i].maxMagazines, muzzle));
                 weapon.SetActive(false);
 
                 if (possibleWeapons[i].bulletTemplate != null)
@@ -224,6 +229,8 @@ namespace Player.WeaponData
 
                 currentAmmo = data.currentAmmo;
                 currentMagazines = data.currentMagazines;
+
+                currentMuzzle = data.muzzle;
 
                 OnWeaponSwitch?.Invoke(data.modelRef.transform);
 
@@ -272,6 +279,9 @@ namespace Player.WeaponData
                 reloadRoutine = StartCoroutine(OnReload());
                 return;
             }
+
+            if (currentMuzzle != null)
+                currentMuzzle.Play();
 
             switch (possibleWeapons[currentWeaponIndex].weaponType)
             {
@@ -371,17 +381,19 @@ namespace Player.WeaponData
     {
         public GameObject modelRef;
         public Transform barrel;
+        public ParticleSystem muzzle;
         public int currentAmmo, currentMagazines;
         public int magazine, maxMagazines;
 
-        public WeaponData(GameObject modelRef, Transform gunBarrel, int magazine, int maxMagazines)
+        public WeaponData(GameObject modelRef, Transform gunBarrel, int magazine, int maxMagazines, ParticleSystem muzzle = null)
         {
             this.modelRef = modelRef;
-            this.barrel = gunBarrel;
+            this.barrel = gunBarrel;  
             this.currentAmmo = magazine;
             this.currentMagazines = 1;
             this.magazine = magazine;
             this.maxMagazines = maxMagazines;
+            this.muzzle = muzzle;
         }
     }
 }
