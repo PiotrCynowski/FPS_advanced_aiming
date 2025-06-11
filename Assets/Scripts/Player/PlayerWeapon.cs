@@ -52,16 +52,24 @@ namespace Player.WeaponData
         public delegate void OnObjTarget(CrosshairTarget target);
         public static event OnObjTarget OnWeaponObjTarget;
 
-        public static Action<Vector3?, int> OnHitEffect;
-        public static Action<Vector3, int, int> OnRadiusHit;
+        //public static Action<Vector3?, int> OnHitEffect;
+        //public static Action<Vector3, int, int> OnRadiusHit;
 
         public static Action<Transform> OnWeaponSwitch;
         public static Action<int, int> OnAmmoChange;
 
+        public static PlayerWeapon Instance { get; private set; }
+
         private void Awake()
         {
-            OnHitEffect += OnHitWeaponAction;
-            OnRadiusHit += OnRadiusHitAction;
+         //   OnHitEffect += OnHitWeaponAction;
+         //   OnRadiusHit += OnRadiusHitAction;
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
+            Instance = this;
         }
 
         private void Start()
@@ -76,8 +84,8 @@ namespace Player.WeaponData
         private void OnDestroy()
         {
 
-            OnHitEffect -= OnHitWeaponAction;
-            OnRadiusHit -= OnRadiusHitAction;
+            //OnHitEffect -= OnHitWeaponAction;
+            //OnRadiusHit -= OnRadiusHitAction;
         }
 
         public void GunBarrelInfo(Vector3? point = null, Vector3? direction = null, IDamageable target = null)
@@ -137,9 +145,7 @@ namespace Player.WeaponData
                 shootingRoutine = StartCoroutine(DelayedShot(possibleWeapons[currentWeaponIndex].shotInterval));
             }
             else
-            {
                 Shot();
-            }
         }
 
         public void SwitchWeaponMouseButScroll(bool isNext)
@@ -239,19 +245,20 @@ namespace Player.WeaponData
         }
 
         #region Callbacks
-        private void OnHitWeaponAction(Vector3? pos, int weaponId)
+        public void OnHitWeaponAction(Vector3? pos, int weaponId)
         {
-                onHitEffectPoolSpawner.GetSpawnObject(pos.Value, weaponId);
+            if (pos.HasValue && onHitEffectPoolSpawner.IsContainID(weaponId))
+                    onHitEffectPoolSpawner.GetSpawnObject(pos.Value, weaponId);
         }
 
-        private void OnRadiusHitAction(Vector3 position, int radius, int Id)
+        public void OnRadiusHitAction(Vector3 position, int radius, int Id)
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+            Collider[] colliders = Physics.OverlapSphere(position, radius);
 
             foreach (Collider nearbyObject in colliders)
             {
                 if (nearbyObject.TryGetComponent<IDamageable>(out var damageable))
-                    damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), transform.position, onHitEffect: false);
+                    damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), position, onHitEffect: false);
             }
         }
         #endregion
@@ -299,7 +306,7 @@ namespace Player.WeaponData
                     break;
                 case ShotType.ray:
                     lastTargetObj?.TakeDamage(currentDamage, lastTargetHitPos.Value, lastTargetHitRot, true);
-                    if (possibleWeapons[currentWeaponIndex].weaponOnHit != null && lastTargetHitPos.HasValue)
+                    if (possibleWeapons[currentWeaponIndex].weaponOnHit != null)
                         OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
                     break;
                 case ShotType.grenade:
@@ -331,8 +338,7 @@ namespace Player.WeaponData
             Quaternion rot = lastTargetHitRot.Value;
             yield return new WaitForSeconds((transform.position - pos).sqrMagnitude * possibleWeapons[currentWeaponIndex].onHitDelayMultiplayer);
             target?.TakeDamage(currentDamage, pos, rot, true);
-            if (lastTargetHitPos.HasValue)
-                OnHitWeaponAction(lastTargetHitPos.Value, currentWeaponIndex);
+            OnHitWeaponAction(pos, currentWeaponIndex);
             yield return null;
         }
 

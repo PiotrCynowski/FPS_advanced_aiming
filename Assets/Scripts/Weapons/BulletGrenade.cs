@@ -15,13 +15,13 @@ namespace Weapons
         protected override void Start()
         {
             base.Start();
-            OnGrenadeRayDamage += PlayerWeapon.OnRadiusHit;
+            OnGrenadeRayDamage += PlayerWeapon.Instance.OnRadiusHitAction;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            OnGrenadeRayDamage -= PlayerWeapon.OnRadiusHit;
+            OnGrenadeRayDamage -= PlayerWeapon.Instance.OnRadiusHitAction;
         }
 
         protected override void OnDisable()
@@ -49,7 +49,6 @@ namespace Weapons
 
         public override void SetDirection(Vector3 dir, Vector3 dest, float speed)
         {
-
         }
 
 #if UNITY_EDITOR

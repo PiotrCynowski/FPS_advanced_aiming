@@ -60,6 +60,11 @@ namespace PoolSpawner
             return poolObjList[id].Get();
         }
 
+        public bool IsContainID(int id)
+        {
+            return poolObjList.ContainsKey(id);
+        }
+
         private void ThisObjReleased(T obj, int id)
         {
             poolObjList[id].Release(obj);

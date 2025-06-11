@@ -22,7 +22,7 @@ namespace Weapons
 
         protected virtual void Start()
         {
-            OnWeaponHitEffect += PlayerWeapon.OnHitEffect;
+            OnWeaponHitEffect += PlayerWeapon.Instance.OnHitWeaponAction;
         }
 
         protected virtual void OnEnable()
@@ -45,7 +45,7 @@ namespace Weapons
 
         protected virtual void OnDestroy()
         {
-            OnWeaponHitEffect -= PlayerWeapon.OnHitEffect;
+            OnWeaponHitEffect -= PlayerWeapon.Instance.OnHitWeaponAction;
         }
 
         protected void OnHitTarget(GameObject target)
