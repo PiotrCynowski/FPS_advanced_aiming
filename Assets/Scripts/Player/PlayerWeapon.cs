@@ -50,20 +50,15 @@ namespace Player.WeaponData
         }
 
         public delegate void OnObjTarget(CrosshairTarget target);
-        public static event OnObjTarget OnWeaponObjTarget;
+        public event OnObjTarget OnWeaponObjTarget;
 
-        //public static Action<Vector3?, int> OnHitEffect;
-        //public static Action<Vector3, int, int> OnRadiusHit;
-
-        public static Action<Transform> OnWeaponSwitch;
-        public static Action<int, int> OnAmmoChange;
+        public Action<Transform> OnWeaponSwitch;
+        public Action<int, int> OnAmmoChange;
 
         public static PlayerWeapon Instance { get; private set; }
 
         private void Awake()
         {
-         //   OnHitEffect += OnHitWeaponAction;
-         //   OnRadiusHit += OnRadiusHitAction;
             if (Instance != null && Instance != this)
             {
                 Destroy(this);
@@ -79,13 +74,6 @@ namespace Player.WeaponData
             weaponInfo = new();
 
             PrepareWeapons();
-        }
-
-        private void OnDestroy()
-        {
-
-            //OnHitEffect -= OnHitWeaponAction;
-            //OnRadiusHit -= OnRadiusHitAction;
         }
 
         public void GunBarrelInfo(Vector3? point = null, Vector3? direction = null, IDamageable target = null)

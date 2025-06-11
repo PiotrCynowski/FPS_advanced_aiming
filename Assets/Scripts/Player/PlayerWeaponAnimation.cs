@@ -35,8 +35,7 @@ namespace Player
 
         public void Start()
         {
-            PlayerWeapon.OnWeaponSwitch += OnWeaponSwitchModel;
-
+            PlayerWeapon.Instance.OnWeaponSwitch += OnWeaponSwitchModel;
             PlayerMovement.onJump += OnJumpOrLandAction;
         }
 
@@ -57,9 +56,8 @@ namespace Player
 
         private void OnDestroy()
         {
+            PlayerWeapon.Instance.OnWeaponSwitch -= OnWeaponSwitchModel;
             PlayerMovement.onJump -= OnJumpOrLandAction;
-
-            PlayerWeapon.OnWeaponSwitch -= OnWeaponSwitchModel;
         }
 
         public void OnWeaponSprint(bool isPlayerSprint)
