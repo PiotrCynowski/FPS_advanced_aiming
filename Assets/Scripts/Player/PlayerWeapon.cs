@@ -249,6 +249,11 @@ namespace Player.WeaponData
                     damageable.TakeDamage(possibleWeapons[Id].GetDamageInfo(damageable.ObjectType), position, onHitEffect: false);
             }
         }
+
+        public void OnAddNewWeapon(Weapon Weapon, bool isAmmo)
+        {
+          
+        }
         #endregion
 
         #region Shooting

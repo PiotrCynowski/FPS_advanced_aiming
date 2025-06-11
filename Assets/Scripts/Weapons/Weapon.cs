@@ -7,6 +7,7 @@ namespace Weapons
     [CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/NewWeapon")]
     public class Weapon : ScriptableObject
     {
+        public string ID;
         public ShotType weaponType;
         public RifleType rifleType;
         public float shotInterval;

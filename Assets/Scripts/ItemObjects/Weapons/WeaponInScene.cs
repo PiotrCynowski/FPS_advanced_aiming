@@ -1,13 +1,16 @@
+using Player.WeaponData;
 using UnityEngine;
 using Weapons;
 
 public class WeaponInScene : InteractableObj, ICanBeInteracted
 {
     public Weapon Weapon;
+    public bool onlyAmmo = false;
 
     public void OnInteracted()
     {
-      
+        PlayerWeapon.Instance.OnAddNewWeapon(Weapon, isAmmo: onlyAmmo);
+        Destroy(gameObject);
     }
 
     private void Start()
