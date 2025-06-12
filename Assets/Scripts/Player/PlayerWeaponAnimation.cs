@@ -104,20 +104,17 @@ namespace Player
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
         }
 
-        private void OnWeaponSwitchModel(Transform weaponRef, System.Action onComplete, bool switchAnim = false)
+        private void OnWeaponSwitchModel(Transform weaponRef, System.Action onMiddleAnim, System.Action onComplete)
         {
             initialLocalPos = weaponRef.localPosition;
             weaponGO = weaponRef;
 
-            if (!switchAnim)
-                return;
-
             if (switchCoroutine != null)
                 StopCoroutine(switchCoroutine);
-            switchCoroutine = StartCoroutine(AnimateWeaponSwitch(weaponRef, onComplete));
+            switchCoroutine = StartCoroutine(AnimateWeaponSwitch(onMiddleAnim, onComplete));
         }
 
-        private IEnumerator AnimateWeaponSwitch(Transform weaponRef, System.Action onComplete)
+        private IEnumerator AnimateWeaponSwitch(System.Action onMiddleAnim, System.Action onComplete)
         {
             Vector3 downPos = initialLocalPos - new Vector3(0f, switchAnimDistance, 0f);
             float timer = 0f;
@@ -129,6 +126,7 @@ namespace Player
                 yield return null;
             }
 
+            onMiddleAnim?.Invoke();
             timer = 0f;
 
             while (timer < 1f)
