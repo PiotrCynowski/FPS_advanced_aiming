@@ -6,18 +6,20 @@ namespace Player
     {
         private ICanBeInteracted interactable;
 
-        public void RaycastInfo(ICanBeInteracted interactable)
+        public bool RaycastInfo(ICanBeInteracted interactable)
         {
             if (interactable == null)
             {
                 this.interactable = null;
-                return;
+                return false;
             }
 
             if (!ReferenceEquals(this.interactable, interactable))
             {
                 this.interactable = interactable;
+                return interactable.IsConditionMet();
             }
+            return false;
         }
 
         public void Interact()
@@ -33,5 +35,6 @@ namespace Player
 public interface ICanBeInteracted
 {
     void OnInteracted();
+    bool IsConditionMet();
 }
 

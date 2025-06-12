@@ -15,6 +15,11 @@ public class InteractableDoor : InteractableObj, ICanBeInteracted, ICanBeDoorAni
         interactRoutine = StartCoroutine(InteractionRoutine(isOn));
     }
 
+    public bool IsConditionMet()
+    {
+        return true;
+    }
+
     IEnumerator InteractionRoutine(bool isOn)
     {
         onInteraction?.Invoke(isOn);

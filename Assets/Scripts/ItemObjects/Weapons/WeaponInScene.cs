@@ -12,6 +12,10 @@ public class WeaponInScene : InteractableObj, ICanBeInteracted
         PlayerWeapon.Instance.OnAddNewWeapon(Weapon, isAmmo: onlyAmmo);
         Destroy(gameObject);
     }
+    public bool IsConditionMet()
+    {
+        return true;
+    }
 
     private void Start()
     {

@@ -27,23 +27,8 @@ namespace Player
         #region Target Bool  
         private bool isTG; //Target Grabbable
 
-        public static event Action<bool> OnInteractableSwitch;
+        public static event Action<bool, bool> OnInteractableSwitch;
         private bool isTI; //Target Interactable
-        public bool IsTI
-        {
-            get
-            {
-                return isTI;
-            }
-            set
-            {
-                if (isTI != value)
-                {
-                    isTI = value;
-                    OnInteractableSwitch?.Invoke(isTI);
-                }
-            }
-        }
         #endregion
 
         private void Start()
@@ -102,9 +87,8 @@ namespace Player
                     }
 
                     if (obj is ICanBeInteracted interactable)
-                    {
-                        IsTI = true;
-                        interact.RaycastInfo(interactable);
+                    {                     
+                        SetInteractable(true, interact.RaycastInfo(interactable));
                         isMatchedRay = true;
                     }
 
@@ -126,11 +110,20 @@ namespace Player
                 isTG = false;
             }
 
-            if (IsTI)
+            if (isTI)
             {        
                 interact.RaycastInfo(null);
-                IsTI = false;
+                SetInteractable(false, false);
             }    
+        }
+
+        private void SetInteractable(bool isOn, bool isCan)
+        {
+            if (isTI != isOn)
+            {
+                isTI = isOn;
+                OnInteractableSwitch?.Invoke(isTI, isCan);
+            }
         }
     }
 }

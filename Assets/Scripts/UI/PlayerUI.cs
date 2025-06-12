@@ -105,8 +105,9 @@ namespace UI.Elements
             ammoInfo.text = currentAmmo.ToString() + " / " + maxAmmo.ToString();
         }
 
-        private void OnInteractInfo(bool isOn)
+        private void OnInteractInfo(bool isOn, bool isCan)
         {
+            Debug.Log("OnInteractInfo:" + isCan);
             infoInteract.SetActive(isOn);
         }
     }  
