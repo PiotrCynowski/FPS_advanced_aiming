@@ -5,19 +5,23 @@ using UnityEngine.Events;
 public class InteractableDoor : InteractableObj, ICanBeInteracted, ICanBeDoorAnimated
 {
     [SerializeField] UnityEvent<bool> onInteraction;
+    [SerializeField] bool isLocked;
     bool isOn = false;
     Coroutine interactRoutine;
 
     public void OnInteracted()
     {
-      if(interactRoutine  != null) StopCoroutine(interactRoutine);
+        if (isLocked)
+            return;
+
+        if (interactRoutine != null) StopCoroutine(interactRoutine);
         isOn = !isOn;
         interactRoutine = StartCoroutine(InteractionRoutine(isOn));
     }
 
-    public bool IsConditionMet()
+    public string IsConditionMet()
     {
-        return true;
+        return isLocked ? "locked" : string.Empty;
     }
 
     IEnumerator InteractionRoutine(bool isOn)

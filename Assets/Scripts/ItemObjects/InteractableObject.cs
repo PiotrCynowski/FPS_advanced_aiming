@@ -5,9 +5,9 @@ public class InteractableObject : InteractableObj, ICanBeInteracted
 {
     [SerializeField] UnityEvent onInteraction;
 
-    public bool IsConditionMet()
+    public string IsConditionMet()
     {
-        return true;
+        return string.Empty;
     }
 
     public void OnInteracted()

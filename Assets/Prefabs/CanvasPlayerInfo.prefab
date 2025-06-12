@@ -901,6 +901,7 @@ MonoBehaviour:
   stamina: {fileID: 8293395910653029871}
   ammoInfo: {fileID: 2356574757267510432}
   infoInteract: {fileID: 8554757744863340083}
+  infoText: {fileID: 8619782929706411763}
 --- !u!114 &4453235882962586906
 MonoBehaviour:
   m_ObjectHideFlags: 0

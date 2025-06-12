@@ -19,37 +19,38 @@ namespace UI.Elements
         [Header("Ammo")]
         [SerializeField] private Text ammoInfo;
         [Header("Info")]
-        [SerializeField] private GameObject infoInteract;
-
-        private void OnEnable()
-        {
-            PlayerWeaponInfo.OnPlayerWeaponChanged += UpdateWeaponState;
-            PlayerWeaponInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
-
-            PlayerWeapon.Instance.OnWeaponObjTarget += CrosshairTargetInformation;
-            PlayerWeapon.Instance.OnAmmoChange += OnAmmoChange;
-
-            PlayerRay.OnInteractableSwitch += OnInteractInfo;
-
-            PlayerMovement.OnStaminaChanged += OnStaminaChanged;
-        }
-
-        private void OnDisable()
-        {
-            PlayerWeaponInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
-            PlayerWeaponInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
-
-            PlayerWeapon.Instance.OnWeaponObjTarget -= CrosshairTargetInformation;
-            PlayerWeapon.Instance.OnAmmoChange -= OnAmmoChange;
-
-            PlayerRay.OnInteractableSwitch -= OnInteractInfo;
-
-            PlayerMovement.OnStaminaChanged -= OnStaminaChanged;
-        }
+        [SerializeField] private Text infoText;
+        private readonly string interactOn = "[E] to interact";
 
         private void Start()
         {
             staminaContainer.SetActive(false);
+            Subscribe();
+        }
+
+        private void OnDestroy()
+        {
+            UnSubscribe();
+        }
+
+        private void Subscribe()
+        {
+            PlayerWeaponInfo.OnPlayerWeaponChanged += UpdateWeaponState;
+            PlayerWeaponInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
+            PlayerWeapon.Instance.OnWeaponObjTarget += CrosshairTargetInformation;
+            PlayerWeapon.Instance.OnAmmoChange += OnAmmoChange;
+            PlayerRay.OnInteractableSwitch += OnInteractInfo;
+            PlayerMovement.OnStaminaChanged += OnStaminaChanged;
+        }
+
+        private void UnSubscribe()
+        {
+            PlayerWeaponInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
+            PlayerWeaponInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
+            PlayerWeapon.Instance.OnWeaponObjTarget -= CrosshairTargetInformation;
+            PlayerWeapon.Instance.OnAmmoChange -= OnAmmoChange;
+            PlayerRay.OnInteractableSwitch -= OnInteractInfo;
+            PlayerMovement.OnStaminaChanged -= OnStaminaChanged;
         }
 
         #region update text
@@ -105,10 +106,11 @@ namespace UI.Elements
             ammoInfo.text = currentAmmo.ToString() + " / " + maxAmmo.ToString();
         }
 
-        private void OnInteractInfo(bool isOn, bool isCan)
+        private void OnInteractInfo(bool isOn, string isCan)
         {
             Debug.Log("OnInteractInfo:" + isCan);
-            infoInteract.SetActive(isOn);
+            infoText.text = string.IsNullOrEmpty(isCan) ? interactOn : isCan;
+            infoText.gameObject.SetActive(isOn);
         }
     }  
 }

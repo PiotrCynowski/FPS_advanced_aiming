@@ -12,9 +12,9 @@ public class WeaponInScene : InteractableObj, ICanBeInteracted
         PlayerWeapon.Instance.OnAddNewWeapon(Weapon, isAmmo: onlyAmmo);
         Destroy(gameObject);
     }
-    public bool IsConditionMet()
+    public string IsConditionMet()
     {
-        return true;
+        return string.Empty;
     }
 
     private void Start()

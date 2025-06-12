@@ -27,7 +27,7 @@ namespace Player
         #region Target Bool  
         private bool isTG; //Target Grabbable
 
-        public static event Action<bool, bool> OnInteractableSwitch;
+        public static event Action<bool, string> OnInteractableSwitch;
         private bool isTI; //Target Interactable
         #endregion
 
@@ -113,11 +113,11 @@ namespace Player
             if (isTI)
             {        
                 interact.RaycastInfo(null);
-                SetInteractable(false, false);
+                SetInteractable(false, "");
             }    
         }
 
-        private void SetInteractable(bool isOn, bool isCan)
+        private void SetInteractable(bool isOn, string isCan)
         {
             if (isTI != isOn)
             {
