@@ -1,11 +1,13 @@
 using UnityEngine;
 using Player.WeaponData;
+using System.Collections;
 
 namespace Player
 {
     public class PlayerWeaponAnimation : MonoBehaviour
     {
         [SerializeField] private Transform crosshairTarget;
+        [SerializeField] private Transform weaponHolder;
         [SerializeField] private float rotationSpeed = 5f;
         private Transform weaponGO;
 
@@ -30,6 +32,12 @@ namespace Player
 
         private float bobTimer = 0f;
         private Vector3 bobOffset = Vector3.zero;
+
+        [Header("Weapon Switch Animation")]
+        [SerializeField] private float switchAnimDistance = 0.3f;
+        [SerializeField] private float switchAnimSpeed = 6f;
+
+        private Coroutine switchCoroutine;
 
         private Vector3 initialLocalPos, targetOffset;
 
@@ -96,10 +104,41 @@ namespace Player
             swayImpulse = new Vector3(0f, isJump ? -jumpSwayAmount : landBounceAmount, 0f);
         }
 
-        private void OnWeaponSwitchModel(Transform weaponRef)
+        private void OnWeaponSwitchModel(Transform weaponRef, System.Action onComplete, bool switchAnim = false)
         {
             initialLocalPos = weaponRef.localPosition;
             weaponGO = weaponRef;
+
+            if (!switchAnim)
+                return;
+
+            if (switchCoroutine != null)
+                StopCoroutine(switchCoroutine);
+            switchCoroutine = StartCoroutine(AnimateWeaponSwitch(weaponRef, onComplete));
+        }
+
+        private IEnumerator AnimateWeaponSwitch(Transform weaponRef, System.Action onComplete)
+        {
+            Vector3 downPos = initialLocalPos - new Vector3(0f, switchAnimDistance, 0f);
+            float timer = 0f;
+
+            while (timer < 1f)
+            {
+                timer += Time.deltaTime * switchAnimSpeed;
+                weaponHolder.localPosition = Vector3.Lerp(initialLocalPos, downPos, timer);
+                yield return null;
+            }
+
+            timer = 0f;
+
+            while (timer < 1f)
+            {
+                timer += Time.deltaTime * switchAnimSpeed;
+                weaponHolder.localPosition = Vector3.Lerp(downPos, initialLocalPos, timer);
+                yield return null;
+            }
+
+            onComplete?.Invoke();
         }
     }
 }

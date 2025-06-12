@@ -108,7 +108,6 @@ namespace UI.Elements
 
         private void OnInteractInfo(bool isOn, string isCan)
         {
-            Debug.Log("OnInteractInfo:" + isCan);
             infoText.text = string.IsNullOrEmpty(isCan) ? interactOn : isCan;
             infoText.gameObject.SetActive(isOn);
         }

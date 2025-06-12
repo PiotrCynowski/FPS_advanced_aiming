@@ -29,6 +29,7 @@ namespace Player.WeaponData
 
         private ParticleSystem currentMuzzle;
         private int currentWeaponIndex, weaponsLen;
+        private bool isReadyToSwitch = true;
 
         private float defaultRayDistance;
         private int currentDamage, currentAmmo, currentMagazines, magazine;
@@ -52,7 +53,7 @@ namespace Player.WeaponData
         public delegate void OnObjTarget(CrosshairTarget target);
         public event OnObjTarget OnWeaponObjTarget;
 
-        public Action<Transform> OnWeaponSwitch;
+        public Action<Transform, Action, bool> OnWeaponSwitch;
         public Action<int, int> OnAmmoChange;
 
         public static PlayerWeapon Instance { get; private set; }
@@ -138,6 +139,11 @@ namespace Player.WeaponData
 
         public void SwitchWeaponMouseButScroll(bool isNext)
         {
+            if (!isReadyToSwitch)
+                return;
+
+            isReadyToSwitch = false;
+
             weaponsCollection[currentWeaponIndex].currentAmmo = currentAmmo;
             weaponsCollection[currentWeaponIndex].currentMagazines = currentMagazines;
 
@@ -162,7 +168,7 @@ namespace Player.WeaponData
             currentDamage = possibleWeapons[currentWeaponIndex].GetDamageInfo(currentTargMat);
             magazine = weaponsCollection[currentWeaponIndex].magazine;
 
-            WeaponModelSwitch(currentWeaponIndex);
+            WeaponModelSwitch(currentWeaponIndex, true);
 
             if (currentTargMat == TargetType.None)
             {
@@ -209,10 +215,12 @@ namespace Player.WeaponData
             weaponInfo.CurrentWeaponMatInfo = possibleWeapons[currentWeaponIndex].GetMaterialInfo();
             magazine = weaponsCollection[currentWeaponIndex].magazine;
 
-            WeaponModelSwitch(currentWeaponIndex);
+            WeaponModelSwitch(currentWeaponIndex, false);
         }
 
-        private void WeaponModelSwitch(int currentWeaponIndex)
+        private void MarkReadyToSwitch() => isReadyToSwitch = true;
+
+        private void WeaponModelSwitch(int currentWeaponIndex, bool switchAnim)
         {
             if (weaponsCollection.TryGetValue(currentWeaponIndex, out WeaponData data))
             {
@@ -226,7 +234,7 @@ namespace Player.WeaponData
 
                 currentMuzzle = data.muzzle;
 
-                OnWeaponSwitch?.Invoke(data.modelRef.transform);
+                OnWeaponSwitch?.Invoke(data.modelRef.transform, MarkReadyToSwitch, switchAnim);
 
                 OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
             }
