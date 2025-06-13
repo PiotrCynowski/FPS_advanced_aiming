@@ -39,15 +39,20 @@ namespace Player
 
         private Coroutine switchCoroutine;
 
-        private Vector3 initialLocalPos, targetOffset;
+        private Vector3 initialLocalPos, targetOffset, downPos;
 
-        public void Start()
+        private void Awake()
+        {
+            downPos = Vector3.zero - new Vector3(0f, switchAnimDistance, 0f);
+        }
+
+        private void Start()
         {
             PlayerWeapon.Instance.OnWeaponSwitch += OnWeaponSwitchModel;
             PlayerMovement.onJump += OnJumpOrLandAction;
         }
 
-        public void Update()
+        private void Update()
         {
             if(weaponGO == null) return;
 
@@ -116,9 +121,7 @@ namespace Player
 
         private IEnumerator AnimateWeaponSwitch(System.Action onMiddleAnim, System.Action onComplete)
         {
-            Vector3 downPos = Vector3.zero - new Vector3(0f, switchAnimDistance, 0f);
             float timer = 0f;
-
             while (timer < 1f)
             {
                 timer += Time.deltaTime * switchAnimSpeed;
@@ -128,7 +131,6 @@ namespace Player
 
             onMiddleAnim?.Invoke();
             timer = 0f;
-
             while (timer < 1f)
             {
                 timer += Time.deltaTime * switchAnimSpeed;
