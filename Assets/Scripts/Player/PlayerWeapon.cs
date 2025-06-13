@@ -141,7 +141,7 @@ namespace Player.WeaponData
 
         public void SwitchWeaponMouseButScroll(bool isNext)
         {
-            if (isReadyToSwitch && !isSwitching)
+            if (!isReadyToSwitch && isSwitching && isAnim)
                 return;
 
             isReadyToSwitch = false;

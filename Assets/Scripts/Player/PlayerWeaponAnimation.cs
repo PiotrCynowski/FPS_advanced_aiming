@@ -116,13 +116,13 @@ namespace Player
 
         private IEnumerator AnimateWeaponSwitch(System.Action onMiddleAnim, System.Action onComplete)
         {
-            Vector3 downPos = initialLocalPos - new Vector3(0f, switchAnimDistance, 0f);
+            Vector3 downPos = Vector3.zero - new Vector3(0f, switchAnimDistance, 0f);
             float timer = 0f;
 
             while (timer < 1f)
             {
                 timer += Time.deltaTime * switchAnimSpeed;
-                weaponHolder.localPosition = Vector3.Lerp(initialLocalPos, downPos, timer);
+                weaponHolder.localPosition = Vector3.Lerp(Vector3.zero, downPos, timer);
                 yield return null;
             }
 
@@ -132,7 +132,7 @@ namespace Player
             while (timer < 1f)
             {
                 timer += Time.deltaTime * switchAnimSpeed;
-                weaponHolder.localPosition = Vector3.Lerp(downPos, initialLocalPos, timer);
+                weaponHolder.localPosition = Vector3.Lerp(downPos, Vector3.zero, timer);
                 yield return null;
             }
 
