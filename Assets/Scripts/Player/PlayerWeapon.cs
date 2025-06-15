@@ -191,7 +191,7 @@ namespace Player.WeaponData
 
             for (int i = 0; i < weaponsLen; i++)
             {
-                possibleWeapons[i].PrepareWeapon();
+                possibleWeapons[i].PrepareWeapon(i);
 
                 GameObject weapon = Instantiate(possibleWeapons[i].weaponModel, weaponsContainer);
                 weapon.transform.localPosition = possibleWeapons[i].weaponPos;
@@ -203,7 +203,7 @@ namespace Player.WeaponData
                 if (possibleWeapons[i].muzzle != null)
                     muzzle = Instantiate(possibleWeapons[i].muzzle, gunBarrel.transform);
 
-                weaponsCollection.Add(i, new(weapon, gunBarrel.transform, possibleWeapons[i].magazine, possibleWeapons[i].maxMagazines, muzzle));
+                weaponsCollection.Add(i, new(possibleWeapons[i].objName, weapon, gunBarrel.transform, possibleWeapons[i].magazine, possibleWeapons[i].maxMagazines, muzzle));
                 weapon.SetActive(false);
 
                 if (possibleWeapons[i].bulletTemplate != null)
@@ -272,7 +272,9 @@ namespace Player.WeaponData
 
         public void OnAddNewWeapon(Weapon Weapon, bool isAmmo)
         {
-          
+          //  List<Weapon> weapons = weaponsCollection.Values;
+
+          //if(weaponsCollection.Values)
         }
         #endregion
 
@@ -398,14 +400,16 @@ namespace Player.WeaponData
 
     public class WeaponData
     {
+        public string name;
         public GameObject modelRef;
         public Transform barrel;
         public ParticleSystem muzzle;
         public int currentAmmo, currentMagazines;
         public int magazine, maxMagazines;
 
-        public WeaponData(GameObject modelRef, Transform gunBarrel, int magazine, int maxMagazines, ParticleSystem muzzle = null)
+        public WeaponData(string name, GameObject modelRef, Transform gunBarrel, int magazine, int maxMagazines, ParticleSystem muzzle = null)
         {
+            this.name = name;
             this.modelRef = modelRef;
             this.barrel = gunBarrel;  
             this.currentAmmo = magazine;

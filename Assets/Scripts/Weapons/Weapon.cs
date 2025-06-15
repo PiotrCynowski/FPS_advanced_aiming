@@ -7,7 +7,8 @@ namespace Weapons
     [CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/NewWeapon")]
     public class Weapon : ScriptableObject
     {
-        public string ID;
+        private int index;
+        public string objName;
         public ShotType weaponType;
         public RifleType rifleType;
         public float shotInterval;
@@ -41,8 +42,9 @@ namespace Weapons
             return canDestroyTheseMat;
         }
 
-        public void PrepareWeapon()
+        public void PrepareWeapon(int index)
         {
+            this.index = index;
             canDestroyDict = new Dictionary<TargetType, int>();
             foreach (WeaponCanDestroySetup setup in canDestroy)
             {
