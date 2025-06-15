@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399f67dcacd780741a999f44043cb219, type: 3}
   m_Name: Weapon1_distanceLaser
   m_EditorClassIdentifier: 
+  objName: distance laser
   weaponType: 3
   rifleType: 0
   shotInterval: 0

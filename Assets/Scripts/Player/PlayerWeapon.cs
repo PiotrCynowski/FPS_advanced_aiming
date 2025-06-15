@@ -191,28 +191,7 @@ namespace Player.WeaponData
 
             for (int i = 0; i < weaponsLen; i++)
             {
-                possibleWeapons[i].PrepareWeapon(i);
-
-                GameObject weapon = Instantiate(possibleWeapons[i].weaponModel, weaponsContainer);
-                weapon.transform.localPosition = possibleWeapons[i].weaponPos;
-                GameObject gunBarrel = new("GunBarrel");
-                gunBarrel.transform.parent = weapon.transform;
-                gunBarrel.transform.localPosition = possibleWeapons[i].gunBarrelPos;
-
-                ParticleSystem muzzle = null;
-                if (possibleWeapons[i].muzzle != null)
-                    muzzle = Instantiate(possibleWeapons[i].muzzle, gunBarrel.transform);
-
-                weaponsCollection.Add(i, new(possibleWeapons[i].objName, weapon, gunBarrel.transform, possibleWeapons[i].magazine, possibleWeapons[i].maxMagazines, muzzle));
-                weapon.SetActive(false);
-
-                if (possibleWeapons[i].bulletTemplate != null)
-                {
-                    poolSpawner.AddPoolForGameObject(possibleWeapons[i].bulletTemplate, i);
-                }
-
-                if (possibleWeapons[i].weaponOnHit != null)
-                    onHitEffectPoolSpawner.AddPoolForGameObject(possibleWeapons[i].weaponOnHit, i);
+                PrepareWeapon(i, possibleWeapons[i]);
             }
 
             currentWeaponIndex = 0;
@@ -220,6 +199,32 @@ namespace Player.WeaponData
             magazine = weaponsCollection[currentWeaponIndex].magazine;
 
             StartCoroutine(WeaponModelSwitch(currentWeaponIndex));
+        }
+
+        private void PrepareWeapon(int index, Weapon weapon)
+        {
+            weapon.PrepareWeapon(index);
+
+            GameObject weaponGO = Instantiate(weapon.weaponModel, weaponsContainer);
+            weaponGO.transform.localPosition = weapon.weaponPos;
+            GameObject gunBarrel = new("GunBarrel");
+            gunBarrel.transform.parent = weaponGO.transform;
+            gunBarrel.transform.localPosition = weapon.gunBarrelPos;
+
+            ParticleSystem muzzle = null;
+            if (weapon.muzzle != null)
+                muzzle = Instantiate(weapon.muzzle, gunBarrel.transform);
+
+            weaponsCollection.Add(index, new(weapon.objName, weaponGO, gunBarrel.transform, weapon.magazine, weapon.maxMagazines, muzzle));
+            weaponGO.SetActive(false);
+
+            if (weapon.bulletTemplate != null)
+            {
+                poolSpawner.AddPoolForGameObject(weapon.bulletTemplate, index);
+            }
+
+            if (weapon.weaponOnHit != null)
+                onHitEffectPoolSpawner.AddPoolForGameObject(weapon.weaponOnHit, index);
         }
 
         private void MarkAnimInMiddle() => isAnim = false;
@@ -270,11 +275,23 @@ namespace Player.WeaponData
             }
         }
 
-        public void OnAddNewWeapon(Weapon Weapon, bool isAmmo)
+        public void OnAddNewWeapon(Weapon weapon, bool isAmmo)
         {
-          //  List<Weapon> weapons = weaponsCollection.Values;
+            int index = weapon.GetIndex();
+            if (weaponsCollection.ContainsKey(index))
+            {
+                PrepareWeapon(weaponsCollection.Keys.Count, weapon);
+                StartCoroutine(WeaponModelSwitch(index));
+            }
+            else
+            {
 
-          //if(weaponsCollection.Values)
+            }
+        }
+
+        public void OnAddAmunition(int index)
+        {
+
         }
         #endregion
 

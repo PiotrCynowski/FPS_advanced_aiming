@@ -62,5 +62,7 @@ namespace Weapons
 
             return 0;
         }
+
+        public int GetIndex() { return index; }
     }
 }
