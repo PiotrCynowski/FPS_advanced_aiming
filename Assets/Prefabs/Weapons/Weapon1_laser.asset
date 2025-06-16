@@ -26,6 +26,7 @@ MonoBehaviour:
   muzzle: {fileID: 7035550439372811042, guid: 5895b2d979370474a9a7dc113255b30e, type: 3}
   onHitDelayMultiplayer: 0.005
   weaponModel: {fileID: 6385154978587273694, guid: cb21245bcf2bc524292dce140a7ec5ba, type: 3}
+  ammoModel: {fileID: 348115494476238330, guid: 04ae346f4a175a44ca0ae840e3288165, type: 3}
   gunBarrelPos: {x: 0, y: 0.011, z: 0.558}
   weaponPos: {x: 0.426, y: -0.292, z: 0.642}
   magazine: 30

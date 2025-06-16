@@ -15,7 +15,7 @@ namespace Player.WeaponData
 
         [Header("Weapon Settings")]
         [SerializeField] private Transform weaponsContainer;
-        [SerializeField] private Weapon[] possibleWeapons;
+        [SerializeField] private List<Weapon> possibleWeapons;
         private Dictionary<int, WeaponData> weaponsCollection;
         private GameObject currentWeapon;
         private Transform gunBarrel;
@@ -28,7 +28,7 @@ namespace Player.WeaponData
         private Quaternion? lastTargetHitRot;
 
         private ParticleSystem currentMuzzle;
-        private int currentWeaponIndex, weaponsLen;
+        public int currentWeaponIndex, weaponsLen;
         public bool isSwitching, isAnim, isReadyToSwitch;
 
         private float defaultRayDistance;
@@ -186,10 +186,10 @@ namespace Player.WeaponData
 
         private void PrepareWeapons()
         {
-            weaponsLen = possibleWeapons.Length;
+            weaponsLen = possibleWeapons.Count;
             weaponsCollection = new();
 
-            for (int i = 0; i < weaponsLen; i++)
+            for (int i = 0; i < possibleWeapons.Count; i++)
             {
                 PrepareWeapon(i, possibleWeapons[i]);
             }
@@ -278,10 +278,16 @@ namespace Player.WeaponData
         public void OnAddNewWeapon(Weapon weapon, bool isAmmo)
         {
             int index = weapon.GetIndex();
+
             if (!weaponsCollection.ContainsKey(index))
             {
-                PrepareWeapon(weaponsCollection.Keys.Count, weapon);
-                StartCoroutine(WeaponModelSwitch(index));
+                int newIndex = weaponsCollection.Keys.Count;
+                weapon.PrepareWeapon(newIndex);
+                PrepareWeapon(newIndex, weapon);
+                StartCoroutine(WeaponModelSwitch(newIndex));
+                weaponsLen = newIndex + 1;
+                currentWeaponIndex = newIndex;
+                possibleWeapons.Add(weapon);
             }
             else
                 OnAddAmunition(index);
@@ -289,6 +295,8 @@ namespace Player.WeaponData
 
         public void OnAddAmunition(int index)
         {
+            Debug.Log($"OnAddAmunition index: {index}");
+
             if (currentWeaponIndex == index)
             {
                 magazine = possibleWeapons[index].maxMagazines;

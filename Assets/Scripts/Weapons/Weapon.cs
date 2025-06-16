@@ -7,7 +7,7 @@ namespace Weapons
     [CreateAssetMenu(fileName = "Weapon", menuName = "Weapons/NewWeapon")]
     public class Weapon : ScriptableObject
     {
-        private int index;
+        public int index;
         public string objName;
         public ShotType weaponType;
         public RifleType rifleType;
@@ -22,6 +22,11 @@ namespace Weapons
         public Vector3 gunBarrelPos, weaponPos;
         public int magazine, maxMagazines;
         public float reloadTime;
+
+        private void OnEnable()
+        {
+            index = -1;
+        }
 
         [Serializable]
         public class WeaponCanDestroySetup

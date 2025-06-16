@@ -1193,6 +1193,18 @@ PrefabInstance:
       propertyPath: crosshairUI
       value: 
       objectReference: {fileID: 238248649}
+    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: possibleWeapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: possibleWeapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 0bb06090656beac41a91e5e199e3274b, type: 2}
+    - target: {fileID: 1891586907174809481, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: possibleWeapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: d562d919e5ccff54d86b6d30f1d11489, type: 2}
     - target: {fileID: 1891586907174809482, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: playerCrosshair
       value: 
