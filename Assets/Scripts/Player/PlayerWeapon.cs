@@ -304,6 +304,11 @@ namespace Player.WeaponData
 
             weaponsCollection[index].magazine = possibleWeapons[index].maxMagazines;
         }
+
+        public bool IsCanAddAmmo(int index)
+        {
+            return weaponsCollection.ContainsKey(index) && weaponsCollection[index].currentMagazines < possibleWeapons[index].maxMagazines;
+        }
         #endregion
 
         #region Shooting

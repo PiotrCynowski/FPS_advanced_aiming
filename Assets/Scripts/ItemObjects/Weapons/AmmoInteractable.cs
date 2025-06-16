@@ -13,6 +13,9 @@ public class AmmoInteractable : TriggerObjects
 
     public override void OnTriggerEnter(Collider other)
     {
+        if (!PlayerWeapon.Instance.IsCanAddAmmo(weapon.GetIndex()))
+            return;
+
         PlayerWeapon.Instance.OnAddAmunition(weapon.GetIndex());
 
         base.OnTriggerEnter(other);
