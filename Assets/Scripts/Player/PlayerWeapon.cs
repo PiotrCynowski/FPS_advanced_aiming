@@ -210,6 +210,7 @@ namespace Player.WeaponData
             GameObject gunBarrel = new("GunBarrel");
             gunBarrel.transform.parent = weaponGO.transform;
             gunBarrel.transform.localPosition = weapon.gunBarrelPos;
+            gunBarrel.transform.localEulerAngles = Vector3.zero;
 
             ParticleSystem muzzle = null;
             if (weapon.muzzle != null)
@@ -295,11 +296,9 @@ namespace Player.WeaponData
 
         public void OnAddAmunition(int index)
         {
-            Debug.Log($"OnAddAmunition index: {index}");
-
             if (currentWeaponIndex == index)
             {
-                magazine = possibleWeapons[index].maxMagazines;
+                magazine = possibleWeapons[index].maxMagazines * magazine;
                 OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
             }
 
