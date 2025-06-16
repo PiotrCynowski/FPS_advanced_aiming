@@ -56,6 +56,8 @@ namespace Player.WeaponData
         public Action<Transform, Action, Action> OnWeaponSwitch;
         public Action<int, int> OnAmmoChange;
 
+        public Action<string> OnWeaponTriggerInfo;
+
         public static PlayerWeapon Instance { get; private set; }
 
         private void Awake()
@@ -302,12 +304,24 @@ namespace Player.WeaponData
                 OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
             }
 
-            weaponsCollection[index].magazine = possibleWeapons[index].maxMagazines;
+            weaponsCollection[index].currentMagazines = possibleWeapons[index].maxMagazines;
         }
 
         public bool IsCanAddAmmo(int index)
         {
-            return weaponsCollection.ContainsKey(index) && weaponsCollection[index].currentMagazines < possibleWeapons[index].maxMagazines;
+            if (!weaponsCollection.ContainsKey(index))
+            {
+                OnWeaponTriggerInfo?.Invoke("missing weapon");
+                return false;
+            }
+
+            if(weaponsCollection[index].currentMagazines >= possibleWeapons[index].maxMagazines)
+            {
+                OnWeaponTriggerInfo?.Invoke("full ammo");
+                return false;
+            }
+
+            return true;
         }
         #endregion
 

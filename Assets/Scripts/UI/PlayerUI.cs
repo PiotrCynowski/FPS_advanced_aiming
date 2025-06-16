@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Player.WeaponData;
 using Player;
+using System.Collections;
 
 namespace UI.Elements 
 {
@@ -19,8 +20,9 @@ namespace UI.Elements
         [Header("Ammo")]
         [SerializeField] private Text ammoInfo;
         [Header("Info")]
-        [SerializeField] private Text infoText;
+        [SerializeField] private Text infoInteractable, infoTrigger;
         private readonly string interactOn = "[E] to interact";
+        private Coroutine triggerInfoRoutine;
 
         private void Start()
         {
@@ -37,8 +39,11 @@ namespace UI.Elements
         {
             PlayerWeaponInfo.OnPlayerWeaponChanged += UpdateWeaponState;
             PlayerWeaponInfo.OnPlayerDestrObjChanged += UpdateDestrObjState;
+
             PlayerWeapon.Instance.OnWeaponObjTarget += CrosshairTargetInformation;
             PlayerWeapon.Instance.OnAmmoChange += OnAmmoChange;
+            PlayerWeapon.Instance.OnWeaponTriggerInfo += OnTriggerInfo;
+
             PlayerRay.OnInteractableSwitch += OnInteractInfo;
             PlayerMovement.OnStaminaChanged += OnStaminaChanged;
         }
@@ -47,8 +52,11 @@ namespace UI.Elements
         {
             PlayerWeaponInfo.OnPlayerWeaponChanged -= UpdateWeaponState;
             PlayerWeaponInfo.OnPlayerDestrObjChanged -= UpdateDestrObjState;
+
             PlayerWeapon.Instance.OnWeaponObjTarget -= CrosshairTargetInformation;
             PlayerWeapon.Instance.OnAmmoChange -= OnAmmoChange;
+            PlayerWeapon.Instance.OnWeaponTriggerInfo -= OnTriggerInfo;
+
             PlayerRay.OnInteractableSwitch -= OnInteractInfo;
             PlayerMovement.OnStaminaChanged -= OnStaminaChanged;
         }
@@ -108,8 +116,25 @@ namespace UI.Elements
 
         private void OnInteractInfo(bool isOn, string isCan)
         {
-            infoText.text = string.IsNullOrEmpty(isCan) ? interactOn : isCan;
-            infoText.gameObject.SetActive(isOn);
+            infoInteractable.text = string.IsNullOrEmpty(isCan) ? interactOn : isCan;
+            infoInteractable.gameObject.SetActive(isOn);
+        }
+
+        private void OnTriggerInfo(string info)
+        {
+            if(triggerInfoRoutine != null)
+                StopCoroutine(triggerInfoRoutine);
+
+            infoTrigger.text = info;
+
+            triggerInfoRoutine = StartCoroutine(OnTrigger());
+        }
+
+        private IEnumerator OnTrigger()
+        {
+            infoTrigger.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1);
+            infoTrigger.gameObject.SetActive(false);
         }
     }  
 }
