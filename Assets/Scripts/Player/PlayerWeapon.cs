@@ -278,20 +278,24 @@ namespace Player.WeaponData
         public void OnAddNewWeapon(Weapon weapon, bool isAmmo)
         {
             int index = weapon.GetIndex();
-            if (weaponsCollection.ContainsKey(index))
+            if (!weaponsCollection.ContainsKey(index))
             {
                 PrepareWeapon(weaponsCollection.Keys.Count, weapon);
                 StartCoroutine(WeaponModelSwitch(index));
             }
             else
-            {
-
-            }
+                OnAddAmunition(index);
         }
 
         public void OnAddAmunition(int index)
         {
+            if (currentWeaponIndex == index)
+            {
+                magazine = possibleWeapons[index].maxMagazines;
+                OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
+            }
 
+            weaponsCollection[index].magazine = possibleWeapons[index].maxMagazines;
         }
         #endregion
 
@@ -315,7 +319,8 @@ namespace Player.WeaponData
                     return;
                 }
 
-                reloadRoutine = StartCoroutine(OnReload());
+                if (currentMagazines > 0)
+                    reloadRoutine = StartCoroutine(OnReload());
                 return;
             }
 
@@ -403,14 +408,11 @@ namespace Player.WeaponData
 
         private IEnumerator OnReload()
         {
-            if (currentMagazines > 0)
-            {
-                yield return new WaitForSeconds(possibleWeapons[currentWeaponIndex].reloadTime);
-                currentMagazines--;
-                currentAmmo = magazine;
-                reloadRoutine = null;
-                OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
-            }
+            yield return new WaitForSeconds(possibleWeapons[currentWeaponIndex].reloadTime);
+            currentMagazines--;
+            currentAmmo = magazine;
+            reloadRoutine = null;
+            OnAmmoChange?.Invoke(currentAmmo, currentMagazines * magazine);
         }
         #endregion
     }
