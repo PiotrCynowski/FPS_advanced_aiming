@@ -18,7 +18,7 @@ namespace Weapons
         public PoolableOnHit weaponOnHit;
         public ParticleSystem muzzle;
         public float onHitDelayMultiplayer;
-        public GameObject weaponModel;
+        public GameObject weaponModel, ammoModel;
         public Vector3 gunBarrelPos, weaponPos;
         public int magazine, maxMagazines;
         public float reloadTime;
