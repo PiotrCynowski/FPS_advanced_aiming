@@ -75,6 +75,15 @@ namespace GameInput
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Focus"",
+                    ""type"": ""Button"",
+                    ""id"": ""21a3a379-c869-43f0-b9a3-dace8258a271"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""WeaponSwitchNext"",
                     ""type"": ""Value"",
                     ""id"": ""d30c8349-f7ae-4c87-97ba-bfd7ef8d6a2a"",
@@ -171,6 +180,17 @@ namespace GameInput
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Shot1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d687858b-7350-49ce-97c6-3f2a618c3146"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Focus"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -318,6 +338,7 @@ namespace GameInput
             m_Player_MouseX = m_Player.FindAction("MouseX", throwIfNotFound: true);
             m_Player_MouseY = m_Player.FindAction("MouseY", throwIfNotFound: true);
             m_Player_Shot1 = m_Player.FindAction("Shot1", throwIfNotFound: true);
+            m_Player_Focus = m_Player.FindAction("Focus", throwIfNotFound: true);
             m_Player_WeaponSwitchNext = m_Player.FindAction("WeaponSwitchNext", throwIfNotFound: true);
             m_Player_WeaponSwitchPrevious = m_Player.FindAction("WeaponSwitchPrevious", throwIfNotFound: true);
             m_Player_Grab = m_Player.FindAction("Grab", throwIfNotFound: true);
@@ -395,6 +416,7 @@ namespace GameInput
         private readonly InputAction m_Player_MouseX;
         private readonly InputAction m_Player_MouseY;
         private readonly InputAction m_Player_Shot1;
+        private readonly InputAction m_Player_Focus;
         private readonly InputAction m_Player_WeaponSwitchNext;
         private readonly InputAction m_Player_WeaponSwitchPrevious;
         private readonly InputAction m_Player_Grab;
@@ -410,6 +432,7 @@ namespace GameInput
             public InputAction @MouseX => m_Wrapper.m_Player_MouseX;
             public InputAction @MouseY => m_Wrapper.m_Player_MouseY;
             public InputAction @Shot1 => m_Wrapper.m_Player_Shot1;
+            public InputAction @Focus => m_Wrapper.m_Player_Focus;
             public InputAction @WeaponSwitchNext => m_Wrapper.m_Player_WeaponSwitchNext;
             public InputAction @WeaponSwitchPrevious => m_Wrapper.m_Player_WeaponSwitchPrevious;
             public InputAction @Grab => m_Wrapper.m_Player_Grab;
@@ -440,6 +463,9 @@ namespace GameInput
                 @Shot1.started += instance.OnShot1;
                 @Shot1.performed += instance.OnShot1;
                 @Shot1.canceled += instance.OnShot1;
+                @Focus.started += instance.OnFocus;
+                @Focus.performed += instance.OnFocus;
+                @Focus.canceled += instance.OnFocus;
                 @WeaponSwitchNext.started += instance.OnWeaponSwitchNext;
                 @WeaponSwitchNext.performed += instance.OnWeaponSwitchNext;
                 @WeaponSwitchNext.canceled += instance.OnWeaponSwitchNext;
@@ -477,6 +503,9 @@ namespace GameInput
                 @Shot1.started -= instance.OnShot1;
                 @Shot1.performed -= instance.OnShot1;
                 @Shot1.canceled -= instance.OnShot1;
+                @Focus.started -= instance.OnFocus;
+                @Focus.performed -= instance.OnFocus;
+                @Focus.canceled -= instance.OnFocus;
                 @WeaponSwitchNext.started -= instance.OnWeaponSwitchNext;
                 @WeaponSwitchNext.performed -= instance.OnWeaponSwitchNext;
                 @WeaponSwitchNext.canceled -= instance.OnWeaponSwitchNext;
@@ -519,6 +548,7 @@ namespace GameInput
             void OnMouseX(InputAction.CallbackContext context);
             void OnMouseY(InputAction.CallbackContext context);
             void OnShot1(InputAction.CallbackContext context);
+            void OnFocus(InputAction.CallbackContext context);
             void OnWeaponSwitchNext(InputAction.CallbackContext context);
             void OnWeaponSwitchPrevious(InputAction.CallbackContext context);
             void OnGrab(InputAction.CallbackContext context);
