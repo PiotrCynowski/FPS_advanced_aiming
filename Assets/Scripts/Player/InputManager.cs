@@ -46,8 +46,11 @@ namespace GameInput
             playerActions.MouseX.performed += ctx => mouseInput.x = ctx.ReadValue<float>();
             playerActions.MouseY.performed += ctx => mouseInput.y = ctx.ReadValue<float>();
 
-            playerActions.Shot1.performed += _ => OnShot1LMB(true);
-            playerActions.Shot1.canceled += _ => OnShot1LMB(false);
+            playerActions.Shot1.performed += _ => OnShotLMB(true);
+            playerActions.Shot1.canceled += _ => OnShotLMB(false);
+
+            playerActions.Focus.performed += _ => OnFocusRMB(true);
+            playerActions.Focus.canceled += _ => OnFocusRMB(false);
 
             playerActions.WeaponSwitchNext.performed += _ => weapon.SwitchWeaponMouseButScroll(true);
             playerActions.WeaponSwitchPrevious.performed += _ => weapon.SwitchWeaponMouseButScroll(false);
@@ -92,7 +95,7 @@ namespace GameInput
             controls.Enable();
         }
 
-        private void OnShot1LMB(bool isPerformed)
+        private void OnShotLMB(bool isPerformed)
         {
             if (isRMB)
             {
@@ -102,6 +105,11 @@ namespace GameInput
             {
                 weapon.ShotLMouseBut(isPerformed);
             }
+        }
+
+        private void OnFocusRMB(bool isPerformed)
+        {
+
         }
     }
 }
