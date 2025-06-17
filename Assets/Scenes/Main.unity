@@ -1367,6 +1367,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2505799009133097169, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7218699299293827298, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: crosshairUI
       value: 
@@ -1624,7 +1628,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4493585093827132993, guid: 619b8329ef240724fb34f7713c23807e, type: 3}
+  m_Mesh: {fileID: -401327975496357480, guid: 619b8329ef240724fb34f7713c23807e, type: 3}
 --- !u!33 &6193039485144770596
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1654,7 +1658,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -1550514412580984892, guid: 619b8329ef240724fb34f7713c23807e, type: 3}
+  m_Mesh: {fileID: -3037626760323194538, guid: 619b8329ef240724fb34f7713c23807e, type: 3}
 --- !u!1001 &6610223648350386290
 PrefabInstance:
   m_ObjectHideFlags: 0
