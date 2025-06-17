@@ -1,6 +1,7 @@
 using UnityEngine;
 using Player.WeaponData;
 using System.Collections;
+using UnityEngine.UIElements;
 
 namespace Player
 {
@@ -32,6 +33,8 @@ namespace Player
 
         private float bobTimer = 0f;
         private Vector3 bobOffset = Vector3.zero;
+
+        private bool isFocusing = false;
 
         [Header("Weapon Switch Animation")]
         [SerializeField] private float switchAnimDistance = 0.3f;
@@ -76,6 +79,11 @@ namespace Player
         public void OnWeaponSprint(bool isPlayerSprint)
         {
             isSprint = isPlayerSprint;
+        }
+
+        public void OnFocus(bool isFocus)
+        {
+            isFocusing = isFocus;
         }
 
         public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)

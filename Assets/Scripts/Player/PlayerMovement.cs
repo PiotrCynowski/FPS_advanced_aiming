@@ -32,6 +32,8 @@ namespace Player
         private CharacterController charCtrl;
         private bool isCanJump = true;
 
+        private bool isFocusing = false;
+
         public static Action<bool> onJump;
 
         private bool isGrounded = true;
@@ -120,6 +122,11 @@ namespace Player
             moveDirection = transform.right * _horizontalInput.x + transform.forward * _horizontalInput.y;
         }
         #endregion
+
+        public void OnFocus(bool isFocus)
+        {
+            isFocusing = isFocus;
+        }
 
         #region Jump
         public void OnJumpPressed()

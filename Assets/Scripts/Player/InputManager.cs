@@ -109,7 +109,8 @@ namespace GameInput
 
         private void OnFocusRMB(bool isPerformed)
         {
-
+            movement.OnFocus(isPerformed);
+            weaponAnim.OnFocus(isPerformed);
         }
     }
 }
