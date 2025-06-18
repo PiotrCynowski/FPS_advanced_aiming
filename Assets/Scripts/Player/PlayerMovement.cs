@@ -126,12 +126,17 @@ namespace Player
         public void OnFocus(bool isFocus)
         {
             isFocusing = isFocus;
+
+            if (isFocusing)
+            {
+                SprintValue = 1;
+            }
         }
 
         #region Jump
         public void OnJumpPressed()
         {
-            if (isGrounded && isCanJump)
+            if (isGrounded && isCanJump && !isFocusing)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 StartCoroutine(JumpCooldown());
@@ -159,6 +164,8 @@ namespace Player
         #region Sprint
         public void OnSprintPressed(bool isActive)
         {
+            if (isFocusing) return;
+
             if (isActive && CurrentStamina > 10) 
             {
                 SprintValue = sprinteMultiplier;

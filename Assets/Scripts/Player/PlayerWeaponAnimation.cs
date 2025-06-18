@@ -34,6 +34,9 @@ namespace Player
         private float bobTimer = 0f;
         private Vector3 bobOffset = Vector3.zero;
 
+        [Header("Focus")]
+        [SerializeField] private Vector3 focusOffset = new Vector3(0f, -0.02f, 0.05f);
+        private Vector3 currentFocusOffset = Vector3.zero;
         private bool isFocusing = false;
 
         [Header("Weapon Switch Animation")]
@@ -59,7 +62,8 @@ namespace Player
         {
             if(weaponGO == null) return;
 
-            weaponGO.localPosition = Vector3.Lerp(weaponGO.localPosition, initialLocalPos + targetOffset, Time.deltaTime * swaySmooth);
+            Vector3 desiredPos = initialLocalPos + targetOffset + currentFocusOffset;
+            weaponGO.localPosition = Vector3.Lerp(weaponGO.localPosition, desiredPos, Time.deltaTime * swaySmooth);
 
             Quaternion targetRotation = Quaternion.LookRotation(crosshairTarget.position - weaponGO.position);
 
@@ -84,6 +88,7 @@ namespace Player
         public void OnFocus(bool isFocus)
         {
             isFocusing = isFocus;
+            currentFocusOffset = isFocusing ? focusOffset : Vector3.zero;
         }
 
         public void WeaponUpdate(Vector2 mouseInput, Vector2 movementInput)

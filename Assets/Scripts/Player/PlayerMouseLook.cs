@@ -13,9 +13,12 @@ namespace Player
         private float mouseX, mouseY;
         private float xRotation = 0f;
         private Vector3 targetRotation;
+        private bool isPause;
 
         private void Update()
         {
+            if(isPause) return;
+
             transform.Rotate(Vector3.up, mouseX * Time.deltaTime);
             LimitViewAngle(); 
         }
@@ -24,6 +27,11 @@ namespace Player
         {
             mouseX = _mouseIn.x * sensitivityX;
             mouseY = _mouseIn.y * sensitivityY;
+        }
+
+        public void OnPauseGame(bool isPause)
+        {
+            this.isPause = isPause;
         }
 
         private void LimitViewAngle()

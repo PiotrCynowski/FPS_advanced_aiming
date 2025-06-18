@@ -88,11 +88,13 @@ namespace GameInput
         {
             onPlayerEscButton.Invoke();
             controls.Disable();
+            mouseLook.OnPauseGame(true);
         }
 
         private void EnableControlls()
         {
             controls.Enable();
+            mouseLook.OnPauseGame(false);
         }
 
         private void OnShotLMB(bool isPerformed)
