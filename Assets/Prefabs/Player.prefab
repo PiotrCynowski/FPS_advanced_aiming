@@ -271,6 +271,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   checkRadius: 0.5
+  focusMultiplier: 0.5
   sprinteMultiplier: 1.5
   sprintCooldown: 2
   maxStamina: 100
@@ -316,9 +317,13 @@ MonoBehaviour:
   crosshairUI: {fileID: 0}
   weaponsContainer: {fileID: 3475362246700101958}
   possibleWeapons:
-  - {fileID: 11400000, guid: 1767736602f62e040876c0c4df0dd3d2, type: 2}
   - {fileID: 11400000, guid: 0bb06090656beac41a91e5e199e3274b, type: 2}
   - {fileID: 11400000, guid: d562d919e5ccff54d86b6d30f1d11489, type: 2}
+  currentWeaponIndex: 0
+  weaponsLen: 0
+  isSwitching: 0
+  isAnim: 0
+  isReadyToSwitch: 0
 --- !u!114 &8273619602216081313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,6 +337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crosshairTarget: {fileID: 5189079693135766729}
+  weaponHolder: {fileID: 3475362246700101958}
   rotationSpeed: 5
   moveSwayAmount: 0.03
   mouseSwayAmount: 0.02
@@ -344,6 +350,13 @@ MonoBehaviour:
   bobAmplitude: 0.05
   bobSpeedThreshold: 0.1
   bobSwayLerp: 8
+  focusOffset: {x: 0, y: -0.02, z: 0.05}
+  normalFOV: 60
+  focusFOV: 40
+  fovTransitionSpeed: 5
+  playerCamera: {fileID: 1891586906770210809}
+  switchAnimDistance: 0.3
+  switchAnimSpeed: 6
 --- !u!114 &7218699299293827298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,7 +504,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6685748880194284284}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

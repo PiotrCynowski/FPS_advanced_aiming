@@ -49,14 +49,11 @@ namespace GameInput
             playerActions.Shot1.performed += _ => OnShotLMB(true);
             playerActions.Shot1.canceled += _ => OnShotLMB(false);
 
-            playerActions.Focus.performed += _ => OnFocusRMB(true);
-            playerActions.Focus.canceled += _ => OnFocusRMB(false);
-
             playerActions.WeaponSwitchNext.performed += _ => weapon.SwitchWeaponMouseButScroll(true);
             playerActions.WeaponSwitchPrevious.performed += _ => weapon.SwitchWeaponMouseButScroll(false);
 
-            playerActions.Grab.performed += ctx => { grabController.OnMouseRMB(true); isRMB = true; };
-            playerActions.Grab.canceled += ctx => { grabController.OnMouseRMB(false); isRMB = false; };
+            playerActions.GrabFocus.performed += ctx => { grabController.OnMouseRMB(true); isRMB = true; OnFocusRMB(true); };
+            playerActions.GrabFocus.canceled += ctx => { grabController.OnMouseRMB(false); isRMB = false; OnFocusRMB(false); };
 
             playerActions.Interact.performed += _ => playerInteract.Interact();
 
