@@ -301,7 +301,6 @@ MonoBehaviour:
   toRayInteract:
     serializedVersion: 2
     m_Bits: 1280
-  aimedObj: 0
 --- !u!114 &1891586907174809481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,7 +350,7 @@ MonoBehaviour:
   bobAmplitude: 0.05
   bobSpeedThreshold: 0.1
   bobSwayLerp: 8
-  focusOffset: {x: 0, y: -0.02, z: 0.05}
+  focusOffset: {x: -0.3, y: -0.02, z: -0.3}
   normalFOV: 60
   focusFOV: 40
   fovTransitionSpeed: 5
