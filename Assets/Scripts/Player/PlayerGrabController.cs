@@ -103,7 +103,7 @@ namespace Player
                 currentAim.PickItem(true);
                 itemPicked = currentAim.GetInteractable();
                 moveItemCoroutine = StartCoroutine(MoveItemToHoldPos());
-                AimedObj = RaycastAimState.grabbed;
+                aimedObj = RaycastAimState.grabbed;
             }
         }
 
@@ -151,6 +151,8 @@ namespace Player
         #region raycast interaction
         public void RaycastInfo(ICanBeGrabbed grabbable)
         {
+            if (itemPicked != null) return;
+
             if (grabbable != null)
             {
                 if (currentAim == null)
@@ -176,7 +178,7 @@ namespace Player
             }
         }
 
-        public bool IsAimedAt() {return AimedObj == RaycastAimState.aimedAt;}
+        public bool IsAimedAt() { return AimedObj != RaycastAimState.leftAlone; }
 
         private void CallCurrentAim(RaycastAimState aimState) 
         {

@@ -113,6 +113,8 @@ namespace GameInput
             {
                 isGrab = isPerformed;
                 grabController.OnMouseRMB(isPerformed);
+                movement.OnFocus(false);
+                weaponAnim.OnFocus(false);
             }
             else
             {

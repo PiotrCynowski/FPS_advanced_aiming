@@ -51,14 +51,13 @@ public class GrabbableItem : InteractableObj, ICanBeGrabbed
 
         switch (aimState)
         {
-            case RaycastAimState.grabbed:
-                indicatorGrab.SetActive(false);
-                break;
-
             case RaycastAimState.aimedAt:
                 indicatorGrab.SetActive(true);
                 break;
 
+            case RaycastAimState.grabbed:
+                indicatorGrab.SetActive(false);
+                break;
 
             case RaycastAimState.leftAlone:
                 indicatorGrab.SetActive(false);

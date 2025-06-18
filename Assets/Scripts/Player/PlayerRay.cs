@@ -59,7 +59,6 @@ namespace Player
                     crosshairTarget.position = hitWeapon.point + ray.direction.normalized * 0.25f;
                     weapon.GunBarrelInfo(hitWeapon.point, ray.direction, obj);
                     isMatchedRay = true;
-                    return;
                 }
                 else
                 {
@@ -87,7 +86,7 @@ namespace Player
                     }
 
                     if (obj is ICanBeInteracted interactable)
-                    {                     
+                    {
                         SetInteractable(true, interact.RaycastInfo(interactable));
                         isMatchedRay = true;
                     }
