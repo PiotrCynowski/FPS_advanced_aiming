@@ -80,32 +80,18 @@ namespace Player
         #endregion
 
         #region input system receive message
-        public void OnMouseLMB(bool isPressed) 
+        public void OnMouseLMB(bool isPressed)
         {
-            if (isPressed) 
-            {
-                if (itemPicked != null) 
-                {
-                    ItemThrow();
-                }
-
-                TryClickButton();
-            }
+            if (isPressed && itemPicked != null)
+                ItemThrow();
         }
 
-        public void OnMouseRMB(bool isPressed) 
-        {       
-            if (isPressed) 
-            {
+        public void OnMouseRMB(bool isPressed)
+        {
+            if (isPressed)
                 ItemGrab();
-            }
-            else 
-            {
-                if (itemPicked != null) 
-                {
-                    ItemRelease();
-                }
-            }
+            else if (itemPicked != null)
+                ItemRelease();
         }
         #endregion
 
@@ -117,15 +103,15 @@ namespace Player
                 currentAim.PickItem(true);
                 itemPicked = currentAim.GetInteractable();
                 moveItemCoroutine = StartCoroutine(MoveItemToHoldPos());
+                AimedObj = RaycastAimState.grabbed;
             }
         }
 
         private void ItemRelease() 
         {
             if (moveItemCoroutine != null) 
-            {
                 StopCoroutine(moveItemCoroutine);
-            }
+
             itemPicked.transform.parent = null;
             itemPicked.PickItem(false);
             itemPicked = null;
@@ -134,9 +120,8 @@ namespace Player
         private void ItemThrow() 
         {
             if (moveItemCoroutine != null) 
-            {
                 StopCoroutine(moveItemCoroutine);
-            }
+
             itemPicked.transform.parent = null;
             itemPicked.ThrowItem(cameraRoot.forward, itemThrowForce);
             itemPicked = null;
@@ -164,12 +149,6 @@ namespace Player
         #endregion
 
         #region raycast interaction
-        private void TryClickButton() 
-        {
-            AimedObj = RaycastAimState.clicked;
-            currentAim = null;
-        }
-
         public void RaycastInfo(ICanBeGrabbed grabbable)
         {
             if (grabbable != null)
@@ -196,6 +175,8 @@ namespace Player
                 return;
             }
         }
+
+        public bool IsAimedAt() {return AimedObj == RaycastAimState.aimedAt;}
 
         private void CallCurrentAim(RaycastAimState aimState) 
         {
@@ -247,6 +228,6 @@ public interface ICanBeGrabbed
 public enum RaycastAimState 
 {
     aimedAt,
-    clicked,
+    grabbed,
     leftAlone
 }
