@@ -1,7 +1,6 @@
 using UnityEngine;
 using Player.WeaponData;
 using System.Collections;
-using UnityEngine.UIElements;
 
 namespace Player
 {
@@ -36,9 +35,14 @@ namespace Player
 
         [Header("Focus")]
         [SerializeField] private Vector3 focusOffset = new Vector3(0f, -0.02f, 0.05f);
+        [SerializeField] private float normalFOV = 60f;
+        [SerializeField] private float focusFOV = 40f;
+        [SerializeField] private float fovTransitionSpeed = 5f;
+        [SerializeField] Camera playerCamera;
+        private float currentFOV;
         private Vector3 currentFocusOffset = Vector3.zero;
-        private bool isFocusing = false;
-
+        private bool isFocusing = false;  
+    
         [Header("Weapon Switch Animation")]
         [SerializeField] private float switchAnimDistance = 0.3f;
         [SerializeField] private float switchAnimSpeed = 6f;
@@ -56,6 +60,8 @@ namespace Player
         {
             PlayerWeapon.Instance.OnWeaponSwitch += OnWeaponSwitchModel;
             PlayerMovement.onJump += OnJumpOrLandAction;
+
+            currentFOV = playerCamera.fieldOfView;
         }
 
         private void Update()
@@ -72,6 +78,9 @@ namespace Player
                 targetRotation,
                 Time.deltaTime * rotationSpeed
             );
+
+            currentFOV = Mathf.Lerp(currentFOV, isFocusing ? focusFOV : normalFOV, Time.deltaTime * fovTransitionSpeed);
+            playerCamera.fieldOfView = currentFOV;
         }
 
         private void OnDestroy()
