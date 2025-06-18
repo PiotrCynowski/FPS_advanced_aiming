@@ -15,6 +15,7 @@ namespace Player
         [SerializeField] private Transform groundCheckPoint;
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private float checkRadius;
+        [SerializeField] private float focusMultiplier = 0.5f;
 
         [Header("Sprint Settings")]
         [SerializeField] private float sprinteMultiplier = 2f;
@@ -32,6 +33,7 @@ namespace Player
         private CharacterController charCtrl;
         private bool isCanJump = true;
 
+        private float focusValue = 1f;
         private bool isFocusing = false;
 
         public static Action<bool> onJump;
@@ -98,7 +100,7 @@ namespace Player
             HandleGravity();
             HandleStamina();
 
-            charCtrl.Move(moveSpeed * SprintValue * Time.deltaTime * velocity);   
+            charCtrl.Move(moveSpeed * SprintValue * focusValue * Time.deltaTime * velocity);   
         }
 
         #region Movement
@@ -126,11 +128,7 @@ namespace Player
         public void OnFocus(bool isFocus)
         {
             isFocusing = isFocus;
-
-            if (isFocusing)
-            {
-                SprintValue = 1;
-            }
+            focusValue = isFocus ? focusMultiplier : 1f;
         }
 
         #region Jump
