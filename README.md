@@ -21,8 +21,15 @@ Assets\Scenes\Main.unity
 - **ESC** – Open or close the in-game pause menu
 
 #### Weapons
-Variety of weapons, each with targets types they are effective against.
-
+Includes a variety of weapons, each with unique shot types, firing rates, and magazine sizes. Weapons are effective against specific target types, defined by customizable configurations.
+Features include:
+- Different weapon and rifle types for varied gameplay.
+- Configurable shot intervals, reload times, and ammo capacity.
+- Bullet templates with impact effects and muzzle flashes.
+- 3D models with precise positioning and dynamic crosshair integration.
+- Smooth weapon switching and animations.
+- Realistic weapon sway and bobbing for immersion.
+  
 *target vulnerable to current weapon*
 ![alt text](https://github.com/PiotrCynowski/FPS_advanced_aiming/blob/master/GitPics/fps_2.png?raw=true)
 
