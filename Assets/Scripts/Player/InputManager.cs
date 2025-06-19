@@ -23,7 +23,7 @@ namespace GameInput
         private Vector2 mouseInput;
 
         public static Action onPlayerEscButton;
-        private bool isGrab;
+        private bool isGrab, isFocus;
 
         private void Awake()
         {
@@ -49,11 +49,11 @@ namespace GameInput
             playerActions.Shot1.performed += _ => OnShotLMB(true);
             playerActions.Shot1.canceled += _ => OnShotLMB(false);
 
-            playerActions.WeaponSwitchNext.performed += _ => weapon.SwitchWeaponMouseButScroll(true);
-            playerActions.WeaponSwitchPrevious.performed += _ => weapon.SwitchWeaponMouseButScroll(false);
+            playerActions.WeaponSwitchNext.performed += _ => OnWeaponSwitchMMB(true);
+            playerActions.WeaponSwitchPrevious.performed += _ => OnWeaponSwitchMMB(false);
 
-            playerActions.GrabFocus.performed += ctx => OnFocusGrabRMB(true);
-            playerActions.GrabFocus.canceled += ctx => OnFocusGrabRMB(false);
+            playerActions.GrabFocus.performed += _ => OnFocusGrabRMB(true);
+            playerActions.GrabFocus.canceled += _ => OnFocusGrabRMB(false);
 
             playerActions.Interact.performed += _ => playerInteract.Interact();
 
@@ -109,7 +109,7 @@ namespace GameInput
 
         private void OnFocusGrabRMB(bool isPerformed)
         {
-            if (grabController.IsAimedAt())
+            if (grabController.IsAimedAt() && !isFocus)
             {
                 isGrab = isPerformed;
                 grabController.OnMouseRMB(isPerformed);
@@ -118,9 +118,16 @@ namespace GameInput
             }
             else
             {
+                isFocus = isPerformed;
                 movement.OnFocus(isPerformed);
                 weaponAnim.OnFocus(isPerformed);
             }
+        }
+
+        private void OnWeaponSwitchMMB(bool isNext)
+        {
+            if(!isGrab && !isFocus)
+                weapon.SwitchWeaponMouseButScroll(isNext);
         }
     }
 }
