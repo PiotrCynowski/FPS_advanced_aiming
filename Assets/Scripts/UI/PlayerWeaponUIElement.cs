@@ -7,7 +7,7 @@ public class PlayerWeaponUIElement : MonoBehaviour
 
     public void Init(string name)
     {
-        weaponName.name = name;
+        weaponName.text = name;
     }
 
     public RectTransform GetRectTransform()
