@@ -37,9 +37,19 @@ Features include:
 Some items can be grabbed; these items will have an indicator when the player is close enough, signaling that they can be picked up. A second indicator will appear when the player is close enough to the item, pointing at it, signifying that the item can be grabbed. Once the item is grabbed, the player can throw it using the left mouse button.
 
 #### Game UI
-The game's User Interface (UI) provides information to the player: 
-Crosshair: The crosshair changes color to indicate whether you can damage a target. Green means the target is vulnerable, while red means the target is invulnerable to your current weapon.
-Weapon Info Window: A small window in the UI displays information about your currently equipped weapon, including its name, damage, and other relevant details.
+The game's UI provides essential feedback to the player through several key elements:
+
+- **Crosshair**: Changes color based on target status:
+  - Green = target can be damaged
+  - Red = target is invulnerable
+  - White = no target
+
+- **Weapon Info**: Displays the currently equipped weapon’s name and which target types it can destroy. Shows target material and HP when aiming at destructible objects.
+- **Stamina Bar**: Appears only when stamina changes and hides when full, showing current stamina level.
+- **Ammo Display**: Shows current and maximum ammo for the equipped weapon.
+- **Interaction Prompts**: Shows “[E] to interact” or custom messages when near interactable objects.
+- **Weapons Menu**: Lists all weapons and centers on the selected weapon briefly for easy navigation.
+All UI elements update in real-time via event subscriptions from the player and weapon systems.
 
 #### Target Prefabs
 Interactive target prefabs, each with distinct behaviors and responses. 
