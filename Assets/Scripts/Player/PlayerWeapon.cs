@@ -54,6 +54,7 @@ namespace Player.WeaponData
         public event OnObjTarget OnWeaponObjTarget;
 
         public Action<Transform, Action, Action> OnWeaponSwitch;
+        public Action<bool> OnWeaponUISwitch;
         public Action<int, int> OnAmmoChange;
 
         public Action<string> OnWeaponTriggerInfo;
@@ -149,6 +150,8 @@ namespace Player.WeaponData
             isReadyToSwitch = false;
             isAnim = true;
             isSwitching = true;
+
+            OnWeaponUISwitch?.Invoke(isNext);
 
             weaponsCollection[currentWeaponIndex].currentAmmo = currentAmmo;
             weaponsCollection[currentWeaponIndex].currentMagazines = currentMagazines;
