@@ -1,4 +1,5 @@
 using Player.WeaponData;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,16 +7,18 @@ using Weapons;
 
 public class PlayerWeaponsMenuUI : MonoBehaviour
 {
-    public RectTransform content;        
-    public RectTransform viewport;       
-    public Dictionary<int, RectTransform> items = new(); 
-
-    public PlayerWeaponUIElement contentElement;
+    [SerializeField] private RectTransform content;
+    [SerializeField] private RectTransform viewport;
+    [SerializeField] private PlayerWeaponUIElement contentElement;
+    private Dictionary<int, RectTransform> items = new();
+    private Coroutine menuRoutine;
 
     private void Start()
     {
         PlayerWeapon.Instance.OnWeaponIndexSwitch += CenterItem;
         PlayerWeapon.Instance.OnAddUIItem += AddItem;
+
+        content.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -35,24 +38,19 @@ public class PlayerWeaponsMenuUI : MonoBehaviour
     {
         if (!items.ContainsKey(key)) return;
 
-        RectTransform target = items[key];
+        if(menuRoutine != null) StopCoroutine(menuRoutine);
+        menuRoutine = StartCoroutine(WeaponsMenuRoutine());
 
+        RectTransform target = items[key];
         LayoutRebuilder.ForceRebuildLayoutImmediate(content);
 
-        // Get item center in world space
-        Vector3 itemCenterWorld = GetWorldCenter(target);
-        Vector3 viewportCenterWorld = GetWorldCenter(viewport);
+        Vector3 itemCenterLocal = content.InverseTransformPoint(GetWorldCenter(target));
+        Vector3 viewportCenterLocal = content.InverseTransformPoint(GetWorldCenter(viewport));
 
-        // Convert both to local space of the content (same coordinate space)
-        Vector3 itemCenterLocal = content.InverseTransformPoint(itemCenterWorld);
-        Vector3 viewportCenterLocal = content.InverseTransformPoint(viewportCenterWorld);
-
-        // Calculate the offset between item and viewport center
         float offsetY = itemCenterLocal.y - viewportCenterLocal.y;
 
-        // Apply the offset to anchoredPosition
         Vector2 newPos = content.anchoredPosition;
-        newPos.y -= offsetY; // content moves opposite to item offset
+        newPos.y -= offsetY; 
         content.anchoredPosition = newPos;
     }
 
@@ -61,5 +59,12 @@ public class PlayerWeaponsMenuUI : MonoBehaviour
         Vector3[] corners = new Vector3[4];
         rt.GetWorldCorners(corners);
         return (corners[0] + corners[2]) * 0.5f;
+    }
+
+    private IEnumerator WeaponsMenuRoutine()
+    {
+        content.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1);
+        content.gameObject.SetActive(false);
     }
 }
