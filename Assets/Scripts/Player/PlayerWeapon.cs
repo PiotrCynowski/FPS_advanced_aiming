@@ -54,7 +54,8 @@ namespace Player.WeaponData
         public event OnObjTarget OnWeaponObjTarget;
 
         public Action<Transform, Action, Action> OnWeaponSwitch;
-        public Action<bool> OnWeaponUISwitch;
+        public Action<int> OnWeaponIndexSwitch;
+        public Action<Weapon> OnAddUIItem;
         public Action<int, int> OnAmmoChange;
 
         public Action<string> OnWeaponTriggerInfo;
@@ -151,8 +152,6 @@ namespace Player.WeaponData
             isAnim = true;
             isSwitching = true;
 
-            OnWeaponUISwitch?.Invoke(isNext);
-
             weaponsCollection[currentWeaponIndex].currentAmmo = currentAmmo;
             weaponsCollection[currentWeaponIndex].currentMagazines = currentMagazines;
 
@@ -165,6 +164,8 @@ namespace Player.WeaponData
                 currentWeaponIndex = 0;
             else if (currentWeaponIndex < 0)
                 currentWeaponIndex = weaponsLen - 1;
+
+            OnWeaponIndexSwitch?.Invoke(currentWeaponIndex);
 
             if (shootingRoutine != null)
             {
@@ -231,6 +232,8 @@ namespace Player.WeaponData
 
             if (weapon.weaponOnHit != null)
                 onHitEffectPoolSpawner.AddPoolForGameObject(weapon.weaponOnHit, index);
+
+            OnAddUIItem?.Invoke(weapon);
         }
 
         private void MarkAnimInMiddle() => isAnim = false;
