@@ -9,13 +9,16 @@ The game was created using Unity Engine.
 Assets\Scenes\Main.unity
 
 #### CONTROLS
-W, A, S, D: Move your character.
-Space: Jump
-Mouse: Rotate the camera.
-Left Mouse Button: Fire your equipped weapon or Throw item.
-Middle Mouse Button: Switch weapon.
-Right Mouse Button: Grab Item
-ESC: Open the in-game menu.
+W, A, S, D – Move your character
+Space – Jump
+Shift – Sprint (Hold to run)
+Mouse – Rotate the camera
+Left Mouse Button – Fire equipped weapon or throw item (Hold for continuous fire)
+Middle Mouse Button / Mouse Scroll Down – Switch to next weapon
+Mouse Scroll Up – Switch to previous weapon
+Right Mouse Button – Grab or focus on an item (Hold to maintain focus)
+E – Interact with objects
+ESC – Open or close the in-game pause menu
 
 #### Weapons
 Variety of weapons, each with targets types they are effective against.
