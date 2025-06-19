@@ -39,20 +39,27 @@ public class PlayerWeaponsMenuUI : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(content);
 
-        Vector3 localCenterPos = content.InverseTransformPoint(GetWorldCenter(target));
-        Vector3 viewportLocalCenter = content.InverseTransformPoint(GetWorldCenter(viewport));
+        // Get item center in world space
+        Vector3 itemCenterWorld = GetWorldCenter(target);
+        Vector3 viewportCenterWorld = GetWorldCenter(viewport);
 
-        float offsetY = localCenterPos.y - viewportLocalCenter.y;
+        // Convert both to local space of the content (same coordinate space)
+        Vector3 itemCenterLocal = content.InverseTransformPoint(itemCenterWorld);
+        Vector3 viewportCenterLocal = content.InverseTransformPoint(viewportCenterWorld);
 
-        Vector2 newAnchoredPos = content.anchoredPosition;
-        newAnchoredPos.y += offsetY;
-        content.anchoredPosition = newAnchoredPos;
+        // Calculate the offset between item and viewport center
+        float offsetY = itemCenterLocal.y - viewportCenterLocal.y;
+
+        // Apply the offset to anchoredPosition
+        Vector2 newPos = content.anchoredPosition;
+        newPos.y -= offsetY; // content moves opposite to item offset
+        content.anchoredPosition = newPos;
     }
 
     private Vector3 GetWorldCenter(RectTransform rt)
     {
         Vector3[] corners = new Vector3[4];
         rt.GetWorldCorners(corners);
-        return (corners[0] + corners[2]) * 0.5f; 
+        return (corners[0] + corners[2]) * 0.5f;
     }
 }
