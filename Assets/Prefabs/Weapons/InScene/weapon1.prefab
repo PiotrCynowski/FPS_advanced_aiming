@@ -67,3 +67,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Weapon: {fileID: 11400000, guid: 1767736602f62e040876c0c4df0dd3d2, type: 2}
+  onlyAmmo: 0

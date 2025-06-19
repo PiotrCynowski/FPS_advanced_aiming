@@ -858,10 +858,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2636124024045244573, guid: 79c43f8b7179fd74299da1a9c85c8eda, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5716602983060196313, guid: 79c43f8b7179fd74299da1a9c85c8eda, type: 3}
       propertyPath: m_Name
       value: weapon1
@@ -943,10 +939,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 498179828304237899, guid: 8d59ad5c594ce0a49b1f1b9ba75d39d4, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 498179828464398028, guid: 8d59ad5c594ce0a49b1f1b9ba75d39d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1287,20 +1279,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5673705125672239668}
     - target: {fileID: 1891586907174809482, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891586907174809482, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: playerCrosshair
       value: 
       objectReference: {fileID: 8318182256057005081}
     - target: {fileID: 1891586907174809490, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 1891586907174809490, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1891586907174809492, guid: 1ed07febd04a1bd4b85d19096f31a46f, type: 3}
       propertyPath: m_LocalPosition.x
